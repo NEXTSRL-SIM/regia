@@ -3,10 +3,11 @@
 <title>Regia - Next</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-:root{--ground:#100E0C;--surface:#1A1613;--surface-2:#231D19;--surface-3:#2C251F;--ink:#F2EBE3;--ink-2:#AFA49A;--ink-3:#7C716A;--line:#332B25;--line-2:#453A32;--amber:#E2A24C;--amber-dim:#7A5622;--amber-wash:#241A0E;--sage:#7FB08B;--sage-dim:#22321F;--brick:#CE6A45;--brick-dim:#3A1F16;--display:"Bricolage Grotesque",Arial,sans-serif;--sans:"IBM Plex Sans",Arial,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace}
+:root{--ground:#100E0C;--surface:#1A1613;--surface-2:#231D19;--surface-3:#2C251F;--ink:#F2EBE3;--ink-2:#AFA49A;--ink-3:#7C716A;--line:#332B25;--line-2:#453A32;--amber:#E2A24C;--amber-dim:#7A5622;--amber-wash:#241A0E;--sage:#7FB08B;--sage-dim:#22321F;--brick:#CE6A45;--brick-dim:#3A1F16;--sky:#79A6C4;--display:"Bricolage Grotesque",Arial,sans-serif;--sans:"IBM Plex Sans",Arial,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace}
 *{box-sizing:border-box}html,body{margin:0}
 body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit}
 .porta{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .porta form{width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px}
 .porta h1{font-family:var(--display);font-weight:800;font-size:30px;margin:0;letter-spacing:-.02em}
@@ -21,7 +22,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .st{padding:12px 17px;font-family:var(--mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px}
 .st[aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
 .nascosto{display:none!important}
-.telaio{display:grid;grid-template-columns:298px minmax(0,1fr) 330px;gap:1px;background:var(--line);min-height:calc(100vh - 78px)}
+.telaio{display:grid;grid-template-columns:298px minmax(0,1fr) 336px;gap:1px;background:var(--line);min-height:calc(100vh - 78px)}
 .col{background:var(--ground);display:flex;flex-direction:column;min-width:0}
 .titolo{padding:14px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between}
 .titolo h2{font-family:var(--display);font-weight:600;font-size:14.5px;margin:0}
@@ -52,36 +53,47 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .capo .sotto{font-family:var(--mono);font-size:12px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:14px}
 .grosso{font-family:var(--mono);font-size:28px;font-variant-numeric:tabular-nums;line-height:1;text-align:right}
 .grosso small{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:5px}
-.corpo-centro{flex:1;overflow-y:auto;padding:18px 20px}
-.vuoto{color:var(--ink-3);font-size:14px;padding:40px 20px;text-align:center}
-.scia{border-top:1px solid var(--line);background:var(--surface-2);padding:11px 20px 12px;display:flex;align-items:baseline;gap:16px}
-.scia-et{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
-.scia-righe{display:flex;overflow-x:auto;padding-bottom:2px}
-.tappa{display:flex;align-items:baseline;gap:7px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;padding:0 14px;border-left:1px solid var(--line-2)}
-.tappa:first-child{padding-left:0;border-left:none}
-.tappa time{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.tappa.ora,.tappa.ora time{color:var(--amber)}
-.banco{border-top:1px solid var(--line);background:var(--surface);padding:13px 20px;display:flex;flex-wrap:wrap;gap:9px}
-.tasto{display:flex;align-items:center;gap:9px;padding:10px 15px;border:1px solid var(--line-2);background:var(--surface-2);font-size:13.5px;font-weight:500}
-.tasto .pt{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
-.tasto:disabled{opacity:.4;cursor:not-allowed}
+.flusso{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.evento{display:grid;grid-template-columns:52px 10px 1fr;gap:12px;align-items:start}
+.evento time{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:2px;font-variant-numeric:tabular-nums}
+.evento .pallo{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--ink-3)}
+.evento.rosso .pallo{background:var(--brick)}.evento.giallo .pallo{background:var(--amber)}.evento.verde .pallo{background:var(--sage)}
+.evento p{margin:0;font-size:14px}
+.evento.rosso p{color:var(--brick)}
+.vuoto{color:var(--ink-3);font-size:14px;padding:36px 20px;text-align:center;line-height:1.6}
+.banco{border-top:1px solid var(--line);background:var(--surface);padding:13px 20px;display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.tasto{display:inline-flex;align-items:center;gap:9px;padding:10px 15px;border:1px solid var(--line-2);background:var(--surface-2);font-size:13.5px;font-weight:500;text-decoration:none}
+.tasto:hover{border-color:var(--ink-3);background:var(--surface-3)}
+.tasto.forte{border-color:var(--amber);color:#FBE9CF;background:var(--amber-dim)}
+.nota-banco{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-left:auto;text-align:right;max-width:44ch;line-height:1.5}
 .dx{overflow-y:auto}
 .blocco{padding:15px 17px;border-bottom:1px solid var(--line)}
+.blocco:last-child{border-bottom:none}
 .etich{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px}
 .sintesi{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
 .coppia{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:13.5px;border-bottom:1px dotted var(--line)}
 .coppia:last-child{border-bottom:none}.coppia dt{color:var(--ink-3)}
 .coppia dd{margin:0;text-align:right;font-family:var(--mono);font-size:12.5px}
 dl{margin:0}
-.foglio{max-width:1080px;margin:0 auto;padding:26px 20px 60px}
+.esitov{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;padding:9px 11px;line-height:1.45}
+.esitov.ok{background:var(--sage-dim);color:#CFE6D5}
+.esitov.att{background:var(--amber-wash);color:#F3DDBB}
+.esitov.no{background:var(--brick-dim);color:#F2D2C6}
+.offerta{background:var(--surface-2);padding:12px 13px}
+.offerta .prezzo{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.02em;line-height:1}
+.offerta .righe{font-size:12.5px;color:var(--ink-2);margin-top:7px;line-height:1.55}
+.attesa{font-size:13px;color:var(--ink-3);font-style:italic;margin:0}
+.foglio{max-width:1000px;margin:0 auto;padding:26px 20px 60px}
 .foglio h1{font-family:var(--display);font-weight:800;font-size:26px;margin:0 0 4px}
 .occhio{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin:0 0 22px}
+.carta{background:var(--surface);border:1px solid var(--line);padding:16px 17px;margin-bottom:13px}
+.carta h4{font-family:var(--display);font-weight:600;font-size:15px;margin:0 0 9px}
 .tabella{width:100%;border-collapse:collapse;font-size:13.5px}
 .tabella th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500;padding:9px 12px;border-bottom:1px solid var(--line-2)}
-.tabella td{padding:11px 12px;border-bottom:1px solid var(--line)}
+.tabella td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-2)}
 .avvolgi{overflow-x:auto;border:1px solid var(--line)}
-audio{width:220px;height:32px}
+audio{width:210px;height:32px}
 @media(max-width:1000px){.telaio{grid-template-columns:1fr}.col.centro{order:-1}}
 </style></head><body>
 <div class="porta" id="porta">
@@ -95,12 +107,17 @@ audio{width:220px;height:32px}
 </div>
 <div id="dentro" class="nascosto">
  <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span></div>
- <div class="schede"><button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button><button class="st" id="tChiuse" aria-selected="false">Chiuse oggi <span id="nChiuse">0</span></button></div>
+ <div class="schede">
+  <button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button>
+  <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
+  <button class="st" id="tChiuse" aria-selected="false">Chiuse oggi <span id="nChiuse">0</span></button>
+ </div>
  <div class="telaio" id="vLinea">
   <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div></div>
   <div class="col centro" id="centro"></div>
   <div class="col dx" id="dx"></div>
  </div>
+ <div id="vArric" class="nascosto"><div class="foglio" id="foglioArric"></div></div>
  <div id="vChiuse" class="nascosto"><div class="foglio"><h1>Chiuse oggi</h1><p class="occhio" id="sottoChiuse"></p><div class="avvolgi"><table class="tabella"><thead><tr><th>Cliente</th><th>Ora</th><th>Durata</th><th>Di cosa si e parlato</th><th>Ascolta</th></tr></thead><tbody id="corpoChiuse"></tbody></table></div></div></div>
 </div>
 <script>
@@ -111,6 +128,8 @@ let sel = null, stato = {vive:[], chiuse:[]}, avviato = false;
 const $ = i => document.getElementById(i);
 const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const corto = (t,n) => { t = String(t||''); return t.length>n ? t.slice(0,n-1)+'…' : t; };
+
 $('formPorta').addEventListener('submit', async (e) => {
   e.preventDefault(); $('no').textContent = '';
   try{
@@ -136,6 +155,10 @@ async function tira(){
     disegna();
   }catch(e){}
 }
+function righe(coppie){
+  const b = coppie.filter(x=>x[1]).map(([k,v])=>'<div class="coppia"><dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd></div>').join('');
+  return b ? '<dl>'+b+'</dl>' : '<p class="attesa">Non ancora raccolto.</p>';
+}
 function disegna(){
   $('orologio').textContent = new Date().toLocaleTimeString('it-IT');
   $('nLive').textContent = stato.vive.length; $('conta').textContent = stato.vive.length;
@@ -146,33 +169,69 @@ function disegna(){
     '<span class="l-nome">'+esc(v.nome||v.telefono||'sconosciuto')+'</span>'+
     '<span class="l-dati">'+esc(v.dove||'')+' - <b>'+mmss(v.secondi)+'</b></span>'+
     '<span class="l-flash '+esc(v.livello)+'">'+esc(v.flash||'')+'</span></span></button>').join('')
-    : '<p class="vuoto">Nessuna telefonata in corso.</p>';
+    : '<p class="vuoto">Nessuna telefonata in corso.<br>Quando Valentino chiama, compare qui.</p>';
   document.querySelectorAll('.linea').forEach(b => b.onclick = () => { sel = b.dataset.c; disegna(); });
+
   const v = stato.vive.find(x => x.conversazione === sel);
-  if(!v){ $('centro').innerHTML = '<p class="vuoto">Quando Valentino chiama, la conversazione compare qui.</p>'; $('dx').innerHTML=''; }
-  else {
-    const m = v.momenti||[];
-    $('centro').innerHTML =
-      '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'In corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
-      '<div class="capo"><div><h1>'+esc(v.nome||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
-      '<div class="corpo-centro"><p class="sintesi">'+esc((v.scheda&&v.scheda.cosa_ha_risposto)||'La trascrizione parola per parola arriva a fine telefonata: qui compaiono i momenti che Valentino segnala mentre parla.')+'</p></div>'+
-      '<div class="scia"><span class="scia-et">Come ci siamo arrivati</span><div class="scia-righe">'+
-      (m.length? m.map((x,i)=>'<span class="tappa'+(i===m.length-1?' ora':'')+'"><time>'+esc(x.ora)+'</time>'+esc(x.cosa)+'</span>').join('') : '<span class="tappa">-</span>')+
-      '</div></div>'+
-      '<div class="banco"><button class="tasto" disabled><span class="pt"></span>Ascolta in silenzio</button><button class="tasto" disabled><span class="pt"></span>Entra in voce</button></div>';
-    const s = v.scheda||{};
-    const riga = (k,x) => x ? '<div class="coppia"><dt>'+k+'</dt><dd>'+esc(x)+'</dd></div>' : '';
-    $('dx').innerHTML = '<div class="titolo"><h2>La sua pratica</h2><span class="conta">dal vivo</span></div>'+
-      (s.cosa_ha_risposto? '<div class="blocco"><p class="etich">Cosa ha chiesto sui social</p><p class="sintesi">'+esc(s.cosa_ha_risposto)+'</p></div>':'')+
-      (s.sintesi? '<div class="blocco"><p class="etich">Dall arricchimento</p><p class="sintesi">'+esc(s.sintesi)+'</p></div>':'')+
-      '<div class="blocco"><p class="etich">Il contatto</p><dl>'+riga('Comune',s.dove)+riga('Indirizzo',s.indirizzo)+riga('Campagna',s.campagna)+riga('Stato',s.stato)+'</dl></div>';
+  if(!v){
+    $('centro').innerHTML = '<p class="vuoto">Nessuna telefonata selezionata.</p>';
+    $('dx').innerHTML=''; $('foglioArric').innerHTML = '<h1>Arricchimento</h1><p class="occhio">Nessuna telefonata in corso.</p>';
+    return;
   }
-  $('corpoChiuse').innerHTML = stato.chiuse.map(c =>
-    '<tr><td>'+esc(c.chi||c.chiamante||'')+'</td><td class="num">'+esc((c.quando||'').slice(11,16))+'</td><td class="num">'+mmss(c.durata_sec||0)+'</td><td>'+esc(c.di_cosa||'')+'</td>'+
-    '<td>'+(c.audio? '<audio controls preload="none" src="'+esc(c.audio)+'"></audio>':'-')+'</td></tr>').join('');
+  const m = v.momenti||[], s = v.scheda||{}, t = s.verifica_tetto||null;
+
+  $('centro').innerHTML =
+    '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
+    '<div class="capo"><div><h1>'+esc(v.nome||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
+    '<div class="flusso">'+ (m.length
+      ? m.map(x=>'<div class="evento '+esc(x.livello)+'"><time>'+esc(x.ora)+'</time><span class="pallo"></span><p>'+esc(x.cosa)+'</p></div>').join('')
+      : '<p class="vuoto">La telefonata e appena partita.<br>Qui compaiono i momenti che Valentino segnala mentre parla.</p>')+
+    '</div>'+
+    '<div class="banco">'+
+      (v.telefono? '<a class="tasto forte" href="tel:'+esc(v.telefono)+'">Chiama tu '+esc((v.nome||'').split(" ")[0]||'il cliente')+'</a>':'')+
+      '<a class="tasto" href="tel:+393355465246">Chiama Roberto</a>'+
+      '<span class="nota-banco">Entrare in voce sulla telefonata in corso non e ancora possibile: l audio sta fra Twilio ed ElevenLabs. Per adesso si interviene richiamando.</span>'+
+    '</div>';
+
+  $('dx').innerHTML =
+    '<div class="titolo"><h2>La sua pratica</h2><span class="conta">dal vivo</span></div>'+
+    '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
+      (s.cosa_ha_risposto? '<p class="sintesi">'+esc(corto(s.cosa_ha_risposto, 220))+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+
+    '</div>'+
+    '<div class="blocco"><p class="etich">Il tetto e i vincoli</p>'+ (t
+      ? '<div class="esitov '+(String(t.semaforo||t.esito||'').match(/verde|ok|libero/i)?'ok':String(t.semaforo||'').match(/ross/i)?'no':'att')+'">'+esc(corto(t.sintesi||t.esito||t.semaforo||'verifica presente',180))+'</div>'
+      : '<p class="attesa">Verifica non ancora collegata a questa pratica.</p>')+
+      (s.posizione_confermata? '<p class="sintesi" style="margin-top:9px">Croce sul tetto confermata dal cliente.</p>':'')+
+    '</div>'+
+    '<div class="blocco"><p class="etich">Quello che ha detto in questa telefonata</p>'+
+      righe([['Bolletta', s.bolletta],['Consumo', s.consumo],['In casa', s.persone],['Di giorno', s.giorno],['Riscaldamento', s.riscaldamento],['Contatore', s.contatore],['Auto', s.auto]])+
+    '</div>'+
+    '<div class="blocco"><p class="etich">Sul tavolo</p>'+ (s.prezzo
+      ? '<div class="offerta"><div class="prezzo">'+esc(s.prezzo)+'</div><div class="righe">'+esc(s.configurazione||'')+'</div></div>'
+      : '<p class="attesa">Nessuna proposta ancora messa sul tavolo.</p>')+
+    '</div>';
+
+  $('foglioArric').innerHTML = '<h1>'+esc(v.nome||v.telefono||'')+'</h1>'+
+    '<p class="occhio">Arricchimento del contatto - '+esc(v.dove||'')+' - '+esc(v.fonte||'')+'</p>'+
+    (s.sintesi? '<div class="carta"><h4>La sintesi</h4><p class="sintesi">'+esc(s.sintesi)+'</p></div>':'')+
+    (s.cosa_ha_risposto? '<div class="carta"><h4>Il modulo, per intero</h4><p class="sintesi">'+esc(s.cosa_ha_risposto)+'</p></div>':'')+
+    '<div class="carta"><h4>Il contatto</h4>'+righe([['Comune',s.dove],['Indirizzo',s.indirizzo],['Provincia',s.provincia],['Campagna',s.campagna],['Quando ha chiesto',(s.quando_ha_chiesto||'').slice(0,16).replace('T',' ')],['Stato',s.stato],['Non disturbare', s.non_disturbare? 'si':'']])+'</div>'+
+    (s.segnali? '<div class="carta"><h4>I segnali trovati</h4><p class="sintesi">'+esc(typeof s.segnali==='string'? s.segnali : JSON.stringify(s.segnali))+'</p></div>':'');
+
+  $('corpoChiuse').innerHTML = stato.chiuse.length ? stato.chiuse.map(c =>
+    '<tr><td>'+esc(c.chi||c.chiamante||'')+'</td><td class="num">'+esc((c.quando||'').slice(11,16))+'</td><td class="num">'+mmss(c.durata_sec||0)+'</td><td>'+esc(corto(c.di_cosa,160))+'</td>'+
+    '<td>'+(c.audio? '<audio controls preload="none" src="'+esc(c.audio)+'"></audio>':'-')+'</td></tr>').join('')
+    : '<tr><td colspan="5" style="color:var(--ink-3)">Nessuna telefonata conclusa oggi.</td></tr>';
   $('sottoChiuse').textContent = stato.chiuse.length + ' telefonate concluse oggi';
 }
-$('tLinea').onclick = () => { $('tLinea').setAttribute('aria-selected','true'); $('tChiuse').setAttribute('aria-selected','false'); $('vLinea').classList.remove('nascosto'); $('vChiuse').classList.add('nascosto'); };
-$('tChiuse').onclick = () => { $('tChiuse').setAttribute('aria-selected','true'); $('tLinea').setAttribute('aria-selected','false'); $('vChiuse').classList.remove('nascosto'); $('vLinea').classList.add('nascosto'); };
+function scheda(quale){
+  ['tLinea','tArric','tChiuse'].forEach(k => $(k).setAttribute('aria-selected', k===quale));
+  $('vLinea').classList.toggle('nascosto', quale!=='tLinea');
+  $('vArric').classList.toggle('nascosto', quale!=='tArric');
+  $('vChiuse').classList.toggle('nascosto', quale!=='tChiuse');
+}
+$('tLinea').onclick = () => scheda('tLinea');
+$('tArric').onclick = () => scheda('tArric');
+$('tChiuse').onclick = () => scheda('tChiuse');
 if(PASS) apri();
 </script></body></html>
