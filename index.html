@@ -164,19 +164,71 @@ let PASS = sessionStorage.getItem('regia_pass') || '';
 let CHI  = sessionStorage.getItem('regia_chi') || '';
 let sel = null, stato = {vive:[], chiuse:[]}, avviato = false, periodo = 'oggi';
 let muto = false, tre = false; let ws = null, wsConv = null, battute = [];
-function ascolta(c){
-  if(wsConv === c && ws && ws.readyState <= 1) return;
-  try{ if(ws) ws.close(); }catch(e){}
-  battute = []; wsConv = c;
+
+/* ---- ascolto in diretta: audio duplicato da Twilio, mu-law 8 kHz ---- */
+const MU = (function(){
+  const t = new Int16Array(256);
+  for(let i=0;i<256;i++){
+    const u = ~i & 0xFF;
+    const segno = (u & 0x80) ? -1 : 1;
+    const esp = (u >> 4) & 7;
+    const man = u & 15;
+    let v = ((man << 1) + 33) << esp;
+    v -= 33;
+    t[i] = segno * v * 4;
+  }
+  return t;
+})();
+let ctx = null, quando = 0, audioWs = null, audioConv = null;
+function avvisa(t){
   try{
-    ws = new WebSocket(API.replace(/^http/,"ws") + "-ascolta?c=" + encodeURIComponent(c) + "&t=" + encodeURIComponent(PASS));
-    ws.onmessage = function(e){
-      var m; try{ m = JSON.parse(e.data); }catch(x){ return; }
-      if(m.tipo === "battuta"){ battute.push(m); disegna(); }
-    };
-    ws.onclose = function(){ if(wsConv === c) wsConv = null; };
+    const b = document.getElementById('bAsc'); if(!b) return;
+    const v = b.innerHTML;
+    b.innerHTML = '<span class="led"></span>' + t;
+    setTimeout(function(){ b.innerHTML = v; }, 4000);
   }catch(e){}
 }
+function suona(b64){
+  if(!ctx) return;
+  let g; try{ g = atob(b64); }catch(e){ return; }
+  const n = g.length; if(!n) return;
+  const buf = ctx.createBuffer(1, n, 8000);
+  const d = buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i] = MU[g.charCodeAt(i)] / 32768;
+  const s = ctx.createBufferSource();
+  s.buffer = buf; s.connect(ctx.destination);
+  const ora = ctx.currentTime;
+  if(quando < ora + 0.05) quando = ora + 0.15;
+  s.start(quando); quando += buf.duration;
+}
+async function accendiAscolto(c){
+  let j;
+  try{
+    const r = await fetch(API + '-ascolta?cosa=avvia&c=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS));
+    j = await r.json();
+  }catch(e){ avvisa('non raggiungo il sistema'); return false; }
+  if(!j || !j.ok){ avvisa(j && j.errore ? j.errore : 'ascolto non disponibile'); return false; }
+  try{
+    if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if(ctx.state === 'suspended') await ctx.resume();
+  }catch(e){ avvisa('il browser non apre l audio'); return false; }
+  quando = 0;
+  try{ if(audioWs) audioWs.close(); }catch(e){}
+  audioConv = c;
+  audioWs = new WebSocket(API.replace(/^http/,'ws') + '-audio?ascolta=1&conv=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS));
+  audioWs.onmessage = function(e){
+    var m; try{ m = JSON.parse(e.data); }catch(x){ return; }
+    if(m.tipo === 'audio' && m.mulaw) suona(m.mulaw);
+  };
+  audioWs.onclose = function(){ if(audioConv === c) audioConv = null; };
+  return true;
+}
+async function spegniAscolto(c){
+  try{ if(audioWs) audioWs.close(); }catch(e){}
+  audioWs = null; audioConv = null;
+  try{ await fetch(API + '-ascolta?cosa=ferma&c=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS)); }catch(e){}
+}
+function ascolta(c){ /* la conversazione scritta arriva con la trascrizione, non piu di qui */ }
 const $ = i => document.getElementById(i);
 const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -254,7 +306,11 @@ function disegna(){
       (v.telefono? '<a class="tasto prendi" href="tel:'+esc(v.telefono)+'">Prendi tu la chiamata</a>':'')+
       '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
     '</div>';
-  $('bAsc').onclick = () => { muto = !muto; if(muto) tre = false; disegna(); };
+  $('bAsc').onclick = async () => {
+    if(!muto){ const ok = await accendiAscolto(v.conversazione); if(!ok) return; muto = true; tre = false; }
+    else { await spegniAscolto(v.conversazione); muto = false; }
+    disegna();
+  };
   $('bEnt').onclick = () => { tre = !tre; if(tre) muto = false; disegna(); };
   $('bChi').onclick = () => chiudiRiga(v.conversazione);
 
