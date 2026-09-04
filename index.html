@@ -33,6 +33,19 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .schede{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 20px;flex-wrap:wrap}
 .st{padding:12px 16px;font-family:var(--mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px}
 .st[aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
+.st.urgente{color:var(--brick)}
+.st.urgente span{background:var(--brick);color:#fff;border-radius:8px;padding:1px 6px;margin-left:3px}
+.rich{display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);padding:14px 16px;margin-bottom:10px}
+.rich-quando b{display:block;font-family:var(--mono);font-size:17px}
+.rich-quando span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.rich.adesso{border-color:var(--brick)}
+.rich.adesso .rich-quando b{color:var(--brick)}
+.rich.a-momenti{border-color:var(--amber)}
+.rich.a-momenti .rich-quando b{color:var(--amber)}
+.rich-chi .tastoNome{font-size:15px}
+.rich-chi .sintesi{margin:5px 0 0}
+.rich-fare{display:flex;gap:8px}
+.rich-fare .tasto{padding:8px 12px;font-size:12.5px}
 .nascosto{display:none!important}
 .telaio{display:grid;grid-template-columns:298px minmax(0,1fr) 336px;gap:1px;background:var(--line);min-height:calc(100vh - 78px)}
 .col{background:var(--ground);display:flex;flex-direction:column;min-width:0}
@@ -215,6 +228,7 @@ audio{width:230px;height:34px;vertical-align:middle}
  <div class="schede">
   <button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button>
   <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
+  <button class="st" id="tRich" aria-selected="false">Da richiamare <span id="nRich">0</span></button>
   <button class="st" id="tChiuse" aria-selected="false">Telefonate chiuse</button>
  </div>
  <div class="telaio" id="vLinea">
@@ -223,6 +237,10 @@ audio{width:230px;height:34px;vertical-align:middle}
   <div class="col dx" id="dx"></div>
  </div>
  <div id="vArric" class="nascosto"><div class="foglio" id="foglioArric"></div></div>
+ <div id="vRich" class="nascosto"><div class="foglio">
+   <h1>Da richiamare</h1><p class="occhio" id="sottoRich">Chi ha chiesto di essere risentito, e quando</p>
+   <div id="corpoRich"></div>
+ </div></div>
  <div id="vChiuse" class="nascosto"><div class="foglio">
    <h1>Telefonate chiuse</h1><p class="occhio" id="sottoChiuse"></p>
    <div class="periodi">
@@ -239,7 +257,7 @@ audio{width:230px;height:34px;vertical-align:middle}
 const API = 'https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/regia';
 let PASS = sessionStorage.getItem('regia_pass') || '';
 let CHI  = sessionStorage.getItem('regia_chi') || '';
-let sel = null, stato = {vive:[], chiuse:[]}, avviato = false, periodo = 'oggi';
+let sel = null, stato = {vive:[], chiuse:[], richiami:[]}, avviato = false, periodo = 'oggi';
 let muto = false, tre = false; let ws = null, wsConv = null, battute = [];
 
 /* ---- ascolto in diretta: audio duplicato da Twilio, mu-law 8 kHz ---- */
@@ -321,9 +339,12 @@ async function prendiChiamata(c){
   segnaTel('attesa', 'Sto passando&hellip;');
   try{
     const r = await fetch(API + '-prendi', {method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({t: PASS, c: c, chi: (CHI||'regia').toLowerCase().replace(/[^a-z0-9]/g,'')||'regia'})});
+      body: JSON.stringify({t: PASS, c: c,
+        chi: (CHI||'regia').toLowerCase().replace(/[^a-z0-9]/g,'')||'regia',
+        nome: CHI || ''})});
     const j = await r.json();
     if(!j || !j.ok){ segnaTel('pronto','Prendo io la chiamata'); avvisa(j && j.errore ? j.errore : 'non riesco a passarla'); }
+    else { const d = document.getElementById('detto'); if(d) d.textContent = 'la sto passando a ' + (CHI || 'lei'); }
   }catch(e){ segnaTel('pronto','Prendo io la chiamata'); avvisa('non riesco a passarla'); }
 }
 
@@ -466,6 +487,9 @@ const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':
 const corto = (t,n) => { t = String(t||''); return t.length>n ? t.slice(0,n-1)+'…' : t; };
 /* i nomi arrivano tutti minuscoli dalle campagne: qui tornano presentabili */
 const Nome = t => String(t||'').toLowerCase().replace(/(^|[\s'’\-])([a-zà-ÿ])/g, (m,a,b) => a + b.toUpperCase());
+const orario = t => { try{ const d = new Date(t); const oggi = new Date().toDateString() === d.toDateString();
+  return (oggi ? '' : d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'}) + ' ') +
+    d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } };
 
 $('formPorta').addEventListener('submit', async (e) => {
   e.preventDefault(); $('no').textContent = '';
@@ -628,6 +652,40 @@ function disegna(){
     '<div class="carta"><h4>Il contatto</h4>'+righe([['Comune',s.dove],['Indirizzo',s.indirizzo],['Provincia',s.provincia],['Campagna',s.campagna],['Quando ha chiesto',(s.quando_ha_chiesto||'').slice(0,16).replace('T',' ')],['Stato',s.stato],['Non disturbare', s.non_disturbare? 'si':'']])+'</div>';
   }
 
+  /* chi aspetta di essere richiamato */
+  const rr = stato.richiami || [];
+  $('nRich').textContent = rr.length;
+  $('tRich').classList.toggle('urgente', rr.some(x => x.urgenza === 'adesso' || x.urgenza === 'a momenti'));
+  $('corpoRich').innerHTML = rr.length ? rr.map(x =>
+    '<div class="rich '+esc(x.urgenza.replace(/ /g,'-'))+'">'+
+      '<div class="rich-quando"><b>'+esc(orario(x.quando))+'</b><span>'+esc(x.urgenza)+'</span></div>'+
+      '<div class="rich-chi">'+
+        '<button class="tastoNome" data-tel="'+esc(x.telefono)+'">'+esc(Nome(x.nome)||x.telefono)+'</button>'+
+        (x.perche? '<p class="sintesi">'+esc(x.perche)+'</p>' : '')+
+      '</div>'+
+      '<div class="rich-fare">'+
+        '<button class="tasto" data-chiama="'+esc(x.telefono)+'">Chiama ora</button>'+
+        '<button class="tasto" data-fatto="'+esc(x.id)+'">Fatto</button>'+
+      '</div>'+
+    '</div>').join('')
+    : '<p class="vuoto">Nessuno in attesa di essere richiamato.</p>';
+  document.querySelectorAll('#corpoRich .tastoNome').forEach(b => b.onclick = () => apriCliente(b.dataset.tel));
+  document.querySelectorAll('#corpoRich [data-fatto]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    try{ await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({t: PASS, richiamo_fatto: b.dataset.fatto})}); }catch(e){}
+    tira();
+  });
+  document.querySelectorAll('#corpoRich [data-chiama]').forEach(b => b.onclick = async () => {
+    b.disabled = true; b.textContent = 'sto chiamando...';
+    try{
+      const r = await fetch(API + '-chiama', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({t: PASS, telefono: b.dataset.chiama})});
+      const j = await r.json();
+      b.textContent = (j && j.ok) ? 'sta squillando' : 'non parte';
+    }catch(e){ b.textContent = 'non parte'; }
+    setTimeout(tira, 2500);
+  });
+
   /* la tabella dello storico si ridisegna solo quando cambia davvero:
      con quattrocento righe, rifarla ogni tre secondi inchioda la pagina */
   const firma = periodo + '|' + stato.chiuse.length + '|' + (stato.chiuse[0] ? stato.chiuse[0].id : '');
@@ -697,14 +755,16 @@ document.querySelectorAll('.per').forEach(b => b.onclick = () => {
   tira();
 });
 function scheda(q){
-  ['tLinea','tArric','tChiuse'].forEach(k => $(k).setAttribute('aria-selected', k===q));
+  ['tLinea','tArric','tRich','tChiuse'].forEach(k => $(k).setAttribute('aria-selected', k===q));
   $('vLinea').classList.toggle('nascosto', q!=='tLinea');
   $('vArric').classList.toggle('nascosto', q!=='tArric');
+  $('vRich').classList.toggle('nascosto', q!=='tRich');
   $('vChiuse').classList.toggle('nascosto', q!=='tChiuse');
 }
 $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema') === 'chiaro' ? 'scuro' : 'chiaro');
 $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
+$('tRich').onclick = () => scheda('tRich');
 $('tChiuse').onclick = () => scheda('tChiuse');
 if(PASS) apri();
 /* il telefono si accende da solo appena si entra, cosi e gia pronto
