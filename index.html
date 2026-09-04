@@ -30,6 +30,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .linea{width:100%;text-align:left;display:grid;grid-template-columns:9px 1fr;gap:11px;padding:13px 17px;border-bottom:1px solid var(--line)}
 .linea:hover{background:var(--surface)}
 .linea[aria-current=true]{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--amber)}
+.linea.spenta{cursor:default}.linea.spenta:hover{background:none}
+.linea.spenta .spia{background:var(--line-2)}
 .spia{width:9px;height:9px;border-radius:50%;margin-top:5px}
 .spia.rosso{background:var(--brick);animation:p 1.3s infinite}.spia.giallo{background:var(--amber)}.spia.verde{background:var(--sage)}
 @keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
@@ -51,6 +53,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .banda.rosso{background:var(--brick-dim)}.banda.rosso .bollo{background:var(--brick)}
 .banda.giallo{background:var(--amber-wash)}.banda.giallo .bollo{background:var(--amber)}
 .banda.verde{background:var(--sage-dim)}.banda.verde .bollo{background:var(--sage)}
+.banda.spenta{background:var(--surface)}.banda.spenta .bollo{background:var(--line-2)}
+.banda.spenta h3{color:var(--ink-2)}
+.spento{color:var(--ink-3)}
+.parlato .et{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px}
+.tasto[disabled]{opacity:.45;cursor:default}
+.suggerisci input[disabled],.suggerisci button[disabled]{opacity:.45;cursor:default}
 .banda h3{font-family:var(--display);font-weight:800;font-size:16.5px;margin:0 0 3px}
 .banda p{margin:0;font-size:13.5px;color:var(--ink-2)}
 .banda .quando{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:auto;white-space:nowrap;padding-top:4px}
@@ -405,13 +413,44 @@ function disegna(){
     '<span class="l-nome">'+esc(Nome(v.nome)||v.telefono||'sconosciuto')+'</span>'+
     '<span class="l-dati">'+esc(v.dove||'')+' - <b>'+mmss(v.secondi)+'</b></span>'+
     '<span class="l-flash '+esc(v.livello)+'">'+esc(v.flash||'')+'</span><span class="onda"><i></i><i></i><i></i><i></i><i></i><i></i></span></span></button>').join('')
-    : '<p class="vuoto">Nessuna telefonata in corso.<br>Quando Valentino chiama, compare qui.</p>';
+    : '<div class="linea spenta"><span class="spia"></span><span>'+
+      '<span class="l-nome spento">Nessuno in linea</span>'+
+      '<span class="l-dati">le telefonate compaiono qui appena partono</span></span></div>';
   document.querySelectorAll('.linea').forEach(b => b.onclick = () => { sel = b.dataset.c; muto=false; tre=false; disegna(); });
 
   const v = stato.vive.find(x => x.conversazione === sel);
   if(!v){
-    $('centro').innerHTML = '<p class="vuoto">Nessuna telefonata selezionata.</p>';
-    $('dx').innerHTML=''; $('foglioArric').innerHTML = '<h1>Arricchimento</h1><p class="occhio">Nessuna telefonata in corso.</p>';
+    /* a riposo la regia non resta bianca: mostra le sue stanze vuote,
+       cosi si sa gia dove guardare quando squillera */
+    $('centro').innerHTML =
+      '<div class="banda spenta"><span class="bollo"></span><span><h3>Nessuna telefonata in corso</h3>'+
+        '<p>Quando Valentino chiama, qui compare chi ha al telefono e cosa sta succedendo.</p></span></div>'+
+      '<div class="capo"><div><h1 class="spento">&mdash;</h1><div class="sotto"><span>comune</span><span>telefono</span><span>campagna</span></div></div>'+
+        '<div class="grosso spento">00:00<small>in linea</small></div></div>'+
+      '<div class="salienti"><p class="et">Punti salienti</p><p class="attesa">Qui compaiono i momenti che Valentino segnala mentre parla.</p></div>'+
+      '<div class="parlato"><p class="et">Cosa si stanno dicendo</p>'+
+        '<p class="attesa">La conversazione si scrive qui, parola per parola, mentre si parla.</p></div>'+
+      '<div class="suggerisci"><input placeholder="Suggerisci a Valentino cosa dire&hellip;" disabled>'+
+        '<button disabled aria-label="detta a voce"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">'+
+        '<rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg></button>'+
+        '<button disabled>Manda</button></div>'+
+      '<div class="banco">'+
+        '<button class="tasto" disabled><span class="led"></span>Ascolta in silenzio</button>'+
+        '<button class="tasto entra" disabled><span class="led"></span>Entra in voce</button>'+
+        '<button class="tasto chiudi" disabled>Chiudi la linea</button></div>';
+    $('dx').innerHTML =
+      '<div class="titolo"><h2>La sua pratica</h2><span class="conta">a riposo</span></div>'+
+      '<div class="vincoli"><span class="bollo"></span><span><b>Vincoli sul tetto</b>In attesa di una telefonata</span></div>'+
+      '<div class="blocco"><p class="etich">Cosa ha chiesto</p><p class="attesa">Il modulo compilato dal cliente.</p></div>'+
+      '<div class="blocco"><p class="etich">Il tetto</p>'+righe([['Falde',''],['Esposizione',''],['Ci stanno',''],['Potenza',''],['Produzione',''],['Verificato','']])+'</div>'+
+      '<div class="blocco"><p class="etich">Quello che ha detto</p>'+righe([['Bolletta',''],['Consumo stimato',''],['In casa',''],['Di giorno',''],['Riscaldamento',''],['Contatore',''],['Auto','']])+'</div>'+
+      '<div class="blocco"><p class="etich">Sul tavolo</p><p class="attesa">Nessuna proposta ancora messa sul tavolo.</p></div>';
+    $('foglioArric').innerHTML = '<h1>Arricchimento</h1>'+
+      '<p class="occhio">Quello che sappiamo del cliente prima di chiamarlo</p>'+
+      '<div class="carta"><h4>La sintesi</h4><p class="attesa">Il ritratto del contatto, messo insieme dal modulo e dalla rete.</p></div>'+
+      '<div class="carta"><h4>Le voci trovate</h4><p class="attesa">Zona, immobile, presenza in rete, omonimi, allarmi.</p></div>'+
+      '<div class="carta"><h4>Il modulo, per intero</h4><p class="attesa">Le risposte date sui social, parola per parola.</p></div>'+
+      '<div class="carta"><h4>Il contatto</h4>'+righe([['Comune',''],['Indirizzo',''],['Provincia',''],['Campagna',''],['Quando ha chiesto',''],['Stato','']])+'</div>';
   } else {
   const m = v.momenti||[], s = v.scheda||{}, t = s.tetto||{}, voci = s.voci||null;
   /* ascolto dal vivo sospeso: il canale di ElevenLabs rifiuta la chiave, riaprirlo ogni giro bloccava la pagina */
