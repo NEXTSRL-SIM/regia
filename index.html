@@ -112,7 +112,23 @@ dl{margin:0}
 .offerta .prezzo{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.02em;line-height:1}
 .offerta .righe{font-size:12.5px;color:var(--ink-2);margin-top:7px;line-height:1.55}
 .attesa{font-size:13px;color:var(--ink-3);font-style:italic;margin:0}
-.foglio{max-width:1000px;margin:0 auto;padding:26px 20px 60px}
+.foglio{max-width:1400px;margin:0 auto;padding:26px 20px 60px}
+.tabella td.nomeCell{white-space:nowrap}
+.tastoNome{font:inherit;font-weight:600;color:var(--amber);border-bottom:1px dotted var(--amber-dim);padding:0}
+.tastoNome:hover{border-bottom-style:solid}
+.velo{position:fixed;inset:0;background:rgba(8,6,5,.72);display:flex;justify-content:flex-end;z-index:50}
+.pannello{width:min(560px,100%);background:var(--ground);border-left:1px solid var(--line);overflow-y:auto}
+.pannello .testa{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);padding:15px 18px;display:flex;align-items:flex-start;gap:14px}
+.pannello .testa h2{font-family:var(--display);font-weight:800;font-size:21px;margin:0 0 3px}
+.pannello .testa p{margin:0;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.pannello .via{margin-left:auto;font-size:22px;line-height:1;color:var(--ink-3);padding:0 4px}
+.tel-riga{border-bottom:1px solid var(--line);padding:13px 18px}
+.tel-capo{display:flex;align-items:baseline;gap:10px;font-size:13.5px}
+.tel-capo time{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.tel-capo .dur{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.tel-mom{margin:8px 0 0;padding:0 0 0 14px;border-left:1px solid var(--line-2);list-style:none}
+.tel-mom li{font-size:12.5px;color:var(--ink-2);padding:2px 0}
+.tel-mom li time{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-right:7px}
 .foglio h1{font-family:var(--display);font-weight:800;font-size:26px;margin:0 0 4px}
 .occhio{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin:0 0 22px}
 .carta{background:var(--surface);border:1px solid var(--line);padding:16px 17px;margin-bottom:13px}
@@ -154,6 +170,7 @@ audio{width:210px;height:32px}
      <button class="per" data-p="oggi" aria-pressed="true">Oggi</button>
      <button class="per" data-p="settimana" aria-pressed="false">Ultima settimana</button>
      <button class="per" data-p="mese" aria-pressed="false">Ultimo mese</button>
+     <button class="per" data-p="tutte" aria-pressed="false">Tutte</button>
    </div>
    <div class="avvolgi"><table class="tabella"><thead><tr><th>Cliente</th><th>Quando</th><th>Durata</th><th>Di cosa si e parlato</th><th>Ascolta</th></tr></thead><tbody id="corpoChiuse"></tbody></table></div>
  </div></div>
@@ -254,6 +271,8 @@ const $ = i => document.getElementById(i);
 const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const corto = (t,n) => { t = String(t||''); return t.length>n ? t.slice(0,n-1)+'…' : t; };
+/* i nomi arrivano tutti minuscoli dalle campagne: qui tornano presentabili */
+const Nome = t => String(t||'').toLowerCase().replace(/(^|[\s'’\-])([a-zà-ÿ])/g, (m,a,b) => a + b.toUpperCase());
 
 $('formPorta').addEventListener('submit', async (e) => {
   e.preventDefault(); $('no').textContent = '';
@@ -295,7 +314,7 @@ function disegna(){
   $('linee').innerHTML = stato.vive.length ? stato.vive.map(v =>
     '<button class="linea" data-c="'+esc(v.conversazione)+'" aria-current="'+(v.conversazione===sel)+'">'+
     '<span class="spia '+esc(v.livello)+'"></span><span>'+
-    '<span class="l-nome">'+esc(v.nome||v.telefono||'sconosciuto')+'</span>'+
+    '<span class="l-nome">'+esc(Nome(v.nome)||v.telefono||'sconosciuto')+'</span>'+
     '<span class="l-dati">'+esc(v.dove||'')+' - <b>'+mmss(v.secondi)+'</b></span>'+
     '<span class="l-flash '+esc(v.livello)+'">'+esc(v.flash||'')+'</span><span class="onda"><i></i><i></i><i></i><i></i><i></i><i></i></span></span></button>').join('')
     : '<p class="vuoto">Nessuna telefonata in corso.<br>Quando Valentino chiama, compare qui.</p>';
@@ -310,7 +329,7 @@ function disegna(){
   /* ascolto dal vivo sospeso: il canale di ElevenLabs rifiuta la chiave, riaprirlo ogni giro bloccava la pagina */
   $('centro').innerHTML =
     '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
-    '<div class="capo"><div><h1>'+esc(v.nome||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
+    '<div class="capo"><div><h1>'+esc(Nome(v.nome)||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
     '<div class="flusso">'+ (battute.length
       ? battute.map(function(b){ return '<div class="dett '+esc(b.chi)+'"><span class="chi">'+(b.chi==="cliente"?"Cliente":"Valentino")+'</span><p>'+esc(b.testo)+'</p></div>'; }).join('')
       : m.length
@@ -349,7 +368,7 @@ function disegna(){
       ? '<div class="offerta"><div class="prezzo">'+esc(s.prezzo)+'</div><div class="righe">'+esc(s.configurazione||'')+'</div></div>'
       : '<p class="attesa">Nessuna proposta ancora messa sul tavolo.</p>')+'</div>';
 
-  $('foglioArric').innerHTML = '<h1>'+esc(v.nome||v.telefono||'')+'</h1>'+
+  $('foglioArric').innerHTML = '<h1>'+esc(Nome(v.nome)||v.telefono||'')+'</h1>'+
     '<p class="occhio">Arricchimento del contatto - '+esc(v.dove||'')+' - '+esc(v.fonte||'')+'</p>'+
     (s.sintesi? '<div class="carta"><h4>La sintesi</h4><p class="sintesi">'+esc(s.sintesi)+'</p></div>':'')+
     (voci? '<div class="carta"><h4>Le voci trovate</h4>'+righe(Object.entries(voci))+'</div>':'')+
@@ -358,11 +377,58 @@ function disegna(){
   }
 
   $('corpoChiuse').innerHTML = stato.chiuse.length ? stato.chiuse.map(c =>
-    '<tr><td>'+esc(c.chi||c.chiamante||'')+'</td><td class="num">'+esc((c.quando||'').slice(0,16).replace('T',' '))+'</td><td class="num">'+mmss(c.durata_sec||0)+'</td><td>'+esc(corto(c.di_cosa,170))+'</td>'+
+    '<tr><td class="nomeCell">'+(c.chiamante
+        ? '<button class="tastoNome" data-tel="'+esc(c.chiamante)+'">'+esc(Nome(c.chi)||c.chiamante)+'</button>'
+        : esc(Nome(c.chi)||''))+'</td>'+
+    '<td class="num">'+esc((c.quando||'').slice(0,16).replace('T',' '))+'</td>'+
+    '<td class="num">'+mmss(c.durata_sec||0)+'</td>'+
+    '<td>'+esc(corto(c.di_cosa,220))+'</td>'+
     '<td>'+(c.audio? '<audio controls preload="none" src="'+esc(c.audio)+'"></audio>':'-')+'</td></tr>').join('')
     : '<tr><td colspan="5" style="color:var(--ink-3)">Nessuna telefonata in questo periodo.</td></tr>';
+  document.querySelectorAll('.tastoNome').forEach(b => b.onclick = () => apriCliente(b.dataset.tel));
   $('sottoChiuse').textContent = stato.chiuse.length + ' telefonate';
 }
+/* ---- la scheda del cliente, aperta cliccando il suo nome ---- */
+async function apriCliente(tel){
+  if(!tel) return;
+  let d;
+  try{
+    const r = await fetch(API + '?cliente=' + encodeURIComponent(tel) + '&t=' + encodeURIComponent(PASS));
+    d = await r.json();
+  }catch(e){ return; }
+  const s = d.scheda || {}, t = s.tetto || {}, voci = s.voci || null;
+  const tel_ = d.telefonate || [];
+  const velo = document.createElement('div');
+  velo.className = 'velo';
+  velo.innerHTML =
+    '<div class="pannello">'+
+      '<div class="testa"><div><h2>'+esc(Nome(d.nome)||tel)+'</h2>'+
+        '<p>'+esc(tel)+(d.dove? ' &middot; '+esc(d.dove):'')+' &middot; '+(d.quante||0)+' telefonate</p></div>'+
+        '<button class="via" aria-label="chiudi">&times;</button></div>'+
+      (s.sintesi? '<div class="blocco"><p class="etich">Chi e</p><p class="sintesi">'+esc(s.sintesi)+'</p></div>':'')+
+      '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
+        (s.cosa_ha_risposto? '<p class="sintesi">'+esc(s.cosa_ha_risposto)+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+'</div>'+
+      '<div class="blocco"><p class="etich">Il tetto</p>'+
+        (t.vincoli? '<div class="esitov '+(t.semaforo==="verde"?"ok":t.semaforo==="rosso"?"no":"att")+'">'+esc(t.vincoli)+'</div>':'')+
+        righe([['Falde',t.falde],['Esposizione',t.inclinazione],['Ci stanno',t.moduli],['Potenza',t.potenza],['Produzione',t.produzione],['Verificato',t.verificato||t.analizzato]])+'</div>'+
+      '<div class="blocco"><p class="etich">Quello che ha detto</p>'+
+        righe([['Bolletta',s.bolletta],['Consumo stimato',s.consumo],['In casa',s.persone],['Di giorno',s.giorno],['Riscaldamento',s.riscaldamento],['Contatore',s.contatore],['Auto',s.auto],['Sul tavolo',s.prezzo]])+'</div>'+
+      (voci? '<div class="blocco"><p class="etich">Le voci trovate</p>'+righe(Object.entries(voci))+'</div>':'')+
+      '<div class="blocco"><p class="etich">Come e andata, volta per volta</p></div>'+
+      (tel_.length? tel_.map(x =>
+        '<div class="tel-riga"><div class="tel-capo">'+
+          '<span class="spia '+esc(x.livello||"verde")+'"></span>'+
+          '<time>'+esc((x.quando||"").slice(0,16).replace("T"," "))+'</time>'+
+          '<span>'+esc(x.flash||"")+'</span>'+
+          '<span class="dur">'+mmss(x.secondi||0)+'</span></div>'+
+        ((x.momenti&&x.momenti.length)? '<ul class="tel-mom">'+x.momenti.map(m=>'<li><time>'+esc(m.ora)+'</time>'+esc(m.cosa)+'</li>').join('')+'</ul>':'')+
+        '<div style="margin-top:9px"><audio controls preload="none" src="'+esc(API+"-registrazione?c="+encodeURIComponent(x.conversazione)+"&t="+encodeURIComponent(PASS))+'"></audio></div>'+
+        '</div>').join('') : '<p class="vuoto">Nessuna telefonata registrata.</p>')+
+    '</div>';
+  velo.onclick = (e) => { if(e.target === velo || e.target.classList.contains('via')) velo.remove(); };
+  document.body.appendChild(velo);
+}
+
 document.querySelectorAll('.per').forEach(b => b.onclick = () => {
   periodo = b.dataset.p;
   document.querySelectorAll('.per').forEach(x => x.setAttribute('aria-pressed', x===b));
