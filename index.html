@@ -663,6 +663,8 @@ function disegna(){
     '<div class="vincoli '+(t.semaforo==="verde"?"ok":t.semaforo==="rosso"?"no":t.vincoli?"att":"")+'">'+
       '<span class="bollo"></span><span><b>Vincoli sul tetto</b>'+
       esc(t.vincoli || "Non ancora verificati")+'</span></div>'+
+    '<div class="blocco"><p class="etich">Chi e</p>'+
+      (s.sintesi? '<p class="sintesi">'+esc(corto(s.sintesi,320))+'</p>' : '<p class="attesa">Nessun ritratto del contatto.</p>')+'</div>'+
     '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
       (s.cosa_ha_risposto? '<p class="sintesi">'+esc(corto(s.cosa_ha_risposto,200))+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+'</div>'+
     '<div class="blocco"><p class="etich">Il tetto</p>'+
