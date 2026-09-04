@@ -93,7 +93,22 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .tasto.chiudi:hover{border-color:var(--brick);background:var(--brick-dim);color:#F6D9CC}
 .avviso{padding:9px 20px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;display:flex;gap:9px;align-items:center;border-top:1px solid var(--line)}
 .avviso .pt{width:7px;height:7px;border-radius:50%;background:currentColor}
-.parlato{border-top:1px solid var(--line);background:var(--surface);max-height:280px;overflow-y:auto;padding:12px 20px}
+.parlato{flex:1;min-height:220px;overflow-y:auto;padding:16px 20px 18px;background:var(--ground)}
+.parlato .bt{font-size:15px}
+.salienti{border-bottom:1px solid var(--line);background:var(--surface);padding:12px 20px 13px;max-height:140px;overflow-y:auto}
+.salienti .et{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
+.sal-righe{display:flex;flex-direction:column;gap:5px}
+.sal{display:grid;grid-template-columns:46px 1fr;gap:10px;font-size:13px;line-height:1.4;padding-left:9px;border-left:2px solid var(--line-2)}
+.sal time{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.sal.rosso{border-left-color:var(--brick)}.sal.rosso span{color:var(--brick)}
+.sal.giallo{border-left-color:var(--amber)}
+.sal.verde{border-left-color:var(--sage)}
+.vincoli{display:flex;gap:11px;align-items:flex-start;padding:13px 17px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.45}
+.vincoli .bollo{width:12px;height:12px;border-radius:50%;margin-top:3px;flex:none;background:var(--ink-3)}
+.vincoli.ok{background:var(--sage-dim);color:#CFE6D5}.vincoli.ok .bollo{background:var(--sage)}
+.vincoli.att{background:var(--amber-wash);color:#F3DDBB}.vincoli.att .bollo{background:var(--amber)}
+.vincoli.no{background:var(--brick-dim);color:#F2D2C6}.vincoli.no .bollo{background:var(--brick)}
+.vincoli b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;opacity:.8;margin-bottom:3px;font-weight:500}
 .parlato .et{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px;display:flex;gap:9px;align-items:center}
 .parlato .et .vivo{width:7px;height:7px;border-radius:50%;background:var(--sage);animation:p 1.3s infinite}
 .bt{display:grid;grid-template-columns:74px 1fr;gap:10px;padding:3px 0;font-size:13.5px;line-height:1.45}
@@ -104,7 +119,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .suggerisci{display:flex;gap:8px;padding:11px 20px;border-top:1px solid var(--line);background:var(--surface-2)}
 .suggerisci input{flex:1;background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:10px 12px;font:inherit;font-size:13.5px}
 .suggerisci input:focus{outline:2px solid var(--amber);outline-offset:1px}
-.suggerisci button{border:1px solid var(--line-2);background:var(--surface-3);padding:0 14px;font-size:13.5px}
+.suggerisci button{border:1px solid var(--line-2);background:var(--surface-3);padding:0 14px;font-size:13.5px;display:inline-flex;align-items:center;justify-content:center;min-width:44px}
+.suggerisci button svg{display:block}
 .suggerisci button.dett[aria-pressed=true]{border-color:var(--brick);background:var(--brick-dim);color:#F6D9CC}
 .detto{padding:0 20px 10px;font-size:12.5px;color:var(--sage);background:var(--surface-2)}
 .avviso.muto{background:var(--surface-2);color:var(--ink-2)}
@@ -211,7 +227,7 @@ const MU = (function(){
   return t;
 })();
 let ctx = null, quando = 0, audioWs = null, audioConv = null, fette = 0, suonate = 0;
-let parlato = [], corso = {}, parlatoConv = null, ricon = null;
+let parlato = [], corso = {}, parlatoConv = null, ricon = null, firmaChiuse = '';
 
 /* la conversazione che si scrive mentre si parla */
 function dipingiParlato(){
@@ -399,20 +415,18 @@ function disegna(){
   $('centro').innerHTML =
     '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
     '<div class="capo"><div><h1>'+esc(Nome(v.nome)||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
-    '<div class="flusso">'+ (battute.length
-      ? battute.map(function(b){ return '<div class="dett '+esc(b.chi)+'"><span class="chi">'+(b.chi==="cliente"?"Cliente":"Valentino")+'</span><p>'+esc(b.testo)+'</p></div>'; }).join('')
-      : m.length
-      ? m.map(x=>'<div class="evento '+esc(x.livello)+'"><time>'+esc(x.ora)+'</time><span class="pallo"></span><p>'+esc(x.cosa)+'</p></div>').join('')
-      : '<p class="vuoto">La telefonata e appena partita.<br>Qui compaiono i momenti che Valentino segnala mentre parla.</p>')+'</div>'+
-    '<div class="scia"><span class="scia-et">Come ci siamo arrivati</span><div class="scia-righe">'+
-      (m.length? m.map((x,i)=>'<span class="tappa'+(i===m.length-1?' ora':'')+'"><time>'+esc(x.ora)+'</time>'+esc(x.cosa)+'</span>').join('') : '<span class="tappa">-</span>')+
-    '</div></div>'+
+    '<div class="salienti"><p class="et">Punti salienti</p>'+ (m.length
+      ? '<div class="sal-righe">'+m.slice().reverse().map(x=>'<div class="sal '+esc(x.livello)+'"><time>'+esc(x.ora)+'</time><span>'+esc(x.cosa)+'</span></div>').join('')+'</div>'
+      : '<p class="attesa">Qui compaiono i momenti che Valentino segnala mentre parla.</p>')+'</div>'+
     (muto? '<div class="avviso muto"><span class="pt"></span>Ascolto in silenzio: l audio dal vivo non e ancora collegato, per ora vede solo quello che Valentino segnala</div>':'')+
     (tre? '<div class="avviso tre"><span class="pt"></span>Per entrare in voce chiami il cliente dal suo telefono: il ponte audio non e ancora attivo</div>':'')+
     '<div class="parlato" id="parlato"></div>'+
     '<div class="suggerisci">'+
       '<input id="sugg" placeholder="Suggerisci a Valentino cosa dire&hellip; (il cliente non sente)" autocomplete="off">'+
-      '<button id="bDett" class="dett" aria-pressed="false" title="detta a voce">&#127908;</button>'+
+      '<button id="bDett" class="dett" aria-pressed="false" title="detta a voce" aria-label="detta a voce">'+
+        '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">'+
+        '<rect x="9" y="3" width="6" height="11" rx="3"></rect>'+
+        '<path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg></button>'+
       '<button id="bSugg">Manda</button>'+
     '</div>'+
     '<div class="detto" id="detto"></div>'+
@@ -436,6 +450,9 @@ function disegna(){
 
   $('dx').innerHTML =
     '<div class="titolo"><h2>La sua pratica</h2><span class="conta">dal vivo</span></div>'+
+    '<div class="vincoli '+(t.semaforo==="verde"?"ok":t.semaforo==="rosso"?"no":t.vincoli?"att":"")+'">'+
+      '<span class="bollo"></span><span><b>Vincoli sul tetto</b>'+
+      esc(t.vincoli || "Non ancora verificati")+'</span></div>'+
     '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
       (s.cosa_ha_risposto? '<p class="sintesi">'+esc(corto(s.cosa_ha_risposto,200))+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+'</div>'+
     '<div class="blocco"><p class="etich">Il tetto</p>'+
@@ -456,6 +473,11 @@ function disegna(){
     '<div class="carta"><h4>Il contatto</h4>'+righe([['Comune',s.dove],['Indirizzo',s.indirizzo],['Provincia',s.provincia],['Campagna',s.campagna],['Quando ha chiesto',(s.quando_ha_chiesto||'').slice(0,16).replace('T',' ')],['Stato',s.stato],['Non disturbare', s.non_disturbare? 'si':'']])+'</div>';
   }
 
+  /* la tabella dello storico si ridisegna solo quando cambia davvero:
+     con quattrocento righe, rifarla ogni tre secondi inchioda la pagina */
+  const firma = periodo + '|' + stato.chiuse.length + '|' + (stato.chiuse[0] ? stato.chiuse[0].id : '');
+  if(firma !== firmaChiuse){
+  firmaChiuse = firma;
   $('corpoChiuse').innerHTML = stato.chiuse.length ? stato.chiuse.map(c =>
     '<tr><td class="nomeCell">'+(c.chiamante
         ? '<button class="tastoNome" data-tel="'+esc(c.chiamante)+'">'+esc(Nome(c.chi)||c.chiamante)+'</button>'
@@ -467,6 +489,7 @@ function disegna(){
     : '<tr><td colspan="5" style="color:var(--ink-3)">Nessuna telefonata in questo periodo.</td></tr>';
   document.querySelectorAll('.tastoNome').forEach(b => b.onclick = () => apriCliente(b.dataset.tel));
   $('sottoChiuse').textContent = stato.chiuse.length + ' telefonate';
+  }
 }
 /* ---- la scheda del cliente, aperta cliccando il suo nome ---- */
 async function apriCliente(tel){
@@ -511,6 +534,7 @@ async function apriCliente(tel){
 
 document.querySelectorAll('.per').forEach(b => b.onclick = () => {
   periodo = b.dataset.p;
+  firmaChiuse = '';
   document.querySelectorAll('.per').forEach(x => x.setAttribute('aria-pressed', x===b));
   tira();
 });
