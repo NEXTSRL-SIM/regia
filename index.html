@@ -71,6 +71,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .spento{color:var(--ink-3)}
 .parlato .et{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px}
 .tasto[disabled]{opacity:.45;cursor:default}
+.tasto em{font-style:normal;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-left:5px}
 .suggerisci input[disabled],.suggerisci button[disabled]{opacity:.45;cursor:default}
 .banda h3{font-family:var(--display);font-weight:800;font-size:16.5px;margin:0 0 3px}
 .banda p{margin:0;font-size:13.5px;color:var(--ink-2)}
@@ -283,19 +284,31 @@ async function mandaSuggerimento(c){
 
 /* dettarlo invece di scriverlo */
 function detta(){
-  const b = document.getElementById('bDett'), i = document.getElementById('sugg');
+  const b = document.getElementById('bDett');
   const R = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!R){ if(i) i.placeholder = 'questo browser non sa ascoltare: scriva pure'; return; }
+  const dove = document.getElementById('sugg');
+  if(!R){ if(dove) dove.placeholder = 'questo browser non sa ascoltare: scriva pure'; return; }
   if(ricon){ try{ ricon.stop(); }catch(e){} ricon = null; if(b) b.setAttribute('aria-pressed','false'); return; }
+
   ricon = new R();
-  ricon.lang = 'it-IT'; ricon.interimResults = true; ricon.continuous = false;
+  ricon.lang = 'it-IT'; ricon.interimResults = true; ricon.continuous = true;
   ricon.onresult = (e) => {
     let t = '';
     for(let k=0;k<e.results.length;k++) t += e.results[k][0].transcript;
-    if(i) i.value = t;
+    /* si ripesca l elemento ogni volta: la pagina lo ricrea di continuo */
+    const i = document.getElementById('sugg');
+    if(i){ i.value = t; i.focus(); }
   };
-  ricon.onend = () => { ricon = null; if(b) b.setAttribute('aria-pressed','false'); };
-  ricon.onerror = () => { ricon = null; if(b) b.setAttribute('aria-pressed','false'); };
+  ricon.onend = () => {
+    ricon = null;
+    const bb = document.getElementById('bDett'); if(bb) bb.setAttribute('aria-pressed','false');
+  };
+  ricon.onerror = (e) => {
+    ricon = null;
+    const bb = document.getElementById('bDett'); if(bb) bb.setAttribute('aria-pressed','false');
+    const i = document.getElementById('sugg');
+    if(i && e && e.error === 'not-allowed') i.placeholder = 'il microfono e bloccato: lo consenta nel lucchetto accanto all indirizzo';
+  };
   try{ ricon.start(); if(b) b.setAttribute('aria-pressed','true'); }catch(e){ ricon = null; }
 }
 function avvisa(t){
@@ -430,6 +443,13 @@ async function chiudiRiga(c){
   sel = null; muto = false; tre = false; tira();
 }
 function disegna(){
+  /* la pagina si ridisegna ogni tre secondi: senza questo, quello che si sta
+     scrivendo (o dettando) nella barra dei suggerimenti sparisce da solo */
+  const iPrima = document.getElementById('sugg');
+  const testoInCorso = iPrima ? iPrima.value : null;
+  const avevaIlFuoco = iPrima ? (document.activeElement === iPrima) : false;
+  const cursore = iPrima ? iPrima.selectionStart : 0;
+
   $('orologio').textContent = new Date().toLocaleTimeString('it-IT');
   $('nLive').textContent = stato.vive.length; $('conta').textContent = stato.vive.length;
   $('linee').innerHTML = stato.vive.length ? stato.vive.map(v =>
@@ -499,11 +519,18 @@ function disegna(){
     '<div class="detto" id="detto"></div>'+
     '<div class="banco">'+
       '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>Ascolta in silenzio</button>'+
-      '<button class="tasto entra" id="bEnt" aria-pressed="'+tre+'"><span class="led"></span>Entra in voce</button>'+
-      (v.telefono? '<a class="tasto prendi" href="tel:'+esc(v.telefono)+'">Prendi tu la chiamata</a>':'')+
+      '<button class="tasto entra" id="bEnt" disabled title="serve il ponte telefonico: non e ancora possibile"><span class="led"></span>Entra in voce <em>presto</em></button>'+
+      (v.telefono? '<a class="tasto prendi" href="tel:'+esc(v.telefono)+'" title="apre il telefono: dal computer non funziona">Chiama tu dal telefono</a>':'')+
       '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
     '</div>';
   dipingiParlato();
+  /* si rimette quello che stava scrivendo, e il cursore dov era */
+  const iDopo = document.getElementById('sugg');
+  if(iDopo && testoInCorso !== null && testoInCorso !== ''){
+    iDopo.value = testoInCorso;
+    if(avevaIlFuoco){ iDopo.focus(); try{ iDopo.setSelectionRange(cursore, cursore); }catch(e){} }
+  }
+  if(ricon && iDopo){ const b = document.getElementById('bDett'); if(b) b.setAttribute('aria-pressed','true'); }
   $('bSugg').onclick = () => mandaSuggerimento(v.conversazione);
   $('sugg').onkeydown = (e) => { if(e.key === 'Enter') mandaSuggerimento(v.conversazione); };
   $('bDett').onclick = () => detta();
@@ -512,7 +539,8 @@ function disegna(){
     else { await spegniAscolto(v.conversazione); muto = false; }
     disegna();
   };
-  $('bEnt').onclick = () => { tre = !tre; if(tre) muto = false; disegna(); };
+  /* Entra in voce resta spento finche la telefonata non passa da un ponte
+     nostro: ElevenLabs, messa la chiamata in conferenza, toglie l agente. */
   $('bChi').onclick = () => chiudiRiga(v.conversazione);
 
   $('dx').innerHTML =
