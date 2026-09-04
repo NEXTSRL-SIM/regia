@@ -1,0 +1,178 @@
+<!doctype html><html lang="it"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Regia - Next</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--ground:#100E0C;--surface:#1A1613;--surface-2:#231D19;--surface-3:#2C251F;--ink:#F2EBE3;--ink-2:#AFA49A;--ink-3:#7C716A;--line:#332B25;--line-2:#453A32;--amber:#E2A24C;--amber-dim:#7A5622;--amber-wash:#241A0E;--sage:#7FB08B;--sage-dim:#22321F;--brick:#CE6A45;--brick-dim:#3A1F16;--display:"Bricolage Grotesque",Arial,sans-serif;--sans:"IBM Plex Sans",Arial,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+.porta{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.porta form{width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px}
+.porta h1{font-family:var(--display);font-weight:800;font-size:30px;margin:0;letter-spacing:-.02em}
+.porta p{margin:0;color:var(--ink-2);font-size:14.5px}
+.porta input{background:var(--surface);border:1px solid var(--line-2);color:var(--ink);padding:13px 14px;font:inherit;font-family:var(--mono)}
+.porta input:focus{outline:2px solid var(--amber);outline-offset:1px}
+.porta button{background:var(--amber-dim);color:#FBE9CF;padding:13px;font-weight:600;border:1px solid var(--amber)}
+.porta .no{color:var(--brick);font-size:13.5px;min-height:20px;margin:0}
+.nastro{background:var(--amber-dim);color:#F6DFBE;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:7px 20px;display:flex;gap:18px;flex-wrap:wrap}
+.nastro b{color:#FFF3E2;font-weight:500}
+.schede{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 20px}
+.st{padding:12px 17px;font-family:var(--mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px}
+.st[aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
+.nascosto{display:none!important}
+.telaio{display:grid;grid-template-columns:298px minmax(0,1fr) 330px;gap:1px;background:var(--line);min-height:calc(100vh - 78px)}
+.col{background:var(--ground);display:flex;flex-direction:column;min-width:0}
+.titolo{padding:14px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between}
+.titolo h2{font-family:var(--display);font-weight:600;font-size:14.5px;margin:0}
+.conta{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.linee{overflow-y:auto}
+.linea{width:100%;text-align:left;display:grid;grid-template-columns:9px 1fr;gap:11px;padding:13px 17px;border-bottom:1px solid var(--line)}
+.linea:hover{background:var(--surface)}
+.linea[aria-current=true]{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--amber)}
+.spia{width:9px;height:9px;border-radius:50%;margin-top:5px}
+.spia.rosso{background:var(--brick);animation:p 1.3s infinite}.spia.giallo{background:var(--amber)}.spia.verde{background:var(--sage)}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+@media(prefers-reduced-motion:reduce){.spia.rosso{animation:none}}
+.l-nome{font-weight:600;font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l-dati{font-family:var(--mono);font-size:11px;color:var(--ink-3);display:block;margin-top:2px}
+.l-dati b{font-weight:400;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.l-flash{font-size:12.5px;margin-top:6px;line-height:1.35;display:block}
+.l-flash.rosso{color:var(--brick)}.l-flash.giallo{color:var(--amber)}.l-flash.verde{color:var(--sage)}
+.banda{display:flex;gap:13px;align-items:flex-start;padding:15px 20px;border-bottom:1px solid var(--line)}
+.banda .bollo{width:13px;height:13px;border-radius:50%;margin-top:4px;flex:none}
+.banda.rosso{background:var(--brick-dim)}.banda.rosso .bollo{background:var(--brick)}
+.banda.giallo{background:var(--amber-wash)}.banda.giallo .bollo{background:var(--amber)}
+.banda.verde{background:var(--sage-dim)}.banda.verde .bollo{background:var(--sage)}
+.banda h3{font-family:var(--display);font-weight:800;font-size:16.5px;margin:0 0 3px}
+.banda p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.banda .quando{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:auto;white-space:nowrap;padding-top:4px}
+.capo{padding:17px 20px 14px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+.capo h1{font-family:var(--display);font-weight:800;font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+.capo .sotto{font-family:var(--mono);font-size:12px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:14px}
+.grosso{font-family:var(--mono);font-size:28px;font-variant-numeric:tabular-nums;line-height:1;text-align:right}
+.grosso small{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:5px}
+.corpo-centro{flex:1;overflow-y:auto;padding:18px 20px}
+.vuoto{color:var(--ink-3);font-size:14px;padding:40px 20px;text-align:center}
+.scia{border-top:1px solid var(--line);background:var(--surface-2);padding:11px 20px 12px;display:flex;align-items:baseline;gap:16px}
+.scia-et{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.scia-righe{display:flex;overflow-x:auto;padding-bottom:2px}
+.tappa{display:flex;align-items:baseline;gap:7px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;padding:0 14px;border-left:1px solid var(--line-2)}
+.tappa:first-child{padding-left:0;border-left:none}
+.tappa time{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.tappa.ora,.tappa.ora time{color:var(--amber)}
+.banco{border-top:1px solid var(--line);background:var(--surface);padding:13px 20px;display:flex;flex-wrap:wrap;gap:9px}
+.tasto{display:flex;align-items:center;gap:9px;padding:10px 15px;border:1px solid var(--line-2);background:var(--surface-2);font-size:13.5px;font-weight:500}
+.tasto .pt{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.tasto:disabled{opacity:.4;cursor:not-allowed}
+.dx{overflow-y:auto}
+.blocco{padding:15px 17px;border-bottom:1px solid var(--line)}
+.etich{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px}
+.sintesi{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.coppia{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:13.5px;border-bottom:1px dotted var(--line)}
+.coppia:last-child{border-bottom:none}.coppia dt{color:var(--ink-3)}
+.coppia dd{margin:0;text-align:right;font-family:var(--mono);font-size:12.5px}
+dl{margin:0}
+.foglio{max-width:1080px;margin:0 auto;padding:26px 20px 60px}
+.foglio h1{font-family:var(--display);font-weight:800;font-size:26px;margin:0 0 4px}
+.occhio{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin:0 0 22px}
+.tabella{width:100%;border-collapse:collapse;font-size:13.5px}
+.tabella th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500;padding:9px 12px;border-bottom:1px solid var(--line-2)}
+.tabella td{padding:11px 12px;border-bottom:1px solid var(--line)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.avvolgi{overflow-x:auto;border:1px solid var(--line)}
+audio{width:220px;height:32px}
+@media(max-width:1000px){.telaio{grid-template-columns:1fr}.col.centro{order:-1}}
+</style></head><body>
+<div class="porta" id="porta">
+ <form id="formPorta">
+  <h1>Regia</h1>
+  <p>La parola d'ordine e la stessa che usa al telefono.</p>
+  <input id="parola" type="password" autocomplete="current-password" placeholder="parola d'ordine" autofocus>
+  <button type="submit">Entra</button>
+  <p class="no" id="no"></p>
+ </form>
+</div>
+<div id="dentro" class="nascosto">
+ <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span></div>
+ <div class="schede"><button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button><button class="st" id="tChiuse" aria-selected="false">Chiuse oggi <span id="nChiuse">0</span></button></div>
+ <div class="telaio" id="vLinea">
+  <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div></div>
+  <div class="col centro" id="centro"></div>
+  <div class="col dx" id="dx"></div>
+ </div>
+ <div id="vChiuse" class="nascosto"><div class="foglio"><h1>Chiuse oggi</h1><p class="occhio" id="sottoChiuse"></p><div class="avvolgi"><table class="tabella"><thead><tr><th>Cliente</th><th>Ora</th><th>Durata</th><th>Di cosa si e parlato</th><th>Ascolta</th></tr></thead><tbody id="corpoChiuse"></tbody></table></div></div></div>
+</div>
+<script>
+const API = 'https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/regia';
+let PASS = sessionStorage.getItem('regia_pass') || '';
+let CHI  = sessionStorage.getItem('regia_chi') || '';
+let sel = null, stato = {vive:[], chiuse:[]}, avviato = false;
+const $ = i => document.getElementById(i);
+const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('formPorta').addEventListener('submit', async (e) => {
+  e.preventDefault(); $('no').textContent = '';
+  try{
+    const r = await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({parola: $('parola').value})});
+    const j = await r.json();
+    if(!j.ok){ $('no').textContent = 'Parola non riconosciuta.'; $('parola').value=''; return; }
+    PASS = j.pass; CHI = j.chi;
+    sessionStorage.setItem('regia_pass', PASS); sessionStorage.setItem('regia_chi', CHI);
+    apri();
+  }catch(err){ $('no').textContent = 'Non riesco a raggiungere il sistema.'; }
+});
+function apri(){
+  $('porta').classList.add('nascosto'); $('dentro').classList.remove('nascosto');
+  $('chiSono').textContent = CHI ? 'ciao ' + CHI : '';
+  if(!avviato){ avviato = true; tira(); setInterval(tira, 3000); }
+}
+async function tira(){
+  try{
+    const r = await fetch(API + '?dati=1&t=' + encodeURIComponent(PASS));
+    if(r.status === 401){ sessionStorage.clear(); location.reload(); return; }
+    stato = await r.json();
+    if(!sel || !stato.vive.some(v=>v.conversazione===sel)) sel = stato.vive.length ? stato.vive[0].conversazione : null;
+    disegna();
+  }catch(e){}
+}
+function disegna(){
+  $('orologio').textContent = new Date().toLocaleTimeString('it-IT');
+  $('nLive').textContent = stato.vive.length; $('conta').textContent = stato.vive.length;
+  $('nChiuse').textContent = stato.chiuse.length;
+  $('linee').innerHTML = stato.vive.length ? stato.vive.map(v =>
+    '<button class="linea" data-c="'+esc(v.conversazione)+'" aria-current="'+(v.conversazione===sel)+'">'+
+    '<span class="spia '+esc(v.livello)+'"></span><span>'+
+    '<span class="l-nome">'+esc(v.nome||v.telefono||'sconosciuto')+'</span>'+
+    '<span class="l-dati">'+esc(v.dove||'')+' - <b>'+mmss(v.secondi)+'</b></span>'+
+    '<span class="l-flash '+esc(v.livello)+'">'+esc(v.flash||'')+'</span></span></button>').join('')
+    : '<p class="vuoto">Nessuna telefonata in corso.</p>';
+  document.querySelectorAll('.linea').forEach(b => b.onclick = () => { sel = b.dataset.c; disegna(); });
+  const v = stato.vive.find(x => x.conversazione === sel);
+  if(!v){ $('centro').innerHTML = '<p class="vuoto">Quando Valentino chiama, la conversazione compare qui.</p>'; $('dx').innerHTML=''; }
+  else {
+    const m = v.momenti||[];
+    $('centro').innerHTML =
+      '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'In corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
+      '<div class="capo"><div><h1>'+esc(v.nome||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
+      '<div class="corpo-centro"><p class="sintesi">'+esc((v.scheda&&v.scheda.cosa_ha_risposto)||'La trascrizione parola per parola arriva a fine telefonata: qui compaiono i momenti che Valentino segnala mentre parla.')+'</p></div>'+
+      '<div class="scia"><span class="scia-et">Come ci siamo arrivati</span><div class="scia-righe">'+
+      (m.length? m.map((x,i)=>'<span class="tappa'+(i===m.length-1?' ora':'')+'"><time>'+esc(x.ora)+'</time>'+esc(x.cosa)+'</span>').join('') : '<span class="tappa">-</span>')+
+      '</div></div>'+
+      '<div class="banco"><button class="tasto" disabled><span class="pt"></span>Ascolta in silenzio</button><button class="tasto" disabled><span class="pt"></span>Entra in voce</button></div>';
+    const s = v.scheda||{};
+    const riga = (k,x) => x ? '<div class="coppia"><dt>'+k+'</dt><dd>'+esc(x)+'</dd></div>' : '';
+    $('dx').innerHTML = '<div class="titolo"><h2>La sua pratica</h2><span class="conta">dal vivo</span></div>'+
+      (s.cosa_ha_risposto? '<div class="blocco"><p class="etich">Cosa ha chiesto sui social</p><p class="sintesi">'+esc(s.cosa_ha_risposto)+'</p></div>':'')+
+      (s.sintesi? '<div class="blocco"><p class="etich">Dall arricchimento</p><p class="sintesi">'+esc(s.sintesi)+'</p></div>':'')+
+      '<div class="blocco"><p class="etich">Il contatto</p><dl>'+riga('Comune',s.dove)+riga('Indirizzo',s.indirizzo)+riga('Campagna',s.campagna)+riga('Stato',s.stato)+'</dl></div>';
+  }
+  $('corpoChiuse').innerHTML = stato.chiuse.map(c =>
+    '<tr><td>'+esc(c.chi||c.chiamante||'')+'</td><td class="num">'+esc((c.quando||'').slice(11,16))+'</td><td class="num">'+mmss(c.durata_sec||0)+'</td><td>'+esc(c.di_cosa||'')+'</td>'+
+    '<td>'+(c.audio? '<audio controls preload="none" src="'+esc(c.audio)+'"></audio>':'-')+'</td></tr>').join('');
+  $('sottoChiuse').textContent = stato.chiuse.length + ' telefonate concluse oggi';
+}
+$('tLinea').onclick = () => { $('tLinea').setAttribute('aria-selected','true'); $('tChiuse').setAttribute('aria-selected','false'); $('vLinea').classList.remove('nascosto'); $('vChiuse').classList.add('nascosto'); };
+$('tChiuse').onclick = () => { $('tChiuse').setAttribute('aria-selected','true'); $('tLinea').setAttribute('aria-selected','false'); $('vChiuse').classList.remove('nascosto'); $('vLinea').classList.add('nascosto'); };
+if(PASS) apri();
+</script></body></html>
