@@ -231,7 +231,17 @@ async function accendiAscolto(c){
       if(b) b.innerHTML = '<span class="led"></span>In ascolto &middot; ' + fette + '/' + suonate;
     }
   };
-  audioWs.onclose = function(){ if(audioConv === c) audioConv = null; };
+  audioWs.onclose = function(){
+    if(audioConv !== c) return;
+    audioConv = null;
+    /* Il canale ha una vita massima: se cade mentre stiamo ancora
+       ascoltando, si riapre da solo e si richiede il flusso a Twilio. */
+    if(muto){
+      const b = document.getElementById('bAsc');
+      if(b) b.innerHTML = '<span class="led"></span>Riaggancio&hellip;';
+      setTimeout(function(){ if(muto) accendiAscolto(c); }, 800);
+    }
+  };
   return true;
 }
 async function spegniAscolto(c){
