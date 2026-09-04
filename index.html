@@ -254,6 +254,21 @@ audio{width:230px;height:34px;vertical-align:middle}
 </div>
 <script src="https://sdk.twilio.com/js/voice/releases/2.11.0/twilio.min.js"></script>
 <script>
+/* se qualcosa si rompe, lo si vede: meglio un avviso brutto che una pagina
+   che smette di funzionare senza dire perche */
+window.onerror = function(m, f, r, c){
+  try{
+    let b = document.getElementById('guasto');
+    if(!b){
+      b = document.createElement('div');
+      b.id = 'guasto';
+      b.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99;background:#7A1E08;color:#FFE9E0;font:12px/1.5 monospace;padding:8px 12px;white-space:pre-wrap';
+      document.body.appendChild(b);
+    }
+    b.textContent = 'guasto nella pagina: ' + m + '  (riga ' + r + ')';
+  }catch(e){}
+  return false;
+};
 const API = 'https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/regia';
 let PASS = sessionStorage.getItem('regia_pass') || '';
 let CHI  = sessionStorage.getItem('regia_chi') || '';
@@ -510,11 +525,14 @@ function apri(){
 }
 async function tira(){
   try{
+    /* un errore dentro disegna() non deve fermare l aggiornamento */
     const r = await fetch(API + '?dati=1&periodo=' + periodo + '&t=' + encodeURIComponent(PASS));
     if(r.status === 401){ sessionStorage.clear(); location.reload(); return; }
     stato = await r.json();
+    if(!stato.richiami) stato.richiami = [];
     if(!sel || !stato.vive.some(v=>v.conversazione===sel)) sel = stato.vive.length ? stato.vive[0].conversazione : null;
-    disegna();
+    try{ disegna(); }
+    catch(e){ if(window.onerror) window.onerror('disegna: ' + (e && e.message ? e.message : e), '', 0, 0); }
   }catch(e){}
 }
 function righe(coppie){
