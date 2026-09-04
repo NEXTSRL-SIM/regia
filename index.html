@@ -171,7 +171,10 @@ dl{margin:0}
 .tabella td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-2)}
 .avvolgi{overflow-x:auto;border:1px solid var(--line)}
-audio{width:210px;height:32px}
+audio{width:230px;height:34px;vertical-align:middle}
+.ascCell{white-space:nowrap}
+.ascCell .apri{margin-left:9px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);border-bottom:1px dotted var(--amber-dim);text-decoration:none}
+.ascCell .apri:hover{border-bottom-style:solid}
 @media(max-width:1000px){.telaio{grid-template-columns:1fr}.col.centro{order:-1}}
 </style></head><body>
 <div class="porta" id="porta">
@@ -485,7 +488,10 @@ function disegna(){
     '<td class="num">'+esc((c.quando||'').slice(0,16).replace('T',' '))+'</td>'+
     '<td class="num">'+mmss(c.durata_sec||0)+'</td>'+
     '<td>'+esc(corto(c.di_cosa,220))+'</td>'+
-    '<td>'+(c.audio? '<audio controls preload="none" src="'+esc(c.audio)+'"></audio>':'-')+'</td></tr>').join('')
+    '<td class="ascCell">'+(c.audio
+        ? '<audio controls preload="none" src="'+esc(c.audio)+'"></audio>'+
+          '<a class="apri" href="'+esc(c.audio)+'" target="_blank" rel="noopener" title="apri in una scheda a parte">apri</a>'
+        : '-')+'</td></tr>').join('')
     : '<tr><td colspan="5" style="color:var(--ink-3)">Nessuna telefonata in questo periodo.</td></tr>';
   document.querySelectorAll('.tastoNome').forEach(b => b.onclick = () => apriCliente(b.dataset.tel));
   $('sottoChiuse').textContent = stato.chiuse.length + ' telefonate';
