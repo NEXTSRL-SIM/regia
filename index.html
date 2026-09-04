@@ -197,7 +197,7 @@ function apri(){
   $('porta').classList.add('nascosto'); $('dentro').classList.remove('nascosto');
   $('chiSono').textContent = CHI ? 'ciao ' + CHI : '';
   if(!avviato){ avviato = true; tira(); setInterval(tira, 3000);
-    setInterval(function(){ fetch(API + '-pulisci?t=' + encodeURIComponent(PASS)).catch(function(){}); }, 15000); }
+    setInterval(function(){ fetch(API + '-pulisci?t=' + encodeURIComponent(PASS)).catch(function(){}); }, 5000); }
 }
 async function tira(){
   try{
@@ -234,7 +234,7 @@ function disegna(){
     $('dx').innerHTML=''; $('foglioArric').innerHTML = '<h1>Arricchimento</h1><p class="occhio">Nessuna telefonata in corso.</p>';
   } else {
   const m = v.momenti||[], s = v.scheda||{}, t = s.tetto||{}, voci = s.voci||null;
-  ascolta(v.conversazione);
+  /* ascolto dal vivo sospeso: il canale di ElevenLabs rifiuta la chiave, riaprirlo ogni giro bloccava la pagina */
   $('centro').innerHTML =
     '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
     '<div class="capo"><div><h1>'+esc(v.nome||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
