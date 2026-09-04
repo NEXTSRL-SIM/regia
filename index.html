@@ -179,7 +179,7 @@ const MU = (function(){
   }
   return t;
 })();
-let ctx = null, quando = 0, audioWs = null, audioConv = null;
+let ctx = null, quando = 0, audioWs = null, audioConv = null, fette = 0, suonate = 0;
 function avvisa(t){
   try{
     const b = document.getElementById('bAsc'); if(!b) return;
@@ -204,7 +204,8 @@ function suona(b64){
   const ora = ctx.currentTime;
   /* cuscinetto: se siamo in ritardo o troppo avanti, ci si riallinea */
   if(quando < ora + 0.10 || quando > ora + 2.0) quando = ora + 0.40;
-  s.start(quando); quando += buf.duration;
+  try{ s.start(quando); suonate++; }catch(e){}
+  quando += buf.duration;
 }
 async function accendiAscolto(c){
   let j;
@@ -223,7 +224,12 @@ async function accendiAscolto(c){
   audioWs = new WebSocket(API.replace(/^http/,'ws') + '-audio?ascolta=1&conv=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS));
   audioWs.onmessage = function(e){
     var m; try{ m = JSON.parse(e.data); }catch(x){ return; }
-    if(m.tipo === 'audio' && m.pcm) suona(m.pcm);
+    if(m.tipo === 'audio' && m.pcm){
+      fette++;
+      suona(m.pcm);
+      const b = document.getElementById('bAsc');
+      if(b) b.innerHTML = '<span class="led"></span>In ascolto &middot; ' + fette + '/' + suonate;
+    }
   };
   audioWs.onclose = function(){ if(audioConv === c) audioConv = null; };
   return true;
