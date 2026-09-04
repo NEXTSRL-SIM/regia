@@ -114,7 +114,7 @@ const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':
 $('formPorta').addEventListener('submit', async (e) => {
   e.preventDefault(); $('no').textContent = '';
   try{
-    const r = await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({parola: $('parola').value})});
+    const r = await fetch(API + '-entra', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({parola: $('parola').value})});
     const j = await r.json();
     if(!j.ok){ $('no').textContent = 'Parola non riconosciuta.'; $('parola').value=''; return; }
     PASS = j.pass; CHI = j.chi;
