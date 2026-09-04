@@ -111,6 +111,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .tasto.entra[aria-pressed=true]{border-color:var(--sage);background:var(--sage-dim);color:#DCEFE0}
 .tasto.entra[aria-pressed=true] .led{background:var(--sage);box-shadow:0 0 6px var(--sage)}
 .tasto.prendi{margin-left:auto}
+.tasto.prendi[data-stato=squilla]{border-color:var(--sage);background:var(--sage-dim);animation:p 1s infinite}
+.tasto.prendi[data-stato=in-linea]{border-color:var(--brick);background:var(--brick-dim)}
+.tasto.prendi[data-stato=attesa]{opacity:.6}
+.tasto.prendi[data-stato=guasto]{border-color:var(--brick-dim);color:var(--ink-3)}
 .tasto.chiudi{border-color:var(--brick-dim);color:var(--brick)}
 .tasto.chiudi:hover{border-color:var(--brick);background:var(--brick-dim);color:#F6D9CC}
 .avviso{padding:9px 20px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;display:flex;gap:9px;align-items:center;border-top:1px solid var(--line)}
@@ -230,6 +234,7 @@ audio{width:230px;height:34px;vertical-align:middle}
    <div class="avvolgi"><table class="tabella"><thead><tr><th>Cliente</th><th>Quando</th><th>Durata</th><th>Di cosa si e parlato</th><th>Ascolta</th></tr></thead><tbody id="corpoChiuse"></tbody></table></div>
  </div></div>
 </div>
+<script src="https://sdk.twilio.com/js/voice/releases/2.11.0/twilio.min.js"></script>
 <script>
 const API = 'https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/regia';
 let PASS = sessionStorage.getItem('regia_pass') || '';
@@ -266,6 +271,60 @@ function dipingiParlato(){
       ? parlato.map(b => '<div class="bt '+esc(b.chi)+'"><span class="chi">'+(b.chi==='cliente'?'Cliente':'Valentino')+'</span><span>'+esc(b.testo)+'</span></div>').join('') + inCorso
       : '<p class="attesa">'+(vivo?'In ascolto&hellip;':'Prema Ascolta in silenzio per sentire e leggere la conversazione.')+'</p>');
   p.scrollTop = p.scrollHeight;
+}
+
+/* ---- il telefono dentro la pagina ----------------------------------
+   Quando si preme "prendo io", Twilio dirotta la telefonata viva qui:
+   squillano le cuffie, il cliente resta in linea, Valentino esce. */
+let apparecchio = null, inLinea = null, statoTel = 'spento';
+
+function segnaTel(s, testo){
+  statoTel = s;
+  const b = document.getElementById('bPrendi');
+  if(b){
+    b.setAttribute('data-stato', s);
+    if(testo) b.innerHTML = testo;
+  }
+}
+
+async function accendiTelefono(){
+  if(apparecchio || !window.Twilio || !Twilio.Device) return;
+  let j;
+  try{
+    const r = await fetch(API + '-telefono?t=' + encodeURIComponent(PASS) + '&chi=' + encodeURIComponent((CHI||'regia').toLowerCase().replace(/[^a-z0-9]/g,'')||'regia'));
+    j = await r.json();
+  }catch(e){ return; }
+  if(!j || !j.ok) return;
+  try{
+    apparecchio = new Twilio.Device(j.token, {codecPreferences:['opus','pcmu'], logLevel:'error'});
+    apparecchio.on('registered', () => segnaTel('pronto'));
+    apparecchio.on('error', () => segnaTel('guasto'));
+    apparecchio.on('incoming', (c) => {
+      inLinea = c;
+      segnaTel('squilla', 'Rispondi');
+      c.on('disconnect', () => { inLinea = null; segnaTel('pronto', 'Prendo io la chiamata'); });
+      c.on('cancel',     () => { inLinea = null; segnaTel('pronto', 'Prendo io la chiamata'); });
+      /* si risponde da soli: chi ha premuto il tasto sta gia aspettando */
+      try{ c.accept(); segnaTel('in-linea', 'Chiudi e riattacca'); }catch(e){}
+    });
+    await apparecchio.register();
+  }catch(e){ segnaTel('guasto'); }
+}
+
+async function prendiChiamata(c){
+  if(inLinea){ try{ inLinea.disconnect(); }catch(e){} inLinea = null; segnaTel('pronto','Prendo io la chiamata'); return; }
+  await accendiTelefono();
+  if(statoTel === 'spento' || statoTel === 'guasto'){
+    avvisa('il telefono nella pagina non parte');
+    return;
+  }
+  segnaTel('attesa', 'Sto passando&hellip;');
+  try{
+    const r = await fetch(API + '-prendi', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({t: PASS, c: c, chi: (CHI||'regia').toLowerCase().replace(/[^a-z0-9]/g,'')||'regia'})});
+    const j = await r.json();
+    if(!j || !j.ok){ segnaTel('pronto','Prendo io la chiamata'); avvisa(j && j.errore ? j.errore : 'non riesco a passarla'); }
+  }catch(e){ segnaTel('pronto','Prendo io la chiamata'); avvisa('non riesco a passarla'); }
 }
 
 /* il suggerimento: lo legge Valentino, il cliente non lo sente */
@@ -520,7 +579,7 @@ function disegna(){
     '<div class="banco">'+
       '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>Ascolta in silenzio</button>'+
       '<button class="tasto entra" id="bEnt" disabled title="serve il ponte telefonico: non e ancora possibile"><span class="led"></span>Entra in voce <em>presto</em></button>'+
-      (v.telefono? '<a class="tasto prendi" href="tel:'+esc(v.telefono)+'" title="apre il telefono: dal computer non funziona">Chiama tu dal telefono</a>':'')+
+      '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">Prendo io la chiamata</button>'+
       '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
     '</div>';
   dipingiParlato();
@@ -542,6 +601,7 @@ function disegna(){
   /* Entra in voce resta spento finche la telefonata non passa da un ponte
      nostro: ElevenLabs, messa la chiamata in conferenza, toglie l agente. */
   $('bChi').onclick = () => chiudiRiga(v.conversazione);
+  $('bPrendi').onclick = () => prendiChiamata(v.conversazione);
 
   $('dx').innerHTML =
     '<div class="titolo"><h2>La sua pratica</h2><span class="conta">dal vivo</span></div>'+
@@ -647,4 +707,7 @@ $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
 $('tChiuse').onclick = () => scheda('tChiuse');
 if(PASS) apri();
+/* il telefono si accende da solo appena si entra, cosi e gia pronto
+   quando serve: senza, il primo passaggio di chiamata perderebbe secondi */
+setTimeout(accendiTelefono, 1200);
 </script></body></html>
