@@ -191,14 +191,19 @@ function avvisa(t){
 function suona(b64){
   if(!ctx) return;
   let g; try{ g = atob(b64); }catch(e){ return; }
-  const n = g.length; if(!n) return;
+  const n = (g.length / 2) | 0; if(!n) return;
   const buf = ctx.createBuffer(1, n, 8000);
   const d = buf.getChannelData(0);
-  for(let i=0;i<n;i++) d[i] = MU[g.charCodeAt(i)] / 32768;
+  for(let i=0;i<n;i++){
+    let v = (g.charCodeAt(i*2+1) << 8) | g.charCodeAt(i*2);
+    if(v > 32767) v -= 65536;
+    d[i] = v / 32768;
+  }
   const s = ctx.createBufferSource();
   s.buffer = buf; s.connect(ctx.destination);
   const ora = ctx.currentTime;
-  if(quando < ora + 0.05) quando = ora + 0.15;
+  /* cuscinetto: se siamo in ritardo o troppo avanti, ci si riallinea */
+  if(quando < ora + 0.10 || quando > ora + 2.0) quando = ora + 0.40;
   s.start(quando); quando += buf.duration;
 }
 async function accendiAscolto(c){
@@ -218,7 +223,7 @@ async function accendiAscolto(c){
   audioWs = new WebSocket(API.replace(/^http/,'ws') + '-audio?ascolta=1&conv=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS));
   audioWs.onmessage = function(e){
     var m; try{ m = JSON.parse(e.data); }catch(x){ return; }
-    if(m.tipo === 'audio' && m.mulaw) suona(m.mulaw);
+    if(m.tipo === 'audio' && m.pcm) suona(m.pcm);
   };
   audioWs.onclose = function(){ if(audioConv === c) audioConv = null; };
   return true;
