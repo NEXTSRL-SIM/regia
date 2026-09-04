@@ -415,7 +415,7 @@ function avvisa(t){
   }catch(e){}
 }
 function suona(b64){
-  if(!ctx) return;
+  if(!muto || !ctx) return;   /* il testo arriva sempre, l audio solo se acceso */
   let g; try{ g = atob(b64); }catch(e){ return; }
   const n = (g.length / 2) | 0; if(!n) return;
   const buf = ctx.createBuffer(1, n, 8000);
@@ -433,17 +433,19 @@ function suona(b64){
   try{ s.start(quando); suonate++; }catch(e){}
   quando += buf.duration;
 }
+/* L ASCOLTO E IL TESTO SONO DUE COSE DIVERSE.
+   Il collegamento con la telefonata si apre da solo appena c e una linea viva:
+   e quello che porta le parole da scrivere. Il tasto decide soltanto se
+   l audio esce dalle cuffie. Prima erano la stessa cosa, e spegnendo l audio
+   si spegneva anche la conversazione scritta. */
 async function accendiAscolto(c){
+  if(audioConv === c && audioWs && audioWs.readyState <= 1) return true;
   let j;
   try{
     const r = await fetch(API + '-ascolta?cosa=avvia&c=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS));
     j = await r.json();
-  }catch(e){ avvisa('non raggiungo il sistema'); return false; }
-  if(!j || !j.ok){ avvisa(j && j.errore ? j.errore : 'ascolto non disponibile'); return false; }
-  try{
-    if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if(ctx.state === 'suspended') await ctx.resume();
-  }catch(e){ avvisa('il browser non apre l audio'); return false; }
+  }catch(e){ return false; }
+  if(!j || !j.ok){ if(!j || j.errore !== 'telefonata gia chiusa') avvisa(j && j.errore ? j.errore : 'collegamento non disponibile'); return false; }
   quando = 0;
   try{ if(audioWs) audioWs.close(); }catch(e){}
   audioConv = c;
@@ -606,7 +608,7 @@ function disegna(){
     '<div class="salienti"><p class="et">Punti salienti</p>'+ (m.length
       ? '<div class="sal-righe">'+m.slice().reverse().map(x=>'<div class="sal '+esc(x.livello)+'"><time>'+esc(x.ora)+'</time><span>'+esc(x.cosa)+'</span></div>').join('')+'</div>'
       : '<p class="attesa">Qui compaiono i momenti che Valentino segnala mentre parla.</p>')+'</div>'+
-    (muto? '<div class="avviso muto"><span class="pt"></span>Ascolto in silenzio: l audio dal vivo non e ancora collegato, per ora vede solo quello che Valentino segnala</div>':'')+
+    (muto? '<div class="avviso muto"><span class="pt"></span>Sta ascoltando la telefonata: il cliente non la sente</div>':'')+
     (tre? '<div class="avviso tre"><span class="pt"></span>Per entrare in voce chiami il cliente dal suo telefono: il ponte audio non e ancora attivo</div>':'')+
     '<div class="parlato" id="parlato"></div>'+
     '<div class="suggerisci">'+
@@ -619,11 +621,14 @@ function disegna(){
     '</div>'+
     '<div class="detto" id="detto"></div>'+
     '<div class="banco">'+
-      '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>Ascolta in silenzio</button>'+
+      '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>'+(muto?'Audio acceso':'Senti la voce')+'</button>'+
       '<button class="tasto entra" id="bEnt" disabled title="serve il ponte telefonico: non e ancora possibile"><span class="led"></span>Entra in voce <em>presto</em></button>'+
       '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">Prendo io la chiamata</button>'+
       '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
     '</div>';
+  /* il collegamento con la telefonata si apre da solo: serve per le parole,
+     non per l audio, e senza di lui la conversazione non si scriverebbe */
+  if(!v.chiusa_il && audioConv !== v.conversazione) accendiAscolto(v.conversazione);
   dipingiParlato();
   /* si rimette quello che stava scrivendo, e il cursore dov era */
   const iDopo = document.getElementById('sugg');
@@ -636,8 +641,16 @@ function disegna(){
   $('sugg').onkeydown = (e) => { if(e.key === 'Enter') mandaSuggerimento(v.conversazione); };
   $('bDett').onclick = () => detta();
   $('bAsc').onclick = async () => {
-    if(!muto){ const ok = await accendiAscolto(v.conversazione); if(!ok) return; muto = true; tre = false; }
-    else { await spegniAscolto(v.conversazione); muto = false; }
+    if(!muto){
+      /* l audio si apre solo qui: il browser vuole un click per farlo suonare */
+      try{
+        if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if(ctx.state === 'suspended') await ctx.resume();
+        quando = 0; muto = true;
+      }catch(e){ avvisa('il browser non apre l audio'); }
+    } else {
+      muto = false;
+    }
     disegna();
   };
   /* Entra in voce resta spento finche la telefonata non passa da un ponte
