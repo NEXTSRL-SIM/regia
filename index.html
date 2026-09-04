@@ -39,6 +39,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .l-dati b{font-weight:400;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .l-flash{font-size:12.5px;margin-top:6px;line-height:1.35;display:block}
 .l-flash.rosso{color:var(--brick)}.l-flash.giallo{color:var(--amber)}.l-flash.verde{color:var(--sage)}
+.onda{display:flex;gap:2px;align-items:flex-end;height:13px;margin-top:7px}
+.onda i{width:2px;background:var(--ink-3);opacity:.5;height:3px;animation:vibra 1s infinite ease-in-out}
+.linea[aria-current=true] .onda i{background:var(--amber);opacity:.85}
+.onda i:nth-child(1){animation-delay:0s}.onda i:nth-child(2){animation-delay:.12s}.onda i:nth-child(3){animation-delay:.24s}
+.onda i:nth-child(4){animation-delay:.36s}.onda i:nth-child(5){animation-delay:.18s}.onda i:nth-child(6){animation-delay:.3s}
+@keyframes vibra{0%,100%{height:3px}50%{height:13px}}
+@media(prefers-reduced-motion:reduce){.onda i{animation:none;height:7px}}
 .banda{display:flex;gap:13px;align-items:flex-start;padding:15px 20px;border-bottom:1px solid var(--line)}
 .banda .bollo{width:13px;height:13px;border-radius:50%;margin-top:4px;flex:none}
 .banda.rosso{background:var(--brick-dim)}.banda.rosso .bollo{background:var(--brick)}
@@ -197,7 +204,7 @@ function disegna(){
     '<span class="spia '+esc(v.livello)+'"></span><span>'+
     '<span class="l-nome">'+esc(v.nome||v.telefono||'sconosciuto')+'</span>'+
     '<span class="l-dati">'+esc(v.dove||'')+' - <b>'+mmss(v.secondi)+'</b></span>'+
-    '<span class="l-flash '+esc(v.livello)+'">'+esc(v.flash||'')+'</span></span></button>').join('')
+    '<span class="l-flash '+esc(v.livello)+'">'+esc(v.flash||'')+'</span><span class="onda"><i></i><i></i><i></i><i></i><i></i><i></i></span></span></button>').join('')
     : '<p class="vuoto">Nessuna telefonata in corso.<br>Quando Valentino chiama, compare qui.</p>';
   document.querySelectorAll('.linea').forEach(b => b.onclick = () => { sel = b.dataset.c; muto=false; tre=false; disegna(); });
 
