@@ -65,6 +65,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .evento .pallo{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--ink-3)}
 .evento.rosso .pallo{background:var(--brick)}.evento.giallo .pallo{background:var(--amber)}.evento.verde .pallo{background:var(--sage)}
 .evento p{margin:0;font-size:14px}
+.dett{display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:baseline}
+.dett .chi{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;padding-top:3px}
+.dett.cliente .chi{color:#79A6C4}
+.dett.valentino .chi{color:var(--amber)}
+.dett p{margin:0;max-width:62ch}
+.dett.valentino p{color:var(--ink-2)}
 .evento.rosso p{color:var(--brick)}
 .vuoto{color:var(--ink-3);font-size:14px;padding:34px 20px;text-align:center;line-height:1.6}
 .scia{border-top:1px solid var(--line);background:var(--surface-2);padding:11px 20px 12px;display:flex;align-items:baseline;gap:16px}
@@ -157,7 +163,20 @@ const API = 'https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/regia';
 let PASS = sessionStorage.getItem('regia_pass') || '';
 let CHI  = sessionStorage.getItem('regia_chi') || '';
 let sel = null, stato = {vive:[], chiuse:[]}, avviato = false, periodo = 'oggi';
-let muto = false, tre = false;
+let muto = false, tre = false; let ws = null, wsConv = null, battute = [];
+function ascolta(c){
+  if(wsConv === c && ws && ws.readyState <= 1) return;
+  try{ if(ws) ws.close(); }catch(e){}
+  battute = []; wsConv = c;
+  try{
+    ws = new WebSocket(API.replace(/^http/,"ws") + "-ascolta?c=" + encodeURIComponent(c) + "&t=" + encodeURIComponent(PASS));
+    ws.onmessage = function(e){
+      var m; try{ m = JSON.parse(e.data); }catch(x){ return; }
+      if(m.tipo === "battuta"){ battute.push(m); disegna(); }
+    };
+    ws.onclose = function(){ if(wsConv === c) wsConv = null; };
+  }catch(e){}
+}
 const $ = i => document.getElementById(i);
 const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -215,10 +234,13 @@ function disegna(){
     $('dx').innerHTML=''; $('foglioArric').innerHTML = '<h1>Arricchimento</h1><p class="occhio">Nessuna telefonata in corso.</p>';
   } else {
   const m = v.momenti||[], s = v.scheda||{}, t = s.tetto||{}, voci = s.voci||null;
+  ascolta(v.conversazione);
   $('centro').innerHTML =
     '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
     '<div class="capo"><div><h1>'+esc(v.nome||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
-    '<div class="flusso">'+ (m.length
+    '<div class="flusso">'+ (battute.length
+      ? battute.map(function(b){ return '<div class="dett '+esc(b.chi)+'"><span class="chi">'+(b.chi==="cliente"?"Cliente":"Valentino")+'</span><p>'+esc(b.testo)+'</p></div>'; }).join('')
+      : m.length
       ? m.map(x=>'<div class="evento '+esc(x.livello)+'"><time>'+esc(x.ora)+'</time><span class="pallo"></span><p>'+esc(x.cosa)+'</p></div>').join('')
       : '<p class="vuoto">La telefonata e appena partita.<br>Qui compaiono i momenti che Valentino segnala mentre parla.</p>')+'</div>'+
     '<div class="scia"><span class="scia-et">Come ci siamo arrivati</span><div class="scia-righe">'+
