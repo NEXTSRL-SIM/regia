@@ -177,7 +177,8 @@ $('formPorta').addEventListener('submit', async (e) => {
 function apri(){
   $('porta').classList.add('nascosto'); $('dentro').classList.remove('nascosto');
   $('chiSono').textContent = CHI ? 'ciao ' + CHI : '';
-  if(!avviato){ avviato = true; tira(); setInterval(tira, 3000); }
+  if(!avviato){ avviato = true; tira(); setInterval(tira, 3000);
+    setInterval(function(){ fetch(API + '-pulisci?t=' + encodeURIComponent(PASS)).catch(function(){}); }, 15000); }
 }
 async function tira(){
   try{
