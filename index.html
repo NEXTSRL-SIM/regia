@@ -791,11 +791,36 @@ async function accendiVoce(velo){
      bisogna ZITTIRLI: l audio schedulato continua a suonare per conto suo anche
      dopo che ElevenLabs ha detto all agente di tacere, e mentre quello finisce
      arriva la risposta nuova - ed e cosi che si sentono due Valentino insieme. */
-  let inCoda = [];
+  /* UNA VOCE SOLA, PER COSTRUZIONE.
+     Prima i pezzi di voce si programmavano a orario: si calcolava quando far
+     partire ognuno e si lasciava fare all orologio. Basta un conto sbagliato,
+     una risposta che si accavalla a quella di prima, un ritardo di rete, e due
+     pezzi partono insieme: si sentono due Valentino. Adesso c e una coda e un
+     solo pezzo che suona per volta: quando finisce parte il successivo, e
+     finche uno suona nessun altro puo partire. Non e una taratura piu fine, e
+     un impedimento: due voci insieme non sono piu possibili.
+     Quando lo si interrompe si butta via la coda e si ferma quello in bocca. */
+  let coda = [], sta = null;
+  function accoda(buf){
+    coda.push(buf);
+    if(!sta) partiIlProssimo();
+  }
+  function partiIlProssimo(){
+    if(chiuso || !coda.length){ sta = null; return; }
+    const buf = coda.shift();
+    try{
+      const src = outCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(outCtx.destination);
+      src.onended = () => { if(sta === src) sta = null; partiIlProssimo(); };
+      src.start();
+      sta = src;
+    }catch(e){ sta = null; partiIlProssimo(); }
+  }
   function zittisci(){
-    for(const s of inCoda){ try{ s.stop(); }catch(e){} try{ s.disconnect(); }catch(e){} }
-    inCoda = [];
-    quando = 0;
+    coda = [];
+    if(sta){ try{ sta.onended = null; sta.stop(); }catch(e){} try{ sta.disconnect(); }catch(e){} }
+    sta = null;
   }
   vocePronta = { chiudi(){
     chiuso = true;
@@ -846,15 +871,7 @@ async function accendiVoce(velo){
           if(v > 32767) v -= 65536;
           d[k] = v / 32768;
         }
-        const src = outCtx.createBufferSource();
-        src.buffer = buf; src.connect(outCtx.destination);
-        const ora = outCtx.currentTime;
-        if(quando < ora + 0.05) quando = ora + 0.12;
-        src.start(quando);
-        quando += buf.duration;
-        /* si tiene il filo di cosa sta suonando, per poterlo zittire */
-        inCoda.push(src);
-        src.onended = () => { const i = inCoda.indexOf(src); if(i >= 0) inCoda.splice(i, 1); };
+        accoda(buf);
       }catch(x){}
       return;
     }
@@ -888,6 +905,9 @@ function spegniVoce(){
   if(vocePronta){ try{ vocePronta.chiudi(); }catch(e){} vocePronta = null; }
 }
 function apriFormazione(){
+  /* un pannello solo: due aperti vorrebbero dire due collegamenti con
+     l allievo, e due voci che si accavallano */
+  if(document.querySelector('.velo .fparlato')) return;
   const v = (stato.vive||[]).find(x=>x.conversazione===sel) || null;
   const conv = v ? v.conversazione : null;
   const velo = document.createElement('div');
