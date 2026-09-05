@@ -80,7 +80,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .titolo{padding:14px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between}
 .titolo h2{font-family:var(--display);font-weight:600;font-size:14.5px;margin:0}
 .conta{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.linee{flex:1;min-height:0;overflow-y:auto}
+.linee{flex:0 1 auto;max-height:46%;min-height:120px;overflow-y:auto}
+.sotto{flex:1;min-height:0;overflow-y:auto;border-top:1px solid var(--line)}
+.sotto .blocco:first-child{border-top:0}
 .linea{width:100%;text-align:left;display:grid;grid-template-columns:9px 1fr;gap:11px;padding:13px 17px;border-bottom:1px solid var(--line)}
 .linea:hover{background:var(--surface)}
 .linea[aria-current=true]{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--amber)}
@@ -260,7 +262,7 @@ audio{width:230px;height:34px;vertical-align:middle}
   <button class="st" id="tChiuse" aria-selected="false">Telefonate chiuse</button>
  </div>
  <div class="telaio" id="vLinea">
-  <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div></div>
+  <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div><div class="sotto" id="sotto"></div></div>
   <div class="col centro" id="centro"></div>
   <div class="col dx" id="dx"></div>
  </div>
@@ -660,10 +662,14 @@ function disegna(){
     $('dx').innerHTML =
       '<div class="titolo"><h2>La sua pratica</h2><span class="conta">a riposo</span></div>'+
       '<div class="vincoli"><span class="bollo"></span><span><b>Vincoli sul tetto</b>In attesa di una telefonata</span></div>'+
-      '<div class="blocco"><p class="etich">Cosa ha chiesto</p><p class="attesa">Il modulo compilato dal cliente.</p></div>'+
+      
       '<div class="blocco"><p class="etich">Il tetto</p>'+righe([['Falde',''],['Esposizione',''],['Ci stanno',''],['Potenza',''],['Produzione',''],['Verificato','']])+'</div>'+
       '<div class="blocco"><p class="etich">Quello che ha detto</p>'+righe([['Bolletta',''],['Consumo stimato',''],['In casa',''],['Di giorno',''],['Riscaldamento',''],['Contatore',''],['Auto','']])+'</div>'+
       '<div class="blocco"><p class="etich">Sul tavolo</p><p class="attesa">Nessuna proposta ancora messa sul tavolo.</p></div>';
+    /* a sinistra, sotto le linee: quello che sapevamo del cliente prima di chiamarlo */
+    $('sotto').innerHTML =
+      '<div class="blocco"><p class="etich">Chi e</p><p class="attesa">Il ritratto del contatto compare qui.</p></div>'+
+      '<div class="blocco"><p class="etich">Cosa ha chiesto</p><p class="attesa">Il modulo compilato dal cliente.</p></div>';
     $('foglioArric').innerHTML = '<h1>Arricchimento</h1>'+
       '<p class="occhio">Quello che sappiamo del cliente prima di chiamarlo</p>'+
       '<div class="carta"><h4>La sintesi</h4><p class="attesa">Il ritratto del contatto, messo insieme dal modulo e dalla rete.</p></div>'+
@@ -735,10 +741,7 @@ function disegna(){
     '<div class="vincoli '+(t.semaforo==="verde"?"ok":t.semaforo==="rosso"?"no":t.vincoli?"att":"")+'">'+
       '<span class="bollo"></span><span><b>Vincoli sul tetto</b>'+
       esc(t.vincoli || "Non ancora verificati")+'</span></div>'+
-    '<div class="blocco"><p class="etich">Chi e</p>'+
-      (s.sintesi? '<p class="sintesi">'+esc(corto(s.sintesi,320))+'</p>' : '<p class="attesa">Nessun ritratto del contatto.</p>')+'</div>'+
-    '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
-      (s.cosa_ha_risposto? '<p class="sintesi">'+esc(corto(s.cosa_ha_risposto,200))+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+'</div>'+
+    ''+
     '<div class="blocco"><p class="etich">Il tetto</p>'+
       (t.vincoli? '<div class="esitov '+(t.semaforo==='verde'?'ok':t.semaforo==='rosso'?'no':'att')+'">'+esc(t.vincoli)+'</div>':'')+
       '<div style="margin-top:'+(t.vincoli?'10px':'0')+'">'+righe([['Falde',t.falde],['Esposizione',t.inclinazione],['Ci stanno',t.moduli],['Potenza',t.potenza],['Produzione',t.produzione],['Verificato',t.verificato||t.analizzato]])+'</div>'+
@@ -748,6 +751,14 @@ function disegna(){
     '<div class="blocco"><p class="etich">Sul tavolo</p>'+ (s.prezzo
       ? '<div class="offerta"><div class="prezzo">'+esc(s.prezzo)+'</div><div class="righe">'+esc(s.configurazione||'')+'</div></div>'
       : '<p class="attesa">Nessuna proposta ancora messa sul tavolo.</p>')+'</div>';
+
+  /* a sinistra, sotto le linee: chi e e cosa ha chiesto - quello che sapevamo
+     prima di telefonare. A destra resta solo cio che nasce parlando. */
+  $('sotto').innerHTML =
+    '<div class="blocco"><p class="etich">Chi e</p>'+
+      (s.sintesi? '<p class="sintesi">'+esc(corto(s.sintesi,420))+'</p>' : '<p class="attesa">Nessun ritratto del contatto.</p>')+'</div>'+
+    '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
+      (s.cosa_ha_risposto? '<p class="sintesi">'+esc(corto(s.cosa_ha_risposto,300))+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+'</div>';
 
   $('foglioArric').innerHTML = '<h1>'+esc(Nome(v.nome)||v.telefono||'')+'</h1>'+
     '<p class="occhio">Arricchimento del contatto - '+esc(v.dove||'')+' - '+esc(v.fonte||'')+'</p>'+
