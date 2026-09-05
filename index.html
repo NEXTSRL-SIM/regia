@@ -74,12 +74,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .rich-fare{display:flex;gap:8px}
 .rich-fare .tasto{padding:8px 12px;font-size:12.5px}
 .nascosto{display:none!important}
-.telaio{display:grid;grid-template-columns:298px minmax(0,1fr) 336px;gap:1px;background:var(--line);min-height:calc(100vh - 78px)}
-.col{background:var(--ground);display:flex;flex-direction:column;min-width:0}
+.telaio{display:grid;grid-template-columns:298px minmax(0,1fr) 336px;gap:1px;background:var(--line);height:calc(100vh - 78px);min-height:0;overflow:hidden}
+.col{background:var(--ground);display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
+.col.dx{overflow-y:auto}
 .titolo{padding:14px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between}
 .titolo h2{font-family:var(--display);font-weight:600;font-size:14.5px;margin:0}
 .conta{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.linee{overflow-y:auto}
+.linee{flex:1;min-height:0;overflow-y:auto}
 .linea{width:100%;text-align:left;display:grid;grid-template-columns:9px 1fr;gap:11px;padding:13px 17px;border-bottom:1px solid var(--line)}
 .linea:hover{background:var(--surface)}
 .linea[aria-current=true]{background:var(--surface-2);box-shadow:inset 3px 0 0 var(--amber)}
@@ -159,7 +160,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .tasto.chiudi:hover{border-color:var(--brick);background:var(--brick-dim);color:#F6D9CC}
 .avviso{padding:9px 20px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;display:flex;gap:9px;align-items:center;border-top:1px solid var(--line)}
 .avviso .pt{width:7px;height:7px;border-radius:50%;background:currentColor}
-.parlato{flex:1;min-height:220px;overflow-y:auto;padding:16px 20px 18px;background:var(--ground)}
+.parlato{flex:1;min-height:0;overflow-y:auto;padding:16px 20px 18px;background:var(--ground)}
 .parlato .bt{font-size:15px}
 .salienti{border-bottom:1px solid var(--line);background:var(--surface);padding:12px 20px 13px;max-height:140px;overflow-y:auto}
 .salienti .et{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
@@ -308,19 +309,22 @@ let muto = false, tre = false; let ws = null, wsConv = null, battute = [];
    vecchia dell orecchio: due dichiarazioni con lo stesso nome sono un errore di
    sintassi e mandavano in fumo TUTTO lo script, porta compresa. */
 let ctx = null, quando = 0, audioWs = null, audioConv = null, fette = 0, suonate = 0;
-let parlato = [], corso = {}, parlatoConv = null, ricon = null, firmaChiuse = '';
+let parlato = [], parlatoDb = [], corso = {}, parlatoConv = null, ricon = null, firmaChiuse = '';
 
 /* la conversazione che si scrive mentre si parla */
 function dipingiParlato(){
   const p = document.getElementById('parlato'); if(!p) return;
   const vivo = (audioWs && audioWs.readyState === 1);
+  /* le battute arrivano dai dati, scritte in archivio mentre si parla: il tubo
+     dell audio serve solo per la voce, e per le parole non ancora archiviate */
+  const righe = parlatoDb.length ? parlatoDb : parlato;
   const inCorso = ['cliente','valentino'].filter(k => corso[k]).map(k =>
     '<div class="bt '+k+' corso"><span class="chi">'+(k==='cliente'?'Cliente':'Valentino')+'</span><span>'+esc(corso[k])+'</span></div>').join('');
   p.innerHTML =
     '<p class="et">'+(vivo?'<span class="vivo"></span>':'')+'Cosa si stanno dicendo</p>'+
-    (parlato.length||inCorso
-      ? parlato.map(b => '<div class="bt '+esc(b.chi)+'"><span class="chi">'+(b.chi==='cliente'?'Cliente':'Valentino')+'</span><span>'+esc(b.testo)+'</span></div>').join('') + inCorso
-      : '<p class="attesa">'+(vivo?'In ascolto&hellip;':'Prema Ascolta in silenzio per sentire e leggere la conversazione.')+'</p>');
+    (righe.length||inCorso
+      ? righe.map(b => '<div class="bt '+esc(b.chi)+'"><span class="chi">'+(b.chi==='cliente'?'Cliente':'Valentino')+'</span><span>'+esc(b.testo)+'</span></div>').join('') + inCorso
+      : '<p class="attesa">'+(vivo?'In ascolto&hellip;':'La conversazione si scrive qui appena si parla.')+'</p>');
   p.scrollTop = p.scrollHeight;
 }
 
@@ -631,6 +635,7 @@ function disegna(){
 
   const v = stato.vive.find(x => x.conversazione === sel);
   if(!v){
+    parlatoDb = [];
     /* a riposo la regia non resta bianca: mostra le sue stanze vuote,
        cosi si sa gia dove guardare quando squillera */
     $('centro').innerHTML =
@@ -664,6 +669,7 @@ function disegna(){
       '<div class="carta"><h4>Il contatto</h4>'+righe([['Comune',''],['Indirizzo',''],['Provincia',''],['Campagna',''],['Quando ha chiesto',''],['Stato','']])+'</div>';
   } else {
   const m = v.momenti||[], s = v.scheda||{}, t = s.tetto||{}, voci = s.voci||null;
+  parlatoDb = Array.isArray(v.battute) ? v.battute : [];
   /* ascolto dal vivo sospeso: il canale di ElevenLabs rifiuta la chiave, riaprirlo ogni giro bloccava la pagina */
   $('centro').innerHTML =
     '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
