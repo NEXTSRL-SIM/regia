@@ -80,8 +80,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .titolo{padding:14px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between}
 .titolo h2{font-family:var(--display);font-weight:600;font-size:14.5px;margin:0}
 .conta{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.linee{flex:0 1 auto;max-height:46%;min-height:120px;overflow-y:auto}
-.sotto{flex:1;min-height:0;overflow-y:auto;border-top:1px solid var(--line)}
+/* l elenco cresce fino a quattro telefonate, poi scorre lui; quello che
+   resta sotto e per i dati raccolti, che scorrono a loro volta se non ci stanno */
+.linee{flex:0 1 auto;max-height:336px;min-height:84px;overflow-y:auto}
+.sotto{flex:1 1 auto;min-height:0;overflow-y:auto;border-top:1px solid var(--line)}
 .sotto .blocco:first-child{border-top:0}
 .linea{width:100%;text-align:left;display:grid;grid-template-columns:9px 1fr;gap:11px;padding:13px 17px;border-bottom:1px solid var(--line)}
 .linea:hover{background:var(--surface)}
