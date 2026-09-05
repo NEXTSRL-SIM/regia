@@ -276,19 +276,10 @@ let sel = null, stato = {vive:[], chiuse:[], richiami:[]}, avviato = false, peri
 let muto = false, tre = false; let ws = null, wsConv = null, battute = [];
 
 /* ---- ascolto in diretta: audio duplicato da Twilio, mu-law 8 kHz ---- */
-const MU = (function(){
-  const t = new Int16Array(256);
-  for(let i=0;i<256;i++){
-    const u = ~i & 0xFF;
-    const segno = (u & 0x80) ? -1 : 1;
-    const esp = (u >> 4) & 7;
-    const man = u & 15;
-    let v = ((man << 1) + 33) << esp;
-    v -= 33;
-    t[i] = segno * v * 4;
-  }
-  return t;
-})();
+/* la tabella mu-law sta piu sotto, accanto a suona(): una sola, in valori
+   fra -1 e 1. Qui ce n era una seconda copia in interi, residuo della versione
+   vecchia dell orecchio: due dichiarazioni con lo stesso nome sono un errore di
+   sintassi e mandavano in fumo TUTTO lo script, porta compresa. */
 let ctx = null, quando = 0, audioWs = null, audioConv = null, fette = 0, suonate = 0;
 let parlato = [], corso = {}, parlatoConv = null, ricon = null, firmaChiuse = '';
 
