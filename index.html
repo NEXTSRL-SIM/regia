@@ -520,12 +520,15 @@ async function accendiAscolto(c){
   audioWs.onclose = function(){
     if(audioConv !== c) return;
     audioConv = null;
-    /* Il canale ha una vita massima: se cade mentre stiamo ancora
-       ascoltando, si riapre da solo e si richiede il flusso a Twilio. */
-    if(muto){
+    /* Il nastro verso la pagina vive dentro una funzione Supabase, che il
+       sistema spegne dopo centocinquanta secondi. Si riapre SEMPRE finche la
+       telefonata e in linea, non solo con l audio acceso: prima era legato al
+       tasto, ed e per questo che spegnendo l audio moriva anche il resto. */
+    const ancoraViva = stato.vive.some(function(x){ return x.conversazione === c; });
+    if(ancoraViva){
       const b = document.getElementById('bAsc');
-      if(b) b.innerHTML = '<span class="led"></span>Riaggancio&hellip;';
-      setTimeout(function(){ if(muto) accendiAscolto(c); }, 800);
+      if(b && muto) b.innerHTML = '<span class="led"></span>Riaggancio&hellip;';
+      setTimeout(function(){ accendiAscolto(c); }, 800);
     }
   };
   return true;
