@@ -894,12 +894,23 @@ async function accendiVoce(velo){
     }
   };
   ws.onclose = () => {
-    if(!chiuso) fVoceStato(velo, 'collegamento chiuso', false);
     try{ flusso.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
     vocePronta = null;
     const b = velo.querySelector('#fParla');
     if(b){ b.setAttribute('aria-pressed','false'); b.innerHTML = '<span class="led"></span>Parla con l allievo'; }
-    elencoFormazione(velo);
+    /* CHIUDE E SPEDISCE, SENZA CHE NESSUNO SE LO DEBBA RICORDARE.
+       Prima bisognava chiudere e poi premere Manda: due gesti, e il secondo si
+       dimentica - e allora la formazione resta nel browser e non la vede
+       nessuno. Adesso quando il collegamento si chiude, comunque si chiuda,
+       quello che vi siete detti parte da solo. Le prove di pochi scambi no:
+       riempirebbero l area di niente. */
+    if(voceBattute.length >= 4){
+      fVoceStato(velo, 'chiuso - sto mandando a Claude quello che ci siamo detti...', false);
+      mandaFormazione(velo, null);
+    } else {
+      fVoceStato(velo, voceBattute.length ? 'chiuso - troppo corta, non l ho mandata' : 'collegamento chiuso', false);
+      elencoFormazione(velo);
+    }
   };
   ws.onerror = () => fVoceStato(velo, 'collegamento interrotto', false);
 
@@ -933,8 +944,9 @@ function apriFormazione(){
         '<div class="fparlato" id="fParlato"></div>'+
       '</div>'+
       '<div class="fblocco"><p class="etich">Poi lo manda a Claude</p>'+
-        '<p class="fspiega">Il tasto manda quello che c e: la conversazione appena fatta a voce, '+
-        'e in piu quello che scrive qui sotto se vuole aggiungere qualcosa.</p>'+
+        '<p class="fspiega">Quando chiude il collegamento, quello che vi siete detti parte da solo: '+
+        'non deve premere niente. Il tasto serve se vuole aggiungere qualcosa per iscritto, '+
+        'o mandare di nuovo.</p>'+
         '<textarea id="fTesto" rows="3" placeholder="Se preferisce scrivere, o se il microfono non va."></textarea>'+
         '<div class="frighe"><button class="tasto entra" id="fManda">Manda a Claude</button></div>'+
         '<div class="fesito" id="fEsito"></div>'+
