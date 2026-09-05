@@ -231,6 +231,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .fstato{font-family:var(--mono);font-size:10px;text-transform:uppercase;padding:2px 6px;border:1px solid var(--line-2);color:var(--ink-3);flex:0 0 auto;height:fit-content}
 .fstato.proposta{border-color:var(--amber);color:var(--amber)}
 .fstato.approvata{border-color:var(--sage);color:var(--sage)}
+.flez.appena{border-left:2px solid var(--sage);padding-left:10px;background:var(--sage-dim)}
+.flez.appena time{color:var(--sage)}
 /* la formazione a voce */
 .fspiega{margin:0 0 11px;font-size:12.5px;line-height:1.55;color:var(--ink-2)}
 .fstatovoce{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-top:9px;display:flex;align-items:center;gap:7px}
@@ -961,17 +963,24 @@ function apriFormazione(){
   velo.querySelector('#fManda').onclick = () => mandaFormazione(velo, conv);
   elencoFormazione(velo);
 }
-async function elencoFormazione(velo){
+async function elencoFormazione(velo, appena){
   const d = velo.querySelector('#fElenco'); if(!d) return;
   try{
     const r = await fetch(API.replace(/regia$/,'formazione')+'?pass='+encodeURIComponent(PASS)+'&elenco=1');
     const j = await r.json();
     const l = (j && j.lezioni) || [];
+    /* la lezione appena messa via si vede subito, in cima e in evidenza: chi
+       chiude il collegamento deve capire a colpo d occhio che e andata, senza
+       doverlo chiedere a nessuno */
     d.innerHTML = l.length
-      ? l.map(x=>'<div class="flez"><span class="fstato '+esc(x.stato||'')+'">'+esc(x.stato||'')+'</span>'+
+      ? l.map(x=>'<div class="flez'+(appena && String(x.id) === String(appena) ? ' appena' : '')+'">'+
+          '<span class="fstato '+esc(x.stato||'')+'">'+esc(x.stato||'')+'</span>'+
           '<div><p>'+esc(x.regola || x.detto || '')+'</p>'+
-          '<time>'+esc(String(x.quando||'').slice(0,16).replace('T',' '))+'</time></div></div>').join('')
+          '<time>'+esc(String(x.quando||'').slice(0,16).replace('T',' '))+
+          (appena && String(x.id) === String(appena) ? ' &middot; appena messa via' : '')+'</time></div></div>').join('')
       : '<p class="attesa">Ancora nessun insegnamento.</p>';
+    const nuova = d.querySelector('.flez.appena');
+    if(nuova) nuova.scrollIntoView({block:'nearest'});
   }catch(e){ d.innerHTML = '<p class="attesa">Non riesco a leggere l elenco.</p>'; }
 }
 async function mandaFormazione(velo, conv){
@@ -1001,7 +1010,8 @@ async function mandaFormazione(velo, conv){
       '<p class="fattesa">Messa via come lezione '+(j.id? '#'+esc(String(j.id)):'')+'. Nel prompt di Valentino non entra niente: '+
       'lo guardiamo insieme quando apre la sessione.</p>';
     if(ta) ta.value = '';
-    elencoFormazione(velo);
+    voceBattute = [];
+    elencoFormazione(velo, j.id);
   }catch(e){ if(es) es.innerHTML = '<p class="attesa">non ci sono riuscito</p>'; }
 }
 function dettaFormazione(velo){
