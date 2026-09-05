@@ -159,6 +159,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 /* i tasti che cambiano scritta tengono una larghezza minima, se no ballano */
 #bAsc{min-width:168px;justify-content:center}
 #bPrendi{min-width:190px;justify-content:center}
+.datario{display:inline-flex;align-items:center;gap:7px;margin-left:4px}
+.datario input{background:var(--ground);border:1px solid var(--line-2);color:var(--ink);font:inherit;font-size:12.5px;padding:8px 10px}
+.datario input:focus{outline:2px solid var(--amber);outline-offset:1px}
+.datario[hidden]{display:none}
 .tasto.prendi[data-stato=squilla]{border-color:var(--sage);background:var(--sage-dim);animation:p 1s infinite}
 .tasto.prendi[data-stato=in-linea]{border-color:var(--brick);background:var(--brick-dim)}
 .tasto.prendi[data-stato=attesa]{opacity:.6}
@@ -349,6 +353,20 @@ let ctx = null, quando = 0, audioWs = null, audioConv = null, fette = 0, suonate
 /* vero quando la voce arriva dal canale diretto dell orecchio invece che dal
    giro lungo attraverso Supabase: cambia quanto cuscinetto serve tenere */
 let diretto = false;
+/* quale richiamo ha il datario aperto e quale sta chiedendo conferma prima di
+   essere cancellato: stanno qui fuori perche la pagina si ridisegna ogni tre
+   secondi, e altrimenti il datario si richiuderebbe da solo mentre uno sceglie */
+let datarioAperto = null, annullaChiesto = null;
+/* dall istante ISO al formato che vuole il campo datario del browser, in ora
+   locale: 2026-09-08T15:30 */
+function perDatario(iso){
+  try{
+    const d = iso ? new Date(iso) : new Date();
+    if(isNaN(d.getTime())) return '';
+    const p = n => String(n).padStart(2,'0');
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());
+  }catch(e){ return ''; }
+}
 let parlato = [], parlatoDb = [], corso = {}, parlatoConv = null, ricon = null, firmaChiuse = '';
 
 /* la conversazione che si scrive mentre si parla */
@@ -976,7 +994,14 @@ function disegna(){
       '</div>'+
       '<div class="rich-fare">'+
         '<button class="tasto" data-chiama="'+esc(x.telefono)+'">Chiama ora</button>'+
-        '<button class="tasto" data-fatto="'+esc(x.id)+'">Fatto</button>'+
+        '<button class="tasto" data-fatto="'+esc(x.id)+'" title="ho telefonato">Fatto</button>'+
+        '<button class="tasto" data-sposta="'+esc(x.id)+'" title="chiamo, ma in un altro momento">Sposta</button>'+
+        '<button class="tasto chiudi" data-annulla="'+esc(x.id)+'" title="non interessa piu: non chiama nessuno">'+
+          (annullaChiesto === String(x.id) ? 'Sicuro?' : 'Cancella')+'</button>'+
+        '<span class="datario"'+(datarioAperto === String(x.id) ? '' : ' hidden')+'>'+
+          '<input type="datetime-local" data-quando="'+esc(x.id)+'" value="'+esc(perDatario(x.quando))+'">'+
+          '<button class="tasto" data-conferma="'+esc(x.id)+'">Sposta qui</button>'+
+        '</span>'+
       '</div>'+
     '</div>').join('')
     : '<p class="vuoto">Nessuno in attesa di essere richiamato.</p>';
@@ -984,6 +1009,41 @@ function disegna(){
   document.querySelectorAll('#corpoRich [data-fatto]').forEach(b => b.onclick = async () => {
     b.disabled = true;
     try{ await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({t: PASS, richiamo_fatto: b.dataset.fatto})}); }catch(e){}
+    tira();
+  });
+  /* SPOSTA: apre il datario su quella riga. La pagina si ridisegna ogni tre
+     secondi, quindi quale datario e aperto va ricordato fuori dal disegno,
+     se no si richiude da solo mentre uno sta scegliendo l ora. */
+  document.querySelectorAll('#corpoRich [data-sposta]').forEach(b => b.onclick = () => {
+    datarioAperto = (datarioAperto === b.dataset.sposta) ? null : b.dataset.sposta;
+    annullaChiesto = null;
+    disegna();
+  });
+  document.querySelectorAll('#corpoRich [data-conferma]').forEach(b => b.onclick = async () => {
+    const id = b.dataset.conferma;
+    const campo = document.querySelector('#corpoRich [data-quando="'+id+'"]');
+    const v = campo && campo.value;
+    if(!v) return;
+    b.disabled = true;
+    try{
+      await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({t: PASS, richiamo_sposta: id, quando: v})});
+    }catch(e){}
+    datarioAperto = null;
+    tira();
+  });
+  /* CANCELLA: due tocchi. Il primo chiede conferma sul tasto stesso, il secondo
+     toglie il richiamo. Non e la stessa cosa di Fatto: qui resta scritto che
+     nessuno ha telefonato, ed e la differenza che conta rileggendo lo storico. */
+  document.querySelectorAll('#corpoRich [data-annulla]').forEach(b => b.onclick = async () => {
+    const id = b.dataset.annulla;
+    if(annullaChiesto !== id){ annullaChiesto = id; datarioAperto = null; disegna(); setTimeout(function(){ if(annullaChiesto === id){ annullaChiesto = null; disegna(); } }, 6000); return; }
+    annullaChiesto = null;
+    b.disabled = true;
+    try{
+      await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({t: PASS, richiamo_annulla: id, motivo: 'tolto dalla regia da ' + (CHI || 'chi era in regia')})});
+    }catch(e){}
     tira();
   });
   document.querySelectorAll('#corpoRich [data-chiama]').forEach(b => b.onclick = async () => {
