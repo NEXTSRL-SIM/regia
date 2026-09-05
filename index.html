@@ -827,6 +827,20 @@ $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
 $('tChiuse').onclick = () => scheda('tChiuse');
+/* si puo entrare anche con il lasciapassare nell indirizzo: serve quando la
+   pagina viene ricaricata forzando e la parola d ordine se ne va con la sessione */
+(function(){
+  try{
+    const u = new URLSearchParams(location.search);
+    const t = u.get('t');
+    if(t){
+      PASS = t;
+      CHI = u.get('chi') || CHI || 'regia';
+      sessionStorage.setItem('regia_pass', PASS);
+      sessionStorage.setItem('regia_chi', CHI);
+    }
+  }catch(e){}
+})();
 if(PASS) apri();
 /* il telefono si accende da solo appena si entra, cosi e gia pronto
    quando serve: senza, il primo passaggio di chiamata perderebbe secondi */
