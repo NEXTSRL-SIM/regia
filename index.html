@@ -512,8 +512,12 @@ function suona(pezzi){
   const s = ctx.createBufferSource();
   s.buffer = buf; s.connect(ctx.destination);
   const ora = ctx.currentTime;
-  /* cuscinetto: se siamo in ritardo o troppo avanti, ci si riallinea */
-  if(quando < ora + 0.10 || quando > ora + 2.0) quando = ora + 0.40;
+  /* CUSCINETTO. Era 0,40 s, e bastava finche l orecchio stava dentro Supabase.
+     Da quando sta sul server di Hostinger il suono fa due salti in piu prima di
+     arrivare qui, e ogni fetta che tarda oltre il cuscinetto lascia un buco e
+     poi un riallineamento: e quello che si sente come parlare a scatti.
+     Adesso si tengono 0,9 s di anticipo: si ascolta un secondo dopo, ma liscio. */
+  if(quando < ora + 0.25 || quando > ora + 3.0) quando = ora + 0.90;
   try{ s.start(quando); suonate++; }catch(e){}
   quando += buf.duration;
 }
@@ -895,6 +899,10 @@ function disegna(){
       (t.vincoli? '<div class="esitov '+(t.semaforo==='verde'?'ok':t.semaforo==='rosso'?'no':'att')+'">'+esc(t.vincoli)+'</div>':'')+
       '<div style="margin-top:'+(t.vincoli?'10px':'0')+'">'+righe([['Falde',t.falde],['Esposizione',t.inclinazione],['Ci stanno',t.moduli],['Potenza',t.potenza],['Produzione',t.produzione],['Verificato',t.verificato||t.analizzato]])+'</div>'+
       (s.posizione_confermata? '<p class="sintesi" style="margin-top:9px">Croce sul tetto confermata dal cliente.</p>':'')+'</div>'+
+    /* le voci trovate dall arricchimento: stavano solo nella scheda che si apre
+       cliccando il nome, e in linea non si vedevano. Sono quelle che servono
+       mentre si parla: zona, immobile, omonimi, allarmi, aziende collegate. */
+    (voci? '<div class="blocco"><p class="etich">Le voci trovate</p>'+righe(Object.entries(voci))+'</div>':'')+
 
     '<div class="blocco"><p class="etich">Sul tavolo</p>'+ (s.prezzo
       ? '<div class="offerta"><div class="prezzo">'+esc(s.prezzo)+'</div><div class="righe">'+esc(s.configurazione||'')+'</div></div>'
