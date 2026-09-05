@@ -343,6 +343,9 @@ let muto = false, tre = false; let ws = null, wsConv = null, battute = [];
    vecchia dell orecchio: due dichiarazioni con lo stesso nome sono un errore di
    sintassi e mandavano in fumo TUTTO lo script, porta compresa. */
 let ctx = null, quando = 0, audioWs = null, audioConv = null, fette = 0, suonate = 0;
+/* vero quando la voce arriva dal canale diretto dell orecchio invece che dal
+   giro lungo attraverso Supabase: cambia quanto cuscinetto serve tenere */
+let diretto = false;
 let parlato = [], parlatoDb = [], corso = {}, parlatoConv = null, ricon = null, firmaChiuse = '';
 
 /* la conversazione che si scrive mentre si parla */
@@ -512,12 +515,17 @@ function suona(pezzi){
   const s = ctx.createBufferSource();
   s.buffer = buf; s.connect(ctx.destination);
   const ora = ctx.currentTime;
-  /* CUSCINETTO. Era 0,40 s, e bastava finche l orecchio stava dentro Supabase.
-     Da quando sta sul server di Hostinger il suono fa due salti in piu prima di
-     arrivare qui, e ogni fetta che tarda oltre il cuscinetto lascia un buco e
-     poi un riallineamento: e quello che si sente come parlare a scatti.
-     Adesso si tengono 0,9 s di anticipo: si ascolta un secondo dopo, ma liscio. */
-  if(quando < ora + 0.25 || quando > ora + 3.0) quando = ora + 0.90;
+  /* CUSCINETTO, quanto anticipo si tiene prima di suonare.
+     Serve a coprire il pacchetto che tarda, quindi va largo quanto il ritardo
+     PEGGIORE, non quanto quello medio: piu il percorso e irregolare, piu deve
+     essere grande, e piu si ascolta in ritardo.
+       - dal canale diretto dell orecchio (un solo collegamento sempre aperto,
+         i pacchetti arrivano regolari come li manda Twilio): 0,30 s.
+       - dal giro lungo (orecchio -> una richiesta HTTP nuova ogni 240 ms verso
+         il Realtime -> edge -> pagina, con la edge che muore ogni 150 s e si
+         riaggancia): 0,90 s, ed e quello che si sentiva a scatti. */
+  const cuscino = diretto ? 0.30 : 0.90;
+  if(quando < ora + (diretto ? 0.08 : 0.25) || quando > ora + 3.0) quando = ora + cuscino;
   try{ s.start(quando); suonate++; }catch(e){}
   quando += buf.duration;
 }
@@ -537,7 +545,17 @@ async function accendiAscolto(c){
   quando = 0;
   try{ if(audioWs) audioWs.close(); }catch(e){}
   audioConv = c;
-  audioWs = new WebSocket(API.replace(/^http/,'ws') + '-audio?ascolta=1&conv=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS));
+  /* IL CANALE DIRETTO. Fino a ieri la voce faceva questo giro: orecchio ->
+     una richiesta HTTP nuova ogni 240 ms verso il Realtime di Supabase ->
+     la vecchia edge regia-audio in ascolto -> questa pagina. Tre salti, e la
+     edge in mezzo veniva spenta ogni centocinquanta secondi con un riaggancio:
+     di qui i buchi e gli scatti. Adesso, se l orecchio offre il suo indirizzo,
+     ci si attacca a lui e basta: un collegamento solo, che dura quanto la
+     telefonata. Se non lo offre - orecchio vecchio, o server irraggiungibile -
+     si torna al giro di prima senza dire niente a nessuno. */
+  const dove = j.diretto || (API.replace(/^http/,'ws') + '-audio?ascolta=1&conv=' + encodeURIComponent(c) + '&t=' + encodeURIComponent(PASS));
+  diretto = Boolean(j.diretto);
+  audioWs = new WebSocket(dove);
   audioWs.onmessage = function(e){
     var m; try{ m = JSON.parse(e.data); }catch(x){ return; }
     if(m.tipo === 'parola' && m.testo){
