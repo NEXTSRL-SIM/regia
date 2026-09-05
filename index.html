@@ -979,8 +979,11 @@ async function elencoFormazione(velo, appena){
           '<time>'+esc(String(x.quando||'').slice(0,16).replace('T',' '))+
           (appena && String(x.id) === String(appena) ? ' &middot; appena messa via' : '')+'</time></div></div>').join('')
       : '<p class="attesa">Ancora nessun insegnamento.</p>';
+    /* si scorre il pannello fin dove sta: il blocco Gia insegnato e in fondo, e
+       con una conversazione lunga sopra finisce fuori dalla finestra - senza
+       questo uno chiude, non vede niente e crede di aver perso tutto */
     const nuova = d.querySelector('.flez.appena');
-    if(nuova) nuova.scrollIntoView({block:'nearest'});
+    if(nuova){ try{ nuova.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){ nuova.scrollIntoView(); } }
   }catch(e){ d.innerHTML = '<p class="attesa">Non riesco a leggere l elenco.</p>'; }
 }
 async function mandaFormazione(velo, conv){
@@ -1011,6 +1014,9 @@ async function mandaFormazione(velo, conv){
       'lo guardiamo insieme quando apre la sessione.</p>';
     if(ta) ta.value = '';
     voceBattute = [];
+    /* lo si dice anche in alto, dove sta guardando: in fondo al pannello
+       potrebbe non arrivarci con l occhio */
+    fVoceStato(velo, j.id ? ('messa via come lezione numero ' + j.id + ' - la trova qui sotto') : 'messa via', false);
     elencoFormazione(velo, j.id);
   }catch(e){ if(es) es.innerHTML = '<p class="attesa">non ci sono riuscito</p>'; }
 }
