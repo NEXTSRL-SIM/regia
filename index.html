@@ -194,6 +194,36 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .suggerisci button svg{display:block}
 .suggerisci button.dett[aria-pressed=true]{border-color:var(--brick);background:var(--brick-dim);color:#F6D9CC}
 .detto{padding:0 20px 10px;font-size:12.5px;color:var(--sage);background:var(--surface-2)}
+/* il modulo dei social: domanda a sinistra in chiaro, il dato a destra in grassetto */
+.chiesto .cq{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:5px 0;border-bottom:1px dotted var(--line)}
+.chiesto .cq:last-child{border-bottom:none}
+.chiesto .cq span{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.chiesto .cq b{font-size:13.5px;font-weight:700;color:var(--ink);text-align:right;flex:0 0 auto;max-width:55%}
+/* il tasto Formazione e il suo pannello */
+.tasto.forma{border-color:var(--line-2)}
+.tasto.forma:hover{border-color:var(--sage);background:var(--sage-dim);color:#DCEFE0}
+.fblocco{padding:16px 18px;border-bottom:1px solid var(--line)}
+.fblocco textarea{width:100%;box-sizing:border-box;background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:10px 12px;font:inherit;font-size:13.5px;line-height:1.5;resize:vertical}
+.fblocco textarea:focus{outline:2px solid var(--amber);outline-offset:1px}
+.frighe{display:flex;gap:9px;margin-top:10px}
+.fesito{margin-top:13px}
+.frisp{margin:0 0 10px;font-size:14px;line-height:1.55;color:var(--ink)}
+.fregola{border-left:2px solid var(--amber);padding:7px 0 7px 11px;margin-bottom:9px}
+.fregola p{margin:0;font-size:13.5px;line-height:1.5}
+.fregola .fperche{color:var(--ink-2);font-size:12.5px;margin-top:5px}
+.fcontrollo{font-size:12.5px;line-height:1.5;padding:8px 11px;border:1px solid var(--line-2);margin-bottom:9px}
+.fcontrollo b{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;margin-right:6px}
+.fcontrollo.nuova{border-color:var(--sage);background:var(--sage-dim)}
+.fcontrollo.contrasta{border-color:var(--brick);background:var(--brick-dim)}
+.fcontrollo.gia_prevista{color:var(--ink-2)}
+.fattesa{margin:0;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.5}
+.flez{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.flez:last-child{border-bottom:none}
+.flez p{margin:0;font-size:13px;line-height:1.45}
+.flez time{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.fstato{font-family:var(--mono);font-size:10px;text-transform:uppercase;padding:2px 6px;border:1px solid var(--line-2);color:var(--ink-3);flex:0 0 auto;height:fit-content}
+.fstato.proposta{border-color:var(--amber);color:var(--amber)}
+.fstato.approvata{border-color:var(--sage);color:var(--sage)}
 .avviso.muto{background:var(--surface-2);color:var(--ink-2)}
 .avviso.tre{background:var(--sage-dim);color:var(--sage)}
 .dx{overflow-y:auto}
@@ -615,6 +645,119 @@ function righe(coppie){
   const b = coppie.filter(x=>x[1]).map(([k,v])=>'<div class="coppia"><dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd></div>').join('');
   return b ? '<dl>'+b+'</dl>' : '<p class="attesa">Non ancora raccolto.</p>';
 }
+/* il modulo compilato sui social: "Domanda?: risposta | Domanda?: risposta".
+   La domanda resta testo, la risposta - il dato - va in grassetto: cosi in un
+   colpo d occhio si leggono 6 kw, si, entro tre mesi, senza rileggere tutto. */
+function chiesto(t){
+  const parti = String(t||'').split('|').map(x=>x.trim()).filter(Boolean);
+  if(!parti.length) return '<p class="attesa">Nessun modulo collegato.</p>';
+  return '<div class="chiesto">'+parti.map(p=>{
+    let d = '', r = '';
+    const m = p.match(/^(.*?\?)\s*:\s*([\s\S]*)$/);
+    if(m){ d = m[1]; r = m[2]; }
+    else { const i = p.indexOf(':'); if(i > 0){ d = p.slice(0,i); r = p.slice(i+1); } else { r = p; } }
+    d = d.replace(/\s*\?\s*$/,'').trim(); r = r.trim();
+    if(!r) return '';
+    return '<div class="cq">'+(d? '<span>'+esc(d)+'</span>':'')+'<b>'+esc(r)+'</b></div>';
+  }).join('')+'</div>';
+}
+
+/* ---- il tasto Formazione ---------------------------------------------------
+   Si preme, gli si racconta a voce o per iscritto come andava gestita la
+   telefonata. Quello che si dice si conserva parola per parola; la edge
+   formazione va a leggere il prompt vivo di Valentino su ElevenLabs, lo
+   confronta con l insegnamento e dice se e cosa nuova, se c era gia, o se
+   litiga con una regola che c e. Poi si ferma: nel prompt non entra niente
+   senza un si esplicito. */
+let riconF = null;
+function apriFormazione(){
+  const v = (stato.vive||[]).find(x=>x.conversazione===sel) || null;
+  const conv = v ? v.conversazione : null;
+  const velo = document.createElement('div');
+  velo.className = 'velo';
+  velo.innerHTML =
+    '<div class="pannello">'+
+      '<div class="testa"><div><h2>Formazione</h2>'+
+        '<p>'+(v? 'sulla telefonata di '+esc(Nome(v.nome)||v.telefono||'') : 'insegnamento generale')+'</p></div>'+
+        '<button class="via" aria-label="chiudi">&times;</button></div>'+
+      '<div class="fblocco"><p class="etich">Come andava gestita</p>'+
+        '<textarea id="fTesto" rows="5" placeholder="Gli parli come parlerebbe a un venditore nuovo. Per esempio: quando il cliente dice che ci deve pensare, non insistere sul prezzo, chiedere che cosa lo trattiene."></textarea>'+
+        '<div class="frighe">'+
+          '<button class="tasto" id="fDetta" aria-pressed="false"><span class="led"></span>Detta a voce</button>'+
+          '<button class="tasto entra" id="fManda">Manda</button>'+
+        '</div>'+
+        '<div class="fesito" id="fEsito"></div>'+
+      '</div>'+
+      '<div class="fblocco"><p class="etich">Gia insegnato</p><div id="fElenco"><p class="attesa">Sto guardando&hellip;</p></div></div>'+
+    '</div>';
+  document.body.appendChild(velo);
+  const via = () => { try{ riconF && riconF.stop(); }catch(e){} riconF = null; velo.remove(); };
+  velo.querySelector('.via').onclick = via;
+  velo.onclick = (e) => { if(e.target === velo) via(); };
+  velo.querySelector('#fDetta').onclick = () => dettaFormazione(velo);
+  velo.querySelector('#fManda').onclick = () => mandaFormazione(velo, conv);
+  const ta = velo.querySelector('#fTesto'); if(ta) ta.focus();
+  elencoFormazione(velo);
+}
+async function elencoFormazione(velo){
+  const d = velo.querySelector('#fElenco'); if(!d) return;
+  try{
+    const r = await fetch(API.replace(/regia$/,'formazione')+'?pass='+encodeURIComponent(PASS)+'&elenco=1');
+    const j = await r.json();
+    const l = (j && j.lezioni) || [];
+    d.innerHTML = l.length
+      ? l.map(x=>'<div class="flez"><span class="fstato '+esc(x.stato||'')+'">'+esc(x.stato||'')+'</span>'+
+          '<div><p>'+esc(x.regola || x.detto || '')+'</p>'+
+          '<time>'+esc(String(x.quando||'').slice(0,16).replace('T',' '))+'</time></div></div>').join('')
+      : '<p class="attesa">Ancora nessun insegnamento.</p>';
+  }catch(e){ d.innerHTML = '<p class="attesa">Non riesco a leggere l elenco.</p>'; }
+}
+async function mandaFormazione(velo, conv){
+  const ta = velo.querySelector('#fTesto');
+  const es = velo.querySelector('#fEsito');
+  const t = ((ta && ta.value) || '').trim();
+  if(t.length < 8){ if(es) es.innerHTML = '<p class="attesa">Mi dica qualcosa di piu.</p>'; return; }
+  if(es) es.innerHTML = '<p class="attesa">Sto ascoltando e confronto con quello che gia sa&hellip;</p>';
+  try{
+    const r = await fetch(API.replace(/regia$/,'formazione'), {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({pass: PASS, testo: t, conversazione: conv, chi: CHI, agente: 'valentino'})});
+    const j = await r.json();
+    if(!j || !j.ok){ if(es) es.innerHTML = '<p class="attesa">'+esc((j && j.errore) || 'non ci sono riuscito')+'</p>'; return; }
+    const nomi = {nuova:'cosa nuova', gia_prevista:'lo sa gia', contrasta:'litiga con una regola'};
+    if(es) es.innerHTML =
+      (j.risposta? '<p class="frisp">'+esc(j.risposta)+'</p>':'')+
+      (j.controllo? '<div class="fcontrollo '+esc(j.esito||'')+'"><b>'+esc(nomi[j.esito]||'controllo')+'</b>'+esc(j.controllo)+'</div>':'')+
+      (j.regola? '<div class="fregola"><p>'+esc(j.regola)+'</p>'+(j.perche? '<p class="fperche">'+esc(j.perche)+'</p>':'')+'</div>':'')+
+      '<p class="fattesa">Segnata come proposta '+(j.id? '#'+esc(String(j.id)):'')+'. Nel prompt di Valentino non e entrato niente: entra solo con un suo si.'+
+      (j.prompt_letto===false? ' Attenzione: il prompt vivo non l ho potuto leggere.':'')+'</p>';
+    if(ta) ta.value = '';
+    elencoFormazione(velo);
+  }catch(e){ if(es) es.innerHTML = '<p class="attesa">non ci sono riuscito</p>'; }
+}
+function dettaFormazione(velo){
+  const b = velo.querySelector('#fDetta');
+  const ta = velo.querySelector('#fTesto');
+  const R = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!R){ if(ta) ta.placeholder = 'questo browser non sa ascoltare: scriva pure'; return; }
+  if(riconF){ try{ riconF.stop(); }catch(e){} riconF = null; if(b) b.setAttribute('aria-pressed','false'); return; }
+  riconF = new R();
+  riconF.lang = 'it-IT'; riconF.interimResults = true; riconF.continuous = true;
+  const prima = ((ta && ta.value) || '').trim();
+  riconF.onresult = (e) => {
+    let t = '';
+    for(let k=0;k<e.results.length;k++) t += e.results[k][0].transcript;
+    if(ta) ta.value = (prima? prima+' ' : '')+t;
+  };
+  riconF.onend = () => { riconF = null; const bb = velo.querySelector('#fDetta'); if(bb) bb.setAttribute('aria-pressed','false'); };
+  riconF.onerror = () => { riconF = null; const bb = velo.querySelector('#fDetta'); if(bb) bb.setAttribute('aria-pressed','false'); };
+  try{ riconF.start(); if(b) b.setAttribute('aria-pressed','true'); }catch(e){}
+}
+/* il banco si ridisegna ogni tre secondi: il tasto si aggancia una volta sola,
+   per delega, cosi non serve riattaccarlo a ogni giro */
+document.addEventListener('click', (e) => {
+  const b = e.target && e.target.closest ? e.target.closest('.tasto.forma') : null;
+  if(b) apriFormazione();
+});
 async function chiudiRiga(c){
   await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({t: PASS, chiudi: c})});
   sel = null; muto = false; tre = false; tira();
@@ -660,6 +803,7 @@ function disegna(){
       '<div class="banco">'+
         '<button class="tasto" disabled><span class="led"></span>Ascolta in silenzio</button>'+
         '<button class="tasto entra" disabled><span class="led"></span>Entra in voce</button>'+
+        '<button class="tasto forma" id="bForm0" title="insegna a Valentino come andava gestita">Formazione</button>'+
         '<button class="tasto chiudi" disabled>Chiudi la linea</button></div>';
     $('dx').innerHTML =
       '<div class="titolo"><h2>La sua pratica</h2><span class="conta">a riposo</span></div>'+
@@ -703,6 +847,7 @@ function disegna(){
     '<div class="banco">'+
       '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>'+(muto?'Audio acceso':'Senti la voce')+'</button>'+
       '<button class="tasto entra" id="bEnt" disabled title="serve il ponte telefonico: non e ancora possibile"><span class="led"></span>Entra in voce <em>presto</em></button>'+
+      '<button class="tasto forma" id="bForm" title="insegna a Valentino come andava gestita">Formazione</button>'+
       '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">Prendo io la chiamata</button>'+
       '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
     '</div>';
@@ -745,8 +890,7 @@ function disegna(){
       esc(t.vincoli || "Non ancora verificati")+'</span></div>'+
     '<div class="blocco"><p class="etich">Chi e</p>'+
       (s.sintesi? '<p class="sintesi">'+esc(corto(s.sintesi,320))+'</p>' : '<p class="attesa">Nessun ritratto del contatto.</p>')+'</div>'+
-    '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
-      (s.cosa_ha_risposto? '<p class="sintesi">'+esc(corto(s.cosa_ha_risposto,200))+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+'</div>'+
+    '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+chiesto(s.cosa_ha_risposto)+'</div>'+
     '<div class="blocco"><p class="etich">Il tetto</p>'+
       (t.vincoli? '<div class="esitov '+(t.semaforo==='verde'?'ok':t.semaforo==='rosso'?'no':'att')+'">'+esc(t.vincoli)+'</div>':'')+
       '<div style="margin-top:'+(t.vincoli?'10px':'0')+'">'+righe([['Falde',t.falde],['Esposizione',t.inclinazione],['Ci stanno',t.moduli],['Potenza',t.potenza],['Produzione',t.produzione],['Verificato',t.verificato||t.analizzato]])+'</div>'+
@@ -768,7 +912,7 @@ function disegna(){
     '<p class="occhio">Arricchimento del contatto - '+esc(v.dove||'')+' - '+esc(v.fonte||'')+'</p>'+
     (s.sintesi? '<div class="carta"><h4>La sintesi</h4><p class="sintesi">'+esc(s.sintesi)+'</p></div>':'')+
     (voci? '<div class="carta"><h4>Le voci trovate</h4>'+righe(Object.entries(voci))+'</div>':'')+
-    (s.cosa_ha_risposto? '<div class="carta"><h4>Il modulo, per intero</h4><p class="sintesi">'+esc(s.cosa_ha_risposto)+'</p></div>':'')+
+    (s.cosa_ha_risposto? '<div class="carta"><h4>Il modulo, per intero</h4>'+chiesto(s.cosa_ha_risposto)+'</div>':'')+
     '<div class="carta"><h4>Il contatto</h4>'+righe([['Comune',s.dove],['Indirizzo',s.indirizzo],['Provincia',s.provincia],['Campagna',s.campagna],['Quando ha chiesto',(s.quando_ha_chiesto||'').slice(0,16).replace('T',' ')],['Stato',s.stato],['Non disturbare', s.non_disturbare? 'si':'']])+'</div>';
   }
 
@@ -845,8 +989,7 @@ async function apriCliente(tel){
         '<p>'+esc(tel)+(d.dove? ' &middot; '+esc(d.dove):'')+' &middot; '+(d.quante||0)+' telefonate</p></div>'+
         '<button class="via" aria-label="chiudi">&times;</button></div>'+
       (s.sintesi? '<div class="blocco"><p class="etich">Chi e</p><p class="sintesi">'+esc(s.sintesi)+'</p></div>':'')+
-      '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+
-        (s.cosa_ha_risposto? '<p class="sintesi">'+esc(s.cosa_ha_risposto)+'</p>' : '<p class="attesa">Nessun modulo collegato.</p>')+'</div>'+
+      '<div class="blocco"><p class="etich">Cosa ha chiesto</p>'+chiesto(s.cosa_ha_risposto)+'</div>'+
       '<div class="blocco"><p class="etich">Il tetto</p>'+
         (t.vincoli? '<div class="esitov '+(t.semaforo==="verde"?"ok":t.semaforo==="rosso"?"no":"att")+'">'+esc(t.vincoli)+'</div>':'')+
         righe([['Falde',t.falde],['Esposizione',t.inclinazione],['Ci stanno',t.moduli],['Potenza',t.potenza],['Produzione',t.produzione],['Verificato',t.verificato||t.analizzato]])+'</div>'+
