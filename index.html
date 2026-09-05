@@ -232,6 +232,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .fstato.proposta{border-color:var(--amber);color:var(--amber)}
 .fstato.approvata{border-color:var(--sage);color:var(--sage)}
 .flez.appena{border-left:2px solid var(--sage);padding-left:10px;background:var(--sage-dim)}
+.flez-corpo{flex:1 1 auto;min-width:0}
+.flez-corpo p{margin:0;font-size:13px;line-height:1.45}
+.flez-tutto{margin-top:8px;padding:9px 11px;background:var(--ground);border:1px solid var(--line-2);font-size:12.5px;line-height:1.55;white-space:pre-wrap;max-height:320px;overflow-y:auto}
+.flez-piu{flex:0 0 auto;width:24px;height:24px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-2);font-size:15px;line-height:1;align-self:flex-start}
+.flez-piu:hover{border-color:var(--amber);color:var(--amber)}
+.flez.aperta{background:var(--surface-2)}
 .flez.appena time{color:var(--sage)}
 /* la formazione a voce */
 .fspiega{margin:0 0 11px;font-size:12.5px;line-height:1.55;color:var(--ink-2)}
@@ -972,13 +978,37 @@ async function elencoFormazione(velo, appena){
     /* la lezione appena messa via si vede subito, in cima e in evidenza: chi
        chiude il collegamento deve capire a colpo d occhio che e andata, senza
        doverlo chiedere a nessuno */
+    /* COMPATTATE. Una conversazione di dieci minuti sono ottomila caratteri:
+       tre formazioni e l elenco diventa illeggibile. Si mostra una riga sola -
+       la sintesi se c e, se no l inizio di quello che ci si e detti - e il piu
+       apre tutto per chi vuole rileggere. */
+    const corto = (s, n) => { s = String(s||'').replace(/\s+/g,' ').trim(); return s.length > n ? s.slice(0, n) + '...' : s; };
     d.innerHTML = l.length
-      ? l.map(x=>'<div class="flez'+(appena && String(x.id) === String(appena) ? ' appena' : '')+'">'+
-          '<span class="fstato '+esc(x.stato||'')+'">'+esc(x.stato||'')+'</span>'+
-          '<div><p>'+esc(x.regola || x.detto || '')+'</p>'+
-          '<time>'+esc(String(x.quando||'').slice(0,16).replace('T',' '))+
-          (appena && String(x.id) === String(appena) ? ' &middot; appena messa via' : '')+'</time></div></div>').join('')
+      ? l.map(x=>{
+          const intero = String(x.detto || '');
+          const riga = x.regola ? String(x.regola) : intero;
+          const lungo = intero.length > 220;
+          return '<div class="flez'+(appena && String(x.id) === String(appena) ? ' appena' : '')+'">'+
+            '<span class="fstato '+esc(x.stato||'')+'">'+esc(x.stato||'')+'</span>'+
+            '<div class="flez-corpo">'+
+              '<p>'+esc(corto(riga, 200))+'</p>'+
+              (lungo? '<div class="flez-tutto" hidden>'+esc(intero)+'</div>':'')+
+              '<time>'+esc(String(x.quando||'').slice(0,16).replace('T',' '))+
+              (appena && String(x.id) === String(appena) ? ' &middot; appena messa via' : '')+
+              (lungo? ' &middot; '+Math.round(intero.length/1000)+' mila caratteri' : '')+'</time>'+
+            '</div>'+
+            (lungo? '<button class="flez-piu" data-apri="'+esc(String(x.id))+'" title="leggi tutto">+</button>' : '')+
+          '</div>';
+        }).join('')
       : '<p class="attesa">Ancora nessun insegnamento.</p>';
+    d.querySelectorAll('[data-apri]').forEach(b => b.onclick = () => {
+      const riga = b.closest('.flez');
+      const tutto = riga && riga.querySelector('.flez-tutto');
+      if(!tutto) return;
+      tutto.hidden = !tutto.hidden;
+      b.textContent = tutto.hidden ? '+' : '−';
+      riga.classList.toggle('aperta', !tutto.hidden);
+    });
     /* si scorre il pannello fin dove sta: il blocco Gia insegnato e in fondo, e
        con una conversazione lunga sopra finisce fuori dalla finestra - senza
        questo uno chiude, non vede niente e crede di aver perso tutto */
