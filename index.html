@@ -156,6 +156,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .tasto.entra[aria-pressed=true]{border-color:var(--sage);background:var(--sage-dim);color:#DCEFE0}
 .tasto.entra[aria-pressed=true] .led{background:var(--sage);box-shadow:0 0 6px var(--sage)}
 .tasto.prendi{margin-left:auto}
+/* i tasti che cambiano scritta tengono una larghezza minima, se no ballano */
+#bAsc{min-width:168px;justify-content:center}
+#bPrendi{min-width:190px;justify-content:center}
 .tasto.prendi[data-stato=squilla]{border-color:var(--sage);background:var(--sage-dim);animation:p 1s infinite}
 .tasto.prendi[data-stato=in-linea]{border-color:var(--brick);background:var(--brick-dim)}
 .tasto.prendi[data-stato=attesa]{opacity:.6}
@@ -354,7 +357,19 @@ function dipingiParlato(){
   const vivo = (audioWs && audioWs.readyState === 1);
   /* le battute arrivano dai dati, scritte in archivio mentre si parla: il tubo
      dell audio serve solo per la voce, e per le parole non ancora archiviate */
-  const righe = parlatoDb.length ? parlatoDb : parlato;
+  /* LE DUE FONTI SI SOMMANO, NON SI ESCLUDONO. Prima era
+       parlatoDb.length ? parlatoDb : parlato
+     cioe: appena arrivava la prima battuta dall archivio, quelle in diretta
+     venivano buttate via - e l archivio la pagina lo rilegge ogni tre secondi.
+     Risultato: le parole comparivano sempre con quel ritardo, anche adesso che
+     arrivano dall orecchio nell istante in cui Scribe le chiude. Adesso si
+     mostra l archivio PIU le battute dal vivo che l archivio non ha ancora. */
+  let righe = parlatoDb;
+  if(parlato.length){
+    const gia = new Set(parlatoDb.slice(-40).map(function(b){ return (b.chi||'')+'|'+String(b.testo||'').trim(); }));
+    const code = parlato.filter(function(b){ return !gia.has((b.chi||'')+'|'+String(b.testo||'').trim()); });
+    if(code.length) righe = parlatoDb.concat(code);
+  }
   const inCorso = ['cliente','valentino'].filter(k => corso[k]).map(k =>
     '<div class="bt '+k+' corso"><span class="chi">'+(k==='cliente'?'Cliente':'Valentino')+'</span><span>'+esc(corso[k])+'</span></div>').join('');
   p.innerHTML =
@@ -569,8 +584,14 @@ async function accendiAscolto(c){
     if(m.tipo === 'audio' && (m.cliente || m.valentino)){
       fette++;
       suona(m);
+      /* IL CONTATORE NON STA PIU DENTRO IL TASTO. Scriveva li dentro fette e
+         pezzi suonati quattro volte al secondo: il testo cambiava, il tasto
+         cambiava larghezza, e chi voleva premerlo si trovava il bersaglio che
+         si muoveva sotto il dito - bisognava insistere, o prenderlo di lato.
+         Il conto serviva a me per capire se l audio scorreva, non a chi lavora:
+         adesso sta nel suggerimento che compare passandoci sopra. */
       const b = document.getElementById('bAsc');
-      if(b) b.innerHTML = '<span class="led"></span>In ascolto &middot; ' + fette + '/' + suonate;
+      if(b) b.title = 'fette ricevute ' + fette + ', suonate ' + suonate + (diretto ? ' - canale diretto' : ' - giro lungo');
     }
   };
   audioWs.onclose = function(){
