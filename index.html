@@ -15,8 +15,32 @@
 :root[data-tema="chiaro"] .esitov.att,:root[data-tema="chiaro"] .vincoli.att{color:#5A3D06}
 :root[data-tema="chiaro"] .esitov.no,:root[data-tema="chiaro"] .vincoli.no{color:#6E2610}
 :root[data-tema="chiaro"] .banda.rosso,:root[data-tema="chiaro"] .banda.giallo,:root[data-tema="chiaro"] .banda.verde{color:var(--ink)}
+/* nel tema chiaro i colori tenui sparivano: qui si caricano, senza cambiare
+   la forma di niente - solo il colore, come chiesto */
+:root[data-tema="chiaro"] .spia.verde{background:#0F7A3D;box-shadow:0 0 0 2px #CFEBD8}
+:root[data-tema="chiaro"] .spia.giallo{background:#B5750A;box-shadow:0 0 0 2px #F6E7C4}
+:root[data-tema="chiaro"] .spia.rosso{background:#C0391A;box-shadow:0 0 0 2px #F8D9CE}
+:root[data-tema="chiaro"] .l-flash.verde{color:#0F5C30}
+:root[data-tema="chiaro"] .l-flash.giallo{color:#8A5405}
+:root[data-tema="chiaro"] .l-flash.rosso{color:#96280C}
+:root[data-tema="chiaro"] .linea[aria-current=true]{box-shadow:inset 3px 0 0 #B5750A}
+:root[data-tema="chiaro"] .banda.verde{background:#DAEFE1;box-shadow:inset 4px 0 0 #0F7A3D}
+:root[data-tema="chiaro"] .banda.verde .bollo{background:#0F7A3D}
+:root[data-tema="chiaro"] .banda.giallo{background:#FBEFD3;box-shadow:inset 4px 0 0 #B5750A}
+:root[data-tema="chiaro"] .banda.giallo .bollo{background:#B5750A}
+:root[data-tema="chiaro"] .banda.rosso{background:#FADFD5;box-shadow:inset 4px 0 0 #C0391A}
+:root[data-tema="chiaro"] .banda.rosso .bollo{background:#C0391A}
+:root[data-tema="chiaro"] .sal{border-left-width:3px}
+:root[data-tema="chiaro"] .sal.verde{border-left-color:#0F7A3D}
+:root[data-tema="chiaro"] .sal.giallo{border-left-color:#B5750A}
+:root[data-tema="chiaro"] .sal.rosso{border-left-color:#C0391A;}
+:root[data-tema="chiaro"] .sal.rosso span{color:#96280C}
+:root[data-tema="chiaro"] .vincoli.ok .bollo{background:#0F7A3D}
+:root[data-tema="chiaro"] .vincoli.att .bollo{background:#B5750A}
+:root[data-tema="chiaro"] .vincoli.no .bollo{background:#C0391A}
 .tema{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid currentColor;padding:2px 8px;opacity:.85}
 .tema:hover{opacity:1}
+#bPieno{margin-left:8px}
 *{box-sizing:border-box}html,body{margin:0}
 body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{color:inherit}
@@ -224,7 +248,7 @@ audio{width:230px;height:34px;vertical-align:middle}
  </form>
 </div>
 <div id="dentro" class="nascosto">
- <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><button class="tema" id="bTema">chiara</button></div>
+ <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
  <div class="schede">
   <button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button>
   <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
@@ -518,6 +542,23 @@ function tema(v){
   try{ v = localStorage.getItem('regia_tema') || 'scuro'; }catch(e){}
   tema(v);
 })();
+/* a tutto schermo: la regia si guarda meglio senza le barre del browser
+   intorno, e su un monitor grande o su un tablet il telaio si ridistribuisce
+   da solo perche le colonne sono elastiche */
+function schermoPieno(){
+  const d = document.documentElement;
+  try{
+    if(!document.fullscreenElement){
+      (d.requestFullscreen || d.webkitRequestFullscreen).call(d);
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    }
+  }catch(e){}
+}
+document.addEventListener('fullscreenchange', function(){
+  const b = document.getElementById('bPieno');
+  if(b) b.textContent = document.fullscreenElement ? 'esci' : 'tutto schermo';
+});
 const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 const esc = t => String(t==null?'':t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const corto = (t,n) => { t = String(t||''); return t.length>n ? t.slice(0,n-1)+'…' : t; };
@@ -814,6 +855,7 @@ function scheda(q){
   $('vChiuse').classList.toggle('nascosto', q!=='tChiuse');
 }
 $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema') === 'chiaro' ? 'scuro' : 'chiaro');
+$('bPieno').onclick = () => schermoPieno();
 $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
