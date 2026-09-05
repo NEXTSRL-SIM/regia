@@ -749,12 +749,16 @@ let riconF = null;
    il biglietto a formazione-voce, che glielo da gia firmato e con dentro le
    istruzioni vive di Valentino da passare all allievo come materiale. */
 let vocePronta = null;
+/* quello che ci si e detti a voce, tenuto qui perche il tasto Manda possa
+   spedirlo anche se l allievo si dimentica di depositarlo da solo */
+let voceBattute = [];
 
 function fVoceStato(velo, testo, acceso){
   const s = velo.querySelector('#fStato');
   if(s){ s.textContent = testo; s.className = 'fstatovoce' + (acceso ? ' acceso' : ''); }
 }
 function fRiga(velo, chi, testo){
+  voceBattute.push({chi: chi, testo: testo});
   const d = velo.querySelector('#fParlato'); if(!d) return;
   const r = document.createElement('div');
   r.className = 'bt ' + (chi === 'io' ? 'cliente' : 'valentino');
@@ -764,6 +768,7 @@ function fRiga(velo, chi, testo){
 }
 async function accendiVoce(velo){
   if(vocePronta){ spegniVoce(); return; }
+  voceBattute = [];
   fVoceStato(velo, 'apro il microfono...', false);
   let j;
   try{
@@ -927,9 +932,11 @@ function apriFormazione(){
         '<div class="fstatovoce" id="fStato"></div>'+
         '<div class="fparlato" id="fParlato"></div>'+
       '</div>'+
-      '<div class="fblocco"><p class="etich">Oppure scriva</p>'+
+      '<div class="fblocco"><p class="etich">Poi lo manda a Claude</p>'+
+        '<p class="fspiega">Il tasto manda quello che c e: la conversazione appena fatta a voce, '+
+        'e in piu quello che scrive qui sotto se vuole aggiungere qualcosa.</p>'+
         '<textarea id="fTesto" rows="3" placeholder="Se preferisce scrivere, o se il microfono non va."></textarea>'+
-        '<div class="frighe"><button class="tasto" id="fManda">Manda</button></div>'+
+        '<div class="frighe"><button class="tasto entra" id="fManda">Manda a Claude</button></div>'+
         '<div class="fesito" id="fEsito"></div>'+
       '</div>'+
       '<div class="fblocco"><p class="etich">Gia insegnato</p><div id="fElenco"><p class="attesa">Sto guardando&hellip;</p></div></div>'+
@@ -958,12 +965,23 @@ async function elencoFormazione(velo){
 async function mandaFormazione(velo, conv){
   const ta = velo.querySelector('#fTesto');
   const es = velo.querySelector('#fEsito');
-  const t = ((ta && ta.value) || '').trim();
-  if(t.length < 8){ if(es) es.innerHTML = '<p class="attesa">Mi dica qualcosa di piu.</p>'; return; }
-  if(es) es.innerHTML = '<p class="attesa">Sto ascoltando e confronto con quello che gia sa&hellip;</p>';
+  const scritto = ((ta && ta.value) || '').trim();
+  /* MANDA QUELLO CHE C E. Se ha parlato con l allievo, quello che conta e la
+     conversazione: e il gesto naturale premere Manda dopo aver parlato, e non
+     deve dipendere dal fatto che l allievo si ricordi di depositarla da solo.
+     Il riquadro scritto resta per chi preferisce scrivere, o si somma. */
+  const aVoce = voceBattute.length
+    ? voceBattute.map(function(b){ return (b.chi === 'io' ? 'SANTE: ' : 'ALLIEVO: ') + b.testo; }).join('\n')
+    : '';
+  const t = [aVoce, scritto ? (aVoce ? '\n\nAGGIUNTO PER ISCRITTO:\n' + scritto : scritto) : ''].filter(Boolean).join('');
+  if(t.length < 8){
+    if(es) es.innerHTML = '<p class="attesa">Non c e ancora niente da mandare: parli con l allievo, oppure scriva qui sotto.</p>';
+    return;
+  }
+  if(es) es.innerHTML = '<p class="attesa">Sto mettendo via&hellip;</p>';
   try{
     const r = await fetch(API.replace(/regia$/,'formazione'), {method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({pass: PASS, testo: t, conversazione: conv, chi: CHI, agente: 'valentino'})});
+      body: JSON.stringify({pass: PASS, conversazione_testo: t, conversazione: conv, chi: CHI, agente: 'valentino'})});
     const j = await r.json();
     if(!j || !j.ok){ if(es) es.innerHTML = '<p class="attesa">'+esc((j && j.errore) || 'non ci sono riuscito')+'</p>'; return; }
     if(es) es.innerHTML =
