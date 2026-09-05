@@ -237,6 +237,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .flez-tutto{margin-top:8px;padding:9px 11px;background:var(--ground);border:1px solid var(--line-2);font-size:12.5px;line-height:1.55;white-space:pre-wrap;max-height:320px;overflow-y:auto}
 .flez-piu{flex:0 0 auto;width:24px;height:24px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-2);font-size:15px;line-height:1;align-self:flex-start}
 .flez-piu:hover{border-color:var(--amber);color:var(--amber)}
+.flez-corpo p.ftitolo{font-weight:600;color:var(--ink)}
+.ftag{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.ftag span{font-family:var(--mono);font-size:10px;text-transform:lowercase;padding:2px 6px;border:1px solid var(--line-2);color:var(--ink-3);white-space:nowrap}
+.flez.aperta .ftag span{border-color:var(--line);color:var(--ink-2)}
 .flez.aperta{background:var(--surface-2)}
 .flez.appena time{color:var(--sage)}
 /* la formazione a voce */
@@ -982,22 +986,31 @@ async function elencoFormazione(velo, appena){
        tre formazioni e l elenco diventa illeggibile. Si mostra una riga sola -
        la sintesi se c e, se no l inizio di quello che ci si e detti - e il piu
        apre tutto per chi vuole rileggere. */
+    /* LA REGOLA E UNIVOCA: l etichetta c e sempre. La scrive la funzione
+       formazione al momento del deposito - una riga di titolo piu i tag degli
+       argomenti - e serve solo a RITROVARE la lezione, non a giudicarla. Qui
+       si mostra quella, mai il testo intero: il testo intero sta sotto il piu,
+       per chi vuole rileggere. Se una vecchia lezione non ha l etichetta si
+       ripiega sull inizio del parlato, ma e un ripiego, non la regola. */
     const corto = (s, n) => { s = String(s||'').replace(/\s+/g,' ').trim(); return s.length > n ? s.slice(0, n) + '...' : s; };
     d.innerHTML = l.length
       ? l.map(x=>{
           const intero = String(x.detto || '');
-          const riga = x.regola ? String(x.regola) : intero;
-          const lungo = intero.length > 220;
+          const testa  = x.titolo ? String(x.titolo) : corto(x.regola || intero, 150);
+          const tag    = Array.isArray(x.tag) ? x.tag : [];
+          const mila   = intero.length >= 1000 ? Math.round(intero.length/1000)+' mila caratteri'
+                       : intero.length+' caratteri';
           return '<div class="flez'+(appena && String(x.id) === String(appena) ? ' appena' : '')+'">'+
             '<span class="fstato '+esc(x.stato||'')+'">'+esc(x.stato||'')+'</span>'+
             '<div class="flez-corpo">'+
-              '<p>'+esc(corto(riga, 200))+'</p>'+
-              (lungo? '<div class="flez-tutto" hidden>'+esc(intero)+'</div>':'')+
+              '<p class="ftitolo">'+esc(testa)+'</p>'+
+              (tag.length? '<div class="ftag">'+tag.map(t=>'<span>'+esc(String(t))+'</span>').join('')+'</div>' : '')+
+              '<div class="flez-tutto" hidden>'+esc(intero)+'</div>'+
               '<time>'+esc(String(x.quando||'').slice(0,16).replace('T',' '))+
               (appena && String(x.id) === String(appena) ? ' &middot; appena messa via' : '')+
-              (lungo? ' &middot; '+Math.round(intero.length/1000)+' mila caratteri' : '')+'</time>'+
+              ' &middot; '+mila+'</time>'+
             '</div>'+
-            (lungo? '<button class="flez-piu" data-apri="'+esc(String(x.id))+'" title="leggi tutto">+</button>' : '')+
+            '<button class="flez-piu" data-apri="'+esc(String(x.id))+'" title="leggi tutto quello che vi siete detti">+</button>'+
           '</div>';
         }).join('')
       : '<p class="attesa">Ancora nessun insegnamento.</p>';
