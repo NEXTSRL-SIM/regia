@@ -787,8 +787,19 @@ async function accendiVoce(velo){
 
   const ws = new WebSocket(j.url);
   let quando = 0, chiuso = false;
+  /* I PEZZI DI VOCE GIA MESSI IN CODA. Servono perche quando lo si interrompe
+     bisogna ZITTIRLI: l audio schedulato continua a suonare per conto suo anche
+     dopo che ElevenLabs ha detto all agente di tacere, e mentre quello finisce
+     arriva la risposta nuova - ed e cosi che si sentono due Valentino insieme. */
+  let inCoda = [];
+  function zittisci(){
+    for(const s of inCoda){ try{ s.stop(); }catch(e){} try{ s.disconnect(); }catch(e){} }
+    inCoda = [];
+    quando = 0;
+  }
   vocePronta = { chiudi(){
     chiuso = true;
+    zittisci();
     try{ ws.close(); }catch(e){}
     try{ flusso.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
     try{ inCtx.close(); outCtx.close(); }catch(e){}
@@ -841,10 +852,14 @@ async function accendiVoce(velo){
         if(quando < ora + 0.05) quando = ora + 0.12;
         src.start(quando);
         quando += buf.duration;
+        /* si tiene il filo di cosa sta suonando, per poterlo zittire */
+        inCoda.push(src);
+        src.onended = () => { const i = inCoda.indexOf(src); if(i >= 0) inCoda.splice(i, 1); };
       }catch(x){}
       return;
     }
-    if(m.type === 'interruption'){ quando = 0; return; }
+    /* lo hanno interrotto: quello che aveva gia in bocca non deve uscire */
+    if(m.type === 'interruption'){ zittisci(); return; }
     if(m.type === 'user_transcript'){
       const t = m.user_transcription_event && m.user_transcription_event.user_transcript;
       if(t) fRiga(velo, 'io', t);
