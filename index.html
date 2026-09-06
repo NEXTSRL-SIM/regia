@@ -553,9 +553,13 @@ tr.fatta td{opacity:.55}
 .stz{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line-2);padding:2px 6px;color:var(--ink-3);white-space:nowrap}
 .stz.approvata{color:var(--sage);border-color:var(--sage)}
 .stz.scartata{color:var(--brick);border-color:var(--brick)}
+.stz{min-width:78px;text-align:center;letter-spacing:.07em;line-height:1.7}
 .scartateBox{border-top:1px dashed var(--line-2);margin-top:12px;padding-top:10px}
-.scartata{display:flex;gap:9px;align-items:baseline;font-size:12px;color:var(--ink-3);padding:4px 0}
-.scartata span{flex:1 1 auto;text-decoration:line-through}
+/* si chiamava .scartata come lo STATO, e vinceva sulle etichette .fstato e
+   .stz che portano la stessa parola: quelle diventavano blocchi flex grigi a
+   tutta larghezza invece di riquadri. Il nome dice la riga, non lo stato. */
+.rigaScartata{display:flex;gap:9px;align-items:baseline;font-size:12px;color:var(--ink-3);padding:4px 0}
+.rigaScartata span{flex:1 1 auto;text-decoration:line-through}
 .impTesta{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
 .impTesta h4{margin:0}
 .impTesta .mono{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
@@ -2444,7 +2448,7 @@ async function caricaImparato(){
             '<span>'+esc(z.titolo || String(z.regola||'').slice(0,140) || 'senza titolo')+'</span></div>').join("")+
           '</div>' : "")+
       (sc.length ? '<div class="scartateBox"><p class="etich">Scartate ('+sc.length+')</p>'+sc.map(s =>
-        '<div class="scartata"><span>'+esc(String(s.testo||"").slice(0,180))+'</span>'+
+        '<div class="rigaScartata"><span>'+esc(String(s.testo||"").slice(0,180))+'</span>'+
         '<button class="minif" data-rimetti="'+esc(s.tipo)+':'+s.id+'">rimetti</button></div>').join("")+'</div>' : "")+
     '</div>';
   }).join("");
