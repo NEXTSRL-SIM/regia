@@ -231,6 +231,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}a{c
 .fstato{font-family:var(--mono);font-size:10px;text-transform:uppercase;padding:2px 6px;border:1px solid var(--line-2);color:var(--ink-3);flex:0 0 auto;height:fit-content}
 .fstato.proposta{border-color:var(--amber);color:var(--amber)}
 .fstato.approvata{border-color:var(--sage);color:var(--sage)}
+/* scartata era rimasta senza regola: stesso riquadro dell approvata, in rosso.
+   E tutti e tre della stessa misura, se no la colonna balla */
+.fstato.scartata{border-color:var(--brick);color:var(--brick)}
+.fstato{min-width:78px;text-align:center;letter-spacing:.07em;line-height:1.7}
+.flez-x{flex:0 0 auto;width:24px;height:24px;line-height:1;color:var(--ink-3);border:1px solid transparent;background:none;font-size:15px}
+.flez-x:hover{color:var(--brick);border-color:var(--brick)}
+.flez-x.su:hover{color:var(--sage);border-color:var(--sage)}
 .flez.appena{border-left:2px solid var(--sage);padding-left:10px;background:var(--sage-dim)}
 .flez-corpo{flex:1 1 auto;min-width:0}
 .flez-corpo p{margin:0;font-size:13px;line-height:1.45}
@@ -1622,9 +1629,37 @@ async function elencoFormazione(velo, appena){
               ' &middot; '+mila+'</time>'+
             '</div>'+
             '<button class="flez-piu" data-apri="'+esc(String(x.id))+'" title="leggi tutto quello che vi siete detti">+</button>'+
+            /* finche e una proposta si puo buttare da qui: le prove a volte
+               depositano lezioni che nessuno ha insegnato, e toglierle deve
+               essere un gesto da regia. Approvare no: quello si decide in
+               sessione. */
+            (String(x.stato||'') === 'proposta'
+              ? '<button class="flez-x" data-butta="'+esc(String(x.id))+'" title="scarta questa proposta">&times;</button>'
+              : (String(x.stato||'') === 'scartata'
+                 ? '<button class="flez-x su" data-rimetti-lez="'+esc(String(x.id))+'" title="rimettila fra le proposte">&#8630;</button>'
+                 : ''))+
           '</div>';
         }).join('')
       : '<p class="attesa">Ancora nessun insegnamento.</p>';
+    d.querySelectorAll('[data-butta]').forEach(b => b.onclick = async () => {
+      const riga = b.closest('.flez');
+      const che = riga && riga.querySelector('.ftitolo');
+      if(!confirm('Scarto questa proposta?\n\n'+((che && che.textContent) || '')+'\n\nResta scritta con sopra "scartata", e da qui la puoi rimettere.')) return;
+      b.disabled = true;
+      try{
+        await fetch(RAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ t: PASS, chi: CHI, lezione: { id: Number(b.dataset.butta), stato: 'scartata' } }) });
+      }catch(e){ b.disabled = false; return; }
+      elencoFormazione(velo); contaLezioni();
+    });
+    d.querySelectorAll('[data-rimetti-lez]').forEach(b => b.onclick = async () => {
+      b.disabled = true;
+      try{
+        await fetch(RAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ t: PASS, chi: CHI, lezione: { id: Number(b.dataset.rimettiLez), stato: 'proposta' } }) });
+      }catch(e){ b.disabled = false; return; }
+      elencoFormazione(velo); contaLezioni();
+    });
     d.querySelectorAll('[data-apri]').forEach(b => b.onclick = () => {
       const riga = b.closest('.flez');
       const tutto = riga && riga.querySelector('.flez-tutto');
