@@ -420,7 +420,10 @@ audio{width:230px;height:34px;vertical-align:middle}
 tr.inlinea td{background:var(--sage-dim)!important}
 tr.fatta td{opacity:.55}
 .titoloArch{font-family:var(--display);font-weight:600;font-size:19px;margin:30px 0 4px}
-.fogli{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:14px}
+.fogli{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:1100px){.fogli{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:820px){.fogli{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.fogli{grid-template-columns:1fr}}
 .foglioA4{background:var(--surface);border:1px solid var(--line-2);aspect-ratio:1/1.414;display:flex;flex-direction:column;padding:15px;position:relative;overflow:hidden}
 .foglioA4:hover{border-color:var(--amber)}
 .foglioA4 .dataF{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
@@ -464,7 +467,8 @@ tr.fatta td{opacity:.55}
  <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
  <div class="schede">
   <button class="st" id="tCont">Contatti <span id="nCont">0</span></button>
-  <button class="st" id="tListe">Liste <span id="nListe">0</span></button>
+  <button class="st" id="tListe">Lista di oggi <span id="nListe">0</span></button>
+  <button class="st" id="tArch">Archivio liste <span id="nArch">0</span></button>
   <button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button>
   <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
   <button class="st" id="tRich" aria-selected="false">Da richiamare <span id="nRich">0</span></button>
@@ -584,8 +588,10 @@ tr.fatta td{opacity:.55}
      <thead><tr><th style="width:84px">Ordine</th><th>Chi</th><th>Punteggio</th><th>Vincoli</th><th>Dove</th>
        <th>Registro</th><th>Stato</th><th>Esito</th><th></th></tr></thead>
      <tbody id="cCorpoLista"></tbody></table></div>
-   <h2 class="titoloArch">Archivio delle liste</h2>
-   <p class="occhio">Ogni lista messa via resta qui come un foglio: chi c era, cosa e successo, quando.</p>
+ </div></div>
+ <div id="vArch" class="nascosto"><div class="foglio">
+   <h1>Archivio delle liste</h1>
+   <p class="occhio">Ogni lista e un foglio: chi c era, cosa e successo, quando. Quelle in lavorazione stanno in cima con la fascetta accesa; premi un foglio per riaprirlo e continuare a lavorarci.</p>
    <div class="fogli" id="cFogli"></div>
  </div></div>
 <script src="https://sdk.twilio.com/js/voice/releases/2.11.0/twilio.min.js"></script>
@@ -1686,6 +1692,7 @@ async function cCaricaListe(){
       const a = cListe.find(l => l.stato === 'aperta'); cListaId = a ? a.id : null;
     }
     if($('nListe')) $('nListe').textContent = cListe.filter(l => l.stato === 'aperta').reduce((s,l) => s + (l.in_lista||0), 0);
+    if($('nArch')) $('nArch').textContent = cListe.length;
     if(cListaId) await cCaricaLista(cListaId); else { cListaRighe = []; cDisegnaLista(); }
   }catch(e){}
 }
@@ -1945,9 +1952,11 @@ document.addEventListener('change', async (e) => {
   if(e.target.id === 'cNomeLista' && cListaId){ await cComando({ lista: cListaId, nome: e.target.value }); await cCaricaListe(); }
 });
 function scheda(q){
-  ['tCont','tListe','tLinea','tArric','tRich','tChiuse'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
+  ['tCont','tListe','tArch','tLinea','tArric','tRich','tChiuse'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
   $('vCont').classList.toggle('nascosto', q!=='tCont');
   $('vListe').classList.toggle('nascosto', q!=='tListe');
+  $('vArch').classList.toggle('nascosto', q!=='tArch');
+  if(q==='tArch'){ cCaricaListe(); }
   /* si caricano solo quando servono: aprire la regia non deve pagare il conto
      di una scheda che magari oggi non si guarda nemmeno */
   if(q==='tCont'){ if(!cVisto){ cVisto = true; cCarica(); cCaricaListe(); } else cCarica(); }
@@ -1961,6 +1970,7 @@ $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema
 $('bPieno').onclick = () => schermoPieno();
 $('tCont').onclick = () => scheda('tCont');
 $('tListe').onclick = () => scheda('tListe');
+$('tArch').onclick = () => scheda('tArch');
 $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
