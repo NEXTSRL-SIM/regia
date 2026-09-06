@@ -537,6 +537,8 @@ tr.fatta td{opacity:.55}
 #cPCorpo .duecol{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
 @media (max-width:900px){#cPCorpo .duecol{grid-template-columns:1fr}}
 .st .pallino{display:inline-block;margin-left:7px;min-width:17px;height:17px;line-height:17px;padding:0 4px;border-radius:9px;background:var(--brick);color:#fff;font-family:var(--mono);font-size:10.5px;text-align:center;vertical-align:middle}
+.appresa{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--sage);border:1px solid var(--sage);padding:2px 7px}
+.carta.impara.fatta{border-left:3px solid var(--sage)}
 .avvisoLez{border:1px solid var(--amber);background:var(--amber-wash);padding:11px 14px;margin-bottom:14px;font-size:13px;line-height:1.5}
 .avvisoLez b{color:var(--amber);font-family:var(--mono);font-size:15px;margin-right:4px}
 .lezBox{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
@@ -1271,10 +1273,12 @@ function apri(){
   $('porta').classList.add('nascosto'); $('dentro').classList.remove('nascosto');
   $('chiSono').textContent = CHI ? 'ciao ' + CHI : '';
   if(!avviato){ avviato = true; tira(); setInterval(tira, 3000);
-    /* il pallino sulla linguetta: quante lezioni aspettano una risposta.
-       Si guarda ogni tanto, non ogni tre secondi: non e roba che cambia
-       mentre uno guarda lo schermo */
-    contaLezioni(); setInterval(contaLezioni, 90000);
+    /* il pallino sulla linguetta: quante telefonate hanno ancora un racconto
+       da ascoltare. Si conta entrando, e poi ogni volta che si apre la scheda
+       o si lavora una lezione: non e roba che cambia da sola mentre uno
+       guarda lo schermo, e un orologio che ricontrolla ogni minuto e mezzo e
+       solo traffico sprecato */
+    contaLezioni();
     setInterval(function(){ fetch(API + '-pulisci?t=' + encodeURIComponent(PASS)).catch(function(){}); }, 5000); }
 }
 async function tira(){
@@ -1508,7 +1512,7 @@ async function accendiVoce(velo){
       elencoFormazione(velo);
     } else if(mie.length >= 2 || quanto >= 60){
       fVoceStato(velo, 'chiuso - sto mandando a Claude quello che ci siamo detti...', false);
-      mandaFormazione(velo, null);
+      mandaFormazione(velo, voceSuTelefonata);
     } else {
       fVoceStato(velo, mie.length ? 'chiuso - lei ha detto troppo poco, non l ho mandata' : 'chiuso - lei non ha detto niente, non c e nessuna lezione da mandare', false);
       elencoFormazione(velo);
@@ -2300,18 +2304,25 @@ function cDisegnaCoda(){
    ============================================================================ */
 const RAPI = () => API.replace(/regia$/, 'regia-riepilogo');
 
-/* IL PALLINO. Sulla linguetta, in rosso, quante lezioni sono depositate e
-   aspettano: cosi si vede che c e qualcosa da fare senza aprire la scheda. */
-async function contaLezioni(){
+/* IL PALLINO. Sulla linguetta, in rosso, quante telefonate hanno ancora un
+   racconto da ascoltare: il totale meno quelle gia lavorate e quelle
+   scartate. A zero si spegne. */
+function pallinoA(n){
   const b = $('tImpara'); if(!b) return;
-  let n = 0;
-  try{
-    const r = await fetch(RAPI()+'?lezioni=1&t='+encodeURIComponent(PASS));
-    const j = await r.json(); n = j.in_attesa || 0;
-  }catch(e){ return; }
   let s = b.querySelector('.pallino');
   if(!s){ s = document.createElement('span'); s.className = 'pallino'; b.appendChild(s); }
   s.textContent = n; s.hidden = !n;
+}
+async function contaLezioni(){
+  try{
+    const [a, l] = await Promise.all([
+      fetch(RAPI()+'?imparato=1&t='+encodeURIComponent(PASS)).then(r => r.json()),
+      fetch(RAPI()+'?lezioni=1&t='+encodeURIComponent(PASS)).then(r => r.json()),
+    ]);
+    const lez = l.lezioni || [];
+    const fatte = (c) => lez.some(z => z.conversazione === c && z.stato !== 'scartata');
+    pallinoA((a.imparato || []).filter(x => !fatte(x.conversazione)).length);
+  }catch(e){}
 }
 
 async function caricaImparato(){
@@ -2329,9 +2340,16 @@ async function caricaImparato(){
     const j2 = await r2.json(); lezioni = j2.lezioni || []; inAttesa = j2.in_attesa || 0;
   }catch(e){}
   const lezioniDi = (conv) => lezioni.filter(z => z.conversazione === conv);
-  const avviso = inAttesa
-    ? '<div class="avvisoLez"><b>'+inAttesa+'</b> '+(inAttesa===1? 'lezione depositata e in attesa' : 'lezioni depositate e in attesa')+
-      ': le ho da guardare io e da approvare lei, prima che entrino nelle istruzioni.</div>'
+  /* lavorata = ci ho gia parlato e ne e uscita una lezione che non e stata
+     buttata. Sono queste che il pallino toglie dal conto */
+  const lavorata = (conv) => lezioni.some(z => z.conversazione === conv && z.stato !== 'scartata');
+  pallinoA(righe.filter(x => !lavorata(x.conversazione)).length);
+  const daFare = righe.filter(x => !lavorata(x.conversazione)).length;
+  const avviso = (daFare || inAttesa)
+    ? '<div class="avvisoLez">'+
+      (daFare ? '<b>'+daFare+'</b> '+(daFare===1? 'telefonata con un racconto ancora da ascoltare' : 'telefonate con un racconto ancora da ascoltare')+'. ' : '')+
+      (inAttesa ? '<b>'+inAttesa+'</b> '+(inAttesa===1? 'lezione depositata aspetta' : 'lezioni depositate aspettano')+': le guardo io e le approva lei, prima che entrino nelle istruzioni.' : '')+
+      '</div>'
     : '';
   if(!righe.length){ box.innerHTML = avviso + '<div class="carta"><p class="attesa">Ancora niente. Si riempie da solo mentre Valentino telefona.</p></div>'; return; }
   const conX = (dentro, tipo, id) =>
@@ -2340,9 +2358,11 @@ async function caricaImparato(){
     '</div>';
   box.innerHTML = avviso + righe.map(x => {
     const me = x.mercato || [], ob = x.obiezioni || [], tr = x.tratti || [], sc = x.scartate || [];
-    return '<div class="carta impara">'+
+    const fatta = lavorata(x.conversazione);
+    return '<div class="carta impara'+(fatta? ' fatta' : '')+'">'+
       '<div class="impTesta">'+
         '<h4>'+esc(Nome(x.chi)||x.telefono||'senza nome')+'</h4>'+
+        (fatta? '<span class="appresa">lezione appresa</span>' : '')+
         '<span class="mono">'+esc(String(x.quando||"").slice(0,16).replace("T"," "))+
           (x.durata_sec? " · "+mmss(x.durata_sec) : "")+'</span>'+
         '<button class="azione" data-racconta="'+esc(x.conversazione)+'" data-chi="'+esc(Nome(x.chi)||x.telefono||'')+'">ascolta il racconto</button>'+
