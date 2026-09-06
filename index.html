@@ -509,6 +509,8 @@ tr.fatta td{opacity:.55}
 .ord .viaord{color:var(--ink-3);padding:0 5px;font-size:15px;line-height:1}
 .piu{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);border:1px dashed var(--amber-dim);padding:5px 9px}
 .chip[disabled]{opacity:.45;cursor:not-allowed}
+.esi{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line-2);padding:2px 6px}
+.esi.buono{color:var(--sage);border-color:var(--sage)}
 .orario{display:flex;gap:7px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
 .orario input{width:auto;min-width:64px;background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:4px 6px;font-family:var(--mono);text-align:center}
 .veloC{position:fixed;inset:0;background:rgba(8,6,5,.78);display:none;align-items:flex-start;justify-content:center;z-index:70;padding:34px 20px;overflow-y:auto}
@@ -777,8 +779,10 @@ tr.fatta td{opacity:.55}
  </div></div>
 
 <div id="vArch" class="nascosto"><div class="foglio">
-   <h1>Archivio delle liste</h1>
-   <p class="occhio">Ogni lista messa via resta qui come un foglio: chi c era, cosa e successo, quando. Premi il foglio per riaprirlo e lavorarlo.</p>
+   <h1>Le liste</h1>
+   <p class="occhio">Le liste in lavorazione stanno qui in grande: chi c e dentro, cosa e successo, quando. Quelle archiviate non spariscono: si spostano dietro il pulsante qui sotto. Premi un foglio per aprirlo.</p>
+   <div class="archTesta"><button class="minif" id="cToggleArch">archiviate</button></div>
+   <div id="cArchivio" class="fogliniA4" hidden></div>
    <div class="fogli" id="cFogli"></div>
  </div></div>
 
@@ -2206,25 +2210,20 @@ function cDisegnaCoda(){
    riempiono l archivio di roba che non e mai stata una telefonata. */
 function cDisegnaArchivio(){
   const via = cListe.filter(x => x.stato !== 'aperta').sort((a,b) => b.id - a.id);
-  let box = $('cArchivio');
-  if(!box){
-    const f = $('cFogli'); if(!f) return;
-    f.insertAdjacentHTML('afterend',
-      '<div class="archTesta"><button class="minif" id="cToggleArch"></button></div>'+
-      '<div id="cArchivio" class="fogliniA4" hidden></div>');
-    box = $('cArchivio');
-  }
-  const t = $('cToggleArch');
-  if(t) t.textContent = (box.hidden ? 'liste messe via (' : 'nascondi le liste messe via (') + via.length + ')';
+  const box = $('cArchivio'), t = $('cToggleArch');
+  if(!box || !t) return;
+  t.textContent = (box.hidden ? 'archiviate (' : 'nascondi le archiviate (') + via.length + ')';
+  t.setAttribute('aria-pressed', !box.hidden);
   box.innerHTML = via.length ? via.map(x =>
     '<div class="foglino">'+
-      '<button class="apriFno" data-riapri="'+x.id+'" title="'+esc(x.nome)+'">'+
+      '<button class="apriFno" data-guarda="'+x.id+'" title="'+esc(x.nome)+'">'+
         '<span class="nf">'+esc(x.nome)+'</span>'+
-        '<span class="qf">'+(x.in_lista||0)+' in lista &middot; '+(x.fatte||0)+' fatte</span>'+
+        '<span class="qf">'+(x.in_lista||0)+' in lista · '+(x.fatte||0)+' fatte</span>'+
         '<span class="df">id '+x.id+'</span>'+
       '</button>'+
+      '<button class="minif" data-rilavora="'+x.id+'" style="margin:0 4px 6px">rimetti in lavorazione</button>'+
       '<button class="cestino" data-cancella="'+x.id+'" title="cancella la lista">&times;</button>'+
-    '</div>').join('') : '<div class="vuotone piccolo">Niente nell archivio.</div>';
+    '</div>').join('') : '<div class="vuotone piccolo">Niente di archiviato.</div>';
 }
 
 function cDisegnaLista(){
@@ -2234,7 +2233,7 @@ function cDisegnaLista(){
     aperte.map(x => '<button class="chiplista" data-lista="'+x.id+'" aria-pressed="'+(x.id===cListaId)+'">'+
       esc(x.nome)+' <small>'+(x.in_lista||0)+'</small></button>').join('') +
     '<button class="chiplista" id="cNuovaLista">+ nuova lista</button>' +
-    (l && (l.in_lista||0) > 0 ? '<button class="chiplista" id="cMettiVia" style="margin-left:auto">metti via</button>' : '');
+    (l && (l.in_lista||0) > 0 ? '<button class="chiplista" id="cMettiVia" style="margin-left:auto">archivia</button>' : '');
   $('cNomeLista').value = l ? l.nome : '';
   $('cNomeLista').disabled = !l;
   $('cIdLista').textContent = l ? '(id lista '+l.id+')' : '';
@@ -2254,7 +2253,9 @@ function cDisegnaLista(){
     if(l.alle2)  $('cOra4').value = String(l.alle2).slice(0,5);
     if(l.tetto_giorno) $('cTettoG').value = l.tetto_giorno;
   }
-  $('cRiepilogo').textContent = l ? (l.in_lista||0)+' in lista &middot; '+(l.fatte||0)+' fatte' : '';
+  /* il puntino va scritto com e, non come sigla HTML: qui si usa textContent
+     e la sigla verrebbe stampata lettera per lettera */
+  $('cRiepilogo').textContent = l ? (l.in_lista||0)+' in lista · '+(l.fatte||0)+' fatte' : '';
   $('cCorpoLista').innerHTML = cListaRighe.length ? cListaRighe.map((r,i) =>
     '<tr class="'+(r.stato==='linea'?'inlinea':r.stato==='fatta'?'fatta':'')+'">'+
     '<td class="grip"><b class="mono">'+(i+1)+'</b> <button data-su="'+r.contatto_id+'">&#8593;</button><button data-giu="'+r.contatto_id+'">&#8595;</button></td>'+
@@ -2265,7 +2266,13 @@ function cDisegnaLista(){
     '<td><span class="rpo '+(r.rpo==='iscritto'?'occhio':r.rpo||'att')+'">'+
       (r.rpo==='ok'?'libero':r.rpo==='iscritto'?'iscritto &middot; occhio':'da controllare')+'</span></td>'+
     '<td><span class="stc">'+(r.stato==='linea'?'in linea':r.stato==='fatta'?'chiusa':r.stato==='saltata'?'tolta':'in attesa')+'</span></td>'+
-    '<td class="mono">'+esc(r.esito||'-')+'</td>'+
+    /* l esito non e piu una parola scritta a mano: viene dall elenco chiuso.
+       E se e un "da richiamare", la data si clicca e porta ai richiami. */
+    '<td class="mono">'+(r.richiamo_il
+        ? '<button class="azione" data-vairich="'+esc(r.tel||'')+'">richiamo '+esc(orario(r.richiamo_il))+'</button>'
+        : (r.esito_nome
+            ? '<span class="esi'+(r.esito_buono?' buono':'')+'">'+esc(r.esito_nome)+'</span>'
+            : esc(r.esito||'-')))+'</td>'+
     '<td>'+(r.stato==='attesa' ? '<button class="azione" data-chiama="'+r.contatto_id+'">chiama adesso</button> '+
       '<button class="azione calmo" data-fuori="'+r.contatto_id+'">togli</button>' : '')+'</td></tr>').join('')
     : '<tr><td colspan="9" class="attesa">La lista e vuota. Scegli dei contatti e premi Aggiungi alla lista.</td></tr>';
@@ -2285,7 +2292,7 @@ function cDisegnaLista(){
         '<span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
         '<span class="re"><b>'+(x.nel_registro||0)+'</b>nel registro</span></div>'+
       '<button class="apriF" data-riapri="'+x.id+'"></button>'+
-      '<div class="azioniF"><button class="minif" data-viafoglio="'+x.id+'">metti via</button>'+
+      '<div class="azioniF"><button class="minif" data-viafoglio="'+x.id+'">archivia</button>'+
       '<button class="minif ross" data-cancella="'+x.id+'">cancella</button></div></div>';
   }).join('') : '<div class="vuotone">Nessuna lista ancora.</div>';
   cDisegnaCoda();
@@ -2628,6 +2635,15 @@ document.addEventListener('click', async (e) => {
     await cComando({ lista: id, archivia: true });
     if(cListaId === id) cListaId = null;
     await cCaricaListe(); return; }
+  /* dall archivio si GUARDA, non si riattiva. Aprire un foglio archiviato per
+     leggerlo non deve rimetterlo in mezzo alle liste di oggi: per quello c e
+     un pulsante che lo dice. */
+  if(d.vairich){ scheda('tRich'); return; }
+  if(d.guarda){ cListaId = Number(d.guarda); await cCaricaLista(cListaId); scheda('tListe'); return; }
+  if(d.rilavora){
+    const id = Number(d.rilavora);
+    await cComando({ lista: id, riapri: true });
+    cListaId = id; await cCaricaListe(); scheda('tListe'); return; }
   /* cancellare una lista: la conferma dice quanto si sta buttando, e dice
      anche cosa NON si butta - i contatti restano dove sono */
   if(d.cancella){
