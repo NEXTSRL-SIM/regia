@@ -1767,6 +1767,11 @@ function disegna(){
        imparando NOI mentre parla. Sono due cose diverse e vanno tenute
        separate: la sua pratica riguarda lui, questa riguarda il mercato e il
        nostro mestiere, e resta anche quando la telefonata e finita. */
+    '';
+
+  /* Sta a SINISTRA, sotto quello che il cliente ha detto: e la parte che si
+     guarda mentre si parla, e a destra Sante non la vedeva. */
+  const imparoHtml =
     '<div class="blocco imparo"><p class="etich">Cosa impariamo</p>'+
       ((mercato.length || obiezioni.length)
         ? mercato.map(x => '<div class="imp merc"><span class="ora">'+esc(x.ora)+'</span><span>'+
@@ -1783,7 +1788,7 @@ function disegna(){
      i dati che si raccolgono parlando, che poi diventano il preventivo */
   $('sotto').innerHTML =
     '<div class="blocco"><p class="etich">Quello che ha detto</p>'+
-      righe([['Bolletta',s.bolletta],['Consumo stimato',s.consumo],['In casa',s.persone],['Di giorno',s.giorno],['Riscaldamento',s.riscaldamento],['Contatore',s.contatore],['Auto',s.auto]])+'</div>';
+      righe([['Bolletta',s.bolletta],['Consumo stimato',s.consumo],['In casa',s.persone],['Di giorno',s.giorno],['Riscaldamento',s.riscaldamento],['Contatore',s.contatore],['Auto',s.auto]])+'</div>'+ imparoHtml;
 
   $('foglioArric').innerHTML = '<h1>'+esc(Nome(v.nome)||v.telefono||'')+'</h1>'+
     '<p class="occhio">Arricchimento del contatto - '+esc(v.dove||'')+' - '+esc(v.fonte||'')+'</p>'+
