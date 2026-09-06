@@ -455,7 +455,83 @@ tr.fatta td{opacity:.55}
 .voci td:last-child{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
 .voci tr.somma td{border-bottom:none;padding-top:11px;font-weight:600;color:var(--amber)}
 @media(max-width:1000px){.telaio{grid-template-columns:1fr}.col.centro{order:-1}}
-</style></head><body>
+
+/* --- CONTATTI: il velo del pannello (senza queste due righe il velo resta
+   sopra tutto e la pagina smette di rispondere ai click) --- */
+#cVelo{display:none}
+#cVelo.apri{display:flex}
+#vCont .telaio{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1px;background:var(--line)}
+#vCont .col{background:var(--ground);min-width:0}
+#vCont .col.dx{position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto}
+.dxtitolo{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between}
+.dxtitolo h2{font-family:var(--display);font-weight:600;font-size:14.5px;margin:0}
+.dxtitolo span{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.blocco{padding:13px 16px;border-bottom:1px solid var(--line)}
+.blocco h3{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 9px;font-weight:500}
+.manopola{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line)}
+.mopz{background:var(--surface);padding:9px 11px;text-align:left;display:flex;gap:9px;align-items:flex-start;width:100%}
+.mopz[aria-pressed=true]{background:var(--amber-wash)}
+.mopz .bollo{width:12px;height:12px;border-radius:50%;border:1px solid var(--line-2);flex:0 0 auto;margin-top:3px}
+.mopz[aria-pressed=true] .bollo{border-color:var(--amber);background:var(--amber);box-shadow:inset 0 0 0 2px var(--surface)}
+.mopz b{display:block;font-size:13px}
+.mopz small{color:var(--ink-3);font-size:11.5px;line-height:1.4}
+.quanti{display:flex;align-items:center;gap:7px;margin-top:9px;padding-left:21px}
+.quanti button{width:26px;height:26px;border:1px solid var(--line-2);color:var(--ink-2);font-family:var(--mono)}
+.quanti b{font-family:var(--mono);font-size:16px;color:var(--amber);min-width:18px;text-align:center}
+.quanti span{font-size:11.5px;color:var(--ink-3)}
+.coda{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line)}
+.cod{background:var(--surface);padding:8px 11px;display:flex;gap:9px;align-items:center}
+.cod .pos{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);flex:0 0 16px}
+.cod .chi{flex:1 1 auto;min-width:0}
+.cod .chi b{display:block;font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cod .chi small{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.cod .via{color:var(--ink-3);font-size:15px;line-height:1;padding:0 3px}
+.cod.viva{background:var(--sage-dim)}.cod.viva .chi b{color:var(--sage)}
+.vuota{border:1px dashed var(--line-2);padding:16px 12px;text-align:center;color:var(--ink-3);font-size:12px;line-height:1.5}
+.ord{display:flex;align-items:center;gap:6px;border:1px solid var(--line-2);padding:3px 4px 3px 9px}
+.ord select{background:var(--ground);border:none;color:var(--ink);font-family:var(--mono);font-size:11.5px;padding:3px}
+.ord .verso{font-family:var(--mono);font-size:11px;color:var(--amber);padding:2px 6px;border:1px solid var(--line-2)}
+.ord .viaord{color:var(--ink-3);padding:0 5px;font-size:15px;line-height:1}
+.piu{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);border:1px dashed var(--amber-dim);padding:5px 9px}
+.chip[disabled]{opacity:.45;cursor:not-allowed}
+.orario{display:flex;gap:7px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
+.orario input{width:auto;min-width:64px;background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:4px 6px;font-family:var(--mono);text-align:center}
+.veloC{position:fixed;inset:0;background:rgba(8,6,5,.78);display:none;align-items:flex-start;justify-content:center;z-index:70;padding:34px 20px;overflow-y:auto}
+.veloC.apri{display:flex}
+.finestra{width:min(980px,100%);background:var(--ground);border:1px solid var(--line-2);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.finestra .testa{background:var(--surface);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.finestra .testa h2{font-family:var(--display);font-weight:600;font-size:18px;margin:0}
+.finestra .dentro{padding:16px 18px 20px}
+.vie{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.via2{padding:9px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px}
+.via2[aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
+.zona{border:1px dashed var(--line-2);background:var(--surface);padding:26px 18px;text-align:center;color:var(--ink-3);font-size:13px;cursor:pointer}
+.zona.sopra{border-color:var(--amber);background:var(--amber-wash);color:var(--amber)}
+.zona b{display:block;color:var(--ink);font-size:14px;margin-bottom:5px}
+.incolla{width:100%;min-height:150px;background:var(--surface);border:1px solid var(--line-2);color:var(--ink);padding:10px 12px;font-family:var(--mono);font-size:12px;line-height:1.6}
+.campi{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:11px}
+.campi label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.campi input,.campi select{width:100%;background:var(--surface);border:1px solid var(--line-2);color:var(--ink);padding:8px 10px;font-size:13.5px}
+.mappa{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0}
+.mappa .mc{border:1px solid var(--line);background:var(--surface);padding:9px 11px}
+.mappa .mc .ori{font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mappa .mc .ori b{color:var(--amber)}
+.mappa .mc select{width:100%;background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:5px 7px;font-family:var(--mono);font-size:11.5px}
+.mappa .mc .es{font-size:11.5px;color:var(--ink-3);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.esiti{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);margin:14px 0}
+.esiti div{background:var(--surface);padding:8px 13px;flex:1 1 auto}
+.esiti b{display:block;font-family:var(--mono);font-size:17px}
+.esiti span{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.esiti .ok b{color:var(--sage)}.esiti .dop b{color:var(--amber)}.esiti .ko b{color:var(--brick)}
+.avviso{display:flex;gap:10px;padding:11px 13px;border:1px solid var(--brick);background:rgba(176,72,48,.13);font-size:13px;margin:14px 0}
+.avviso b{color:var(--brick);white-space:nowrap}
+.avviso.buono{border-color:var(--sage);background:var(--sage-dim)}
+.avviso.buono b{color:var(--sage)}
+.piedeF{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:14px;margin-top:16px}
+.piedeF .spinge{margin-left:auto}
+@media (max-width:1100px){#vCont .telaio{grid-template-columns:minmax(0,1fr)}#vCont .col.dx{position:static;max-height:none}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
  <form id="formPorta" autocomplete="off" action="javascript:void(0)" onsubmit="return false">
   <h1>Regia</h1><p>La parola d'ordine e la stessa che usa al telefono.</p>
@@ -495,31 +571,46 @@ tr.fatta td{opacity:.55}
    <div class="avvolgi"><table class="tabella"><thead><tr><th>Cliente</th><th>Quando</th><th>Durata</th><th>Di cosa si e parlato</th><th>Ascolta</th></tr></thead><tbody id="corpoChiuse"></tbody></table></div>
  </div></div>
 </div>
-<div id="vCont" class="nascosto"><div class="foglio">
+<div id="vCont" class="nascosto"><div class="telaio">
+ <div class="col"><div class="foglio">
    <div class="testaCont">
-     <div><h1>Contatti dalle campagne</h1>
-       <p class="occhio">Tutto quello che e arrivato da Facebook, da Squadd e dagli import. I numeri qui sotto sono pulsanti: premili per filtrare.</p></div>
+     <div>
+       <h1>Contatti dalle campagne</h1>
+       <p class="occhio">Tutto quello che e arrivato da Facebook, da Squadd e dagli import. I numeri qui sotto sono pulsanti: premili per filtrare.</p>
+     </div>
      <button class="bott" id="cRicalcola" title="rifa il punteggio di tutti i contatti">Ricalcola i punteggi</button>
+     <button class="bott forte" id="cCaricaMano">+ Carica contatti</button>
    </div>
+
    <div class="conta1" id="cConta"></div>
-   <div class="banda"><b>Registro opposizioni</b>
-     <span>Qui il registro <b>informa, non blocca</b>: queste sono persone che hanno compilato un nostro modulo o che ci ha segnalato un cliente, il consenso l hanno dato a noi. La targhetta serve a sapere che quella persona il registro l ha fatto, e ad andarci piano.</span></div>
+
+   <div class="banda">
+     <b>Registro opposizioni</b>
+     <span>Qui il registro <b>informa, non blocca</b>: queste sono persone che hanno compilato un nostro modulo o che ci ha segnalato un cliente, il consenso l hanno dato a noi. La targhetta serve a sapere che quella persona il registro l ha fatto, e ad andarci piano.</span>
+   </div>
+
    <div class="testafiltri">
      <button class="imbuto" id="cImbuto" aria-expanded="false">
        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-7 8v7l-4 2v-9z"/></svg>
-       <span>Filtri</span><span class="conta nascosto" id="cQuantiF">0</span></button>
+       <span>Filtri</span><span class="conta nascosto" id="cQuantiF">0</span>
+     </button>
      <button class="pulisci nascosto" id="cAzzeraB">azzera tutto</button>
      <span class="mono" id="cQuante" style="margin-left:auto"></span>
    </div>
+
    <div class="filtri nascosto" id="cFiltri">
-     <div class="friga"><span class="fetichetta">Cerca</span>
+     <div class="friga">
+       <span class="fetichetta">Cerca</span>
        <input class="cerca" id="cCerca" placeholder="nome, telefono, email, comune...">
        <div class="tenda"><button class="tbott" data-apre="stati"><span>Stato: tutti</span><span class="frecc">&#9660;</span></button>
          <div class="tpannello" id="cPstati"><div class="tazioni"><button data-tutte="stati">tutti</button><button data-nessuna="stati">nessuno</button></div>
          <div class="tlista" id="cLstati"></div></div></div>
        <button class="chip si" data-int="tel" aria-pressed="true">solo con telefono</button>
-       <button class="chip" data-int="dnd" aria-pressed="false">solo quelli nel registro</button></div>
-     <div class="friga"><span class="fetichetta">Campagna</span>
+       <button class="chip" data-int="wa" aria-pressed="false" disabled title="Il dato non c e: nel database non e registrato chi ha WhatsApp. Il filtro si accende quando decidiamo da dove ricavarlo.">solo con WhatsApp (dato non raccolto)</button>
+       <button class="chip" data-int="dnd" aria-pressed="false">solo quelli nel registro</button>
+     </div>
+     <div class="friga">
+       <span class="fetichetta">Campagna</span>
        <div class="tenda"><button class="tbott" data-apre="campagne"><span>Tutte le campagne</span><span class="frecc">&#9660;</span></button>
          <div class="tpannello" id="cPcampagne"><input class="tcerca" data-filtra="campagne" id="cFcampagne" placeholder="cerca...">
          <div class="tazioni"><button data-tutte="campagne">tutte</button><button data-nessuna="campagne">nessuna</button></div>
@@ -533,67 +624,180 @@ tr.fatta td{opacity:.55}
        <div class="tenda"><button class="tbott" data-apre="province"><span>Tutte le province</span><span class="frecc">&#9660;</span></button>
          <div class="tpannello" id="cPprovince"><input class="tcerca" data-filtra="province" id="cFprovince" placeholder="cerca...">
          <div class="tazioni"><button data-tutte="province">tutte</button><button data-nessuna="province">nessuna</button></div>
-         <div class="tlista" id="cLprovince"></div></div></div></div>
-     <div class="friga"><span class="fetichetta">Tetto</span>
+         <div class="tlista" id="cLprovince"></div></div></div>
+     </div>
+     <div class="friga">
+       <span class="fetichetta">Tetto</span>
        <div class="tenda"><button class="tbott" data-apre="semafori"><span>Vincoli: tutti</span><span class="frecc">&#9660;</span></button>
          <div class="tpannello" id="cPsemafori"><div class="tazioni"><button data-tutte="semafori">tutti</button><button data-nessuna="semafori">nessuno</button></div>
          <div class="tlista" id="cLsemafori"></div></div></div>
+       <div class="tenda"><button class="tbott" data-apre="presc"><span>Prescrizioni: tutte</span><span class="frecc">&#9660;</span></button>
+         <div class="tpannello" id="cPpresc"><div class="tazioni"><button data-tutte="presc">tutte</button><button data-nessuna="presc">nessuna</button></div>
+         <div class="tlista" id="cLpresc"></div></div></div>
        <button class="chip si" data-int="geo" aria-pressed="false">solo geolocalizzati</button>
        <button class="chip si" data-int="arr" aria-pressed="false">solo arricchiti</button>
-       <button class="chip" data-int="daarr" aria-pressed="false">solo da arricchire</button></div>
-     <div class="friga"><span class="fetichetta">Entrato</span>
+       <button class="chip" data-int="daarr" aria-pressed="false">solo da arricchire</button>
+     </div>
+     <div class="friga">
+       <span class="fetichetta">Entrato</span>
        <button class="chip" data-p="0" aria-pressed="false">oggi</button>
        <button class="chip" data-p="1" aria-pressed="false">ieri</button>
        <button class="chip" data-p="7" aria-pressed="false">ultimi 7 giorni</button>
        <button class="chip" data-p="30" aria-pressed="false">ultimo mese</button>
        <button class="chip" data-p="tutto" aria-pressed="true">sempre</button>
        <button class="chip" data-p="date" aria-pressed="false">da data a data</button>
-       <span class="dataint" id="cIntervallo" hidden><span>dal</span><input type="date" id="cD1"><span>al</span><input type="date" id="cD2"></span></div>
-     <div class="friga"><span class="fetichetta">Punteggio</span>
+       <span class="dataint" id="cIntervallo" hidden><span>dal</span><input type="date" id="cD1"><span>al</span><input type="date" id="cD2"></span>
+     </div>
+     <div class="friga">
+       <span class="fetichetta">Punteggio</span>
        <div class="slider"><span class="mono">almeno</span><input type="range" id="cSlid" min="0" max="100" step="5" value="0"><b id="cSlidV">0</b></div>
        <span class="fetichetta" style="flex:0 0 auto;margin-left:12px">Ordina</span>
-       <select id="cOrdina" class="scelta"><option value="punteggio">per punteggio</option><option value="recente">dal piu recente</option><option value="nome">per nome</option></select></div>
+       <div id="cOrdini" style="display:flex;gap:7px;flex-wrap:wrap"></div>
+       <button class="piu" id="cPiuOrd">+ ordina anche per</button>
+     </div>
    </div>
+
    <div class="avvolgi"><table class="tabella tCont">
      <thead><tr><th style="width:34px"><input type="checkbox" id="cTutti"></th>
        <th>Contatto</th><th>Punteggio</th><th>Vincoli sul tetto</th><th>Regione</th><th>Prov.</th><th>Comune</th>
        <th>Campagna</th><th>Entrato</th><th>Chiamate</th><th>Cosa ha chiesto</th><th>Cosa sappiamo di lui</th></tr></thead>
      <tbody id="cCorpo"></tbody></table></div>
+
    <div class="barrasel">
      <b id="cSelN">0 selezionati</b>
      <div class="presa"><span>prendi i primi</span><input id="cPrimiN" value="20"><button class="bott" id="cPrimi">dell ordinamento</button></div>
      <button class="bott forte" id="cAggiungi">Aggiungi alla lista</button>
      <button class="bott" id="cArricchisci">Manda ad arricchire</button>
+     <button class="bott" id="cTetto">Guarda il tetto</button>
      <button class="bott calmo" id="cPulisci">Deseleziona</button>
    </div>
  </div></div>
- <div id="vListe" class="nascosto"><div class="foglio">
+
+ <div class="col dx">
+   <div class="dxtitolo"><h2>Lista di oggi</h2><span id="cNCoda">0 in coda</span></div>
+   <div class="blocco">
+     <h3>Come si chiama</h3>
+     <div class="manopola">
+       <button class="mopz" data-m2="una" aria-pressed="false"><span class="bollo"></span><span><b>Una alla volta</b><small>La successiva parte quando la precedente ha chiuso.</small></span></button>
+       <button class="mopz" data-m2="gruppo" aria-pressed="false"><span class="bollo"></span><span><b>A gruppi</b><small>Tiene sempre N linee occupate.</small></span></button>
+       <button class="mopz" data-m2="mano" aria-pressed="false"><span class="bollo"></span><span><b>A mano</b><small>Parte solo quando premi tu sulla riga.</small></span></button>
+     </div>
+     <div class="quanti" id="cQuanteLinee" hidden><button id="cMeno">&#8722;</button><b id="cNPar">2</b><button id="cPiu">+</button><span>linee insieme</span></div>
+   </div>
+   <div class="blocco"><h3>In coda</h3><div id="cCodaBox"></div>
+     <button class="bott" style="width:100%;margin-top:10px" id="cApriLista">Apri la lista intera</button>
+   </div>
+ </div>
+</div></div>
+
+<div id="vListe" class="nascosto"><div class="foglio">
    <div class="barraliste" id="cBarraListe"></div>
    <input class="nomelista" id="cNomeLista" placeholder="Lista di oggi">
    <p class="occhio">Chi si chiama, in che ordine, e a che punto siamo.</p>
    <div class="passi">
-     <div class="passo fatto"><span class="num">1</span><span><b>Scelti</b><small id="cP1">-</small></span></div>
-     <div class="passo ora" id="cPassoRpo"><span class="num">2</span><span><b>Registro opposizioni</b><small id="cP2">-</small></span></div>
-     <div class="passo" id="cPasso3"><span class="num">3</span><span><b>Chiamate</b><small id="cP3">-</small></span></div>
+     <div class="passo fatto"><span class="num">1</span><span><b>Scelti</b><small id="cP1">&mdash;</small></span></div>
+     <div class="passo ora" id="cPassoRpo"><span class="num">2</span><span><b>Registro opposizioni</b><small id="cP2">&mdash;</small></span></div>
+     <div class="passo" id="cPasso3"><span class="num">3</span><span><b>Chiamate</b><small id="cP3">&mdash;</small></span></div>
    </div>
-   <div class="filtri" style="margin:14px 0"><div class="friga">
+   <div class="filtri" style="margin:14px 0">
+     <div class="friga">
        <span class="fetichetta">Modo</span>
        <button class="chip" data-m2="una">una alla volta</button>
        <button class="chip" data-m2="gruppo">a gruppi</button>
        <button class="chip" data-m2="mano">a mano</button>
-       <span class="quanti" id="cQuanteLinee" hidden><button id="cMeno">-</button><b id="cNPar">2</b><button id="cPiu">+</button><span>linee</span></span>
-       <button class="bott" id="cRpo" style="margin-left:auto">Controlla il registro</button>
-       <button class="bott forte" id="cAvvia" disabled>Avvia le chiamate</button></div></div>
+       <span class="quanti" id="cQuanteLinee2" hidden style="margin:0;padding:0"><button id="cMeno2">&#8722;</button><b id="cNPar2">2</b><button id="cPiu2">+</button><span>linee</span></span>
+     </div>
+     <div class="friga">
+       <span class="fetichetta">Orario</span>
+       <span class="orario"><input type="time" id="cOra1" value="09:00"><span>&ndash;</span><input type="time" id="cOra2" value="13:00"><span>e</span><input type="time" id="cOra3" value="15:00"><span>&ndash;</span><input type="time" id="cOra4" value="19:00"><span>&middot; al massimo</span><input id="cTettoG" value="30" style="min-width:48px;width:48px"><span>chiamate al giorno</span></span>
+     </div>
+     <div class="friga">
+       <button class="bott" id="cRpo">Controlla il registro</button>
+       <button class="bott forte" id="cAvvia" disabled>Avvia le chiamate</button>
+       <button class="bott calmo" id="cSvuota">Svuota la lista</button>
+       <span class="mono" id="cRiepilogo" style="margin-left:auto"></span>
+     </div>
+   </div>
    <div class="avvolgi"><table class="tabella">
      <thead><tr><th style="width:84px">Ordine</th><th>Chi</th><th>Punteggio</th><th>Vincoli</th><th>Dove</th>
        <th>Registro</th><th>Stato</th><th>Esito</th><th></th></tr></thead>
      <tbody id="cCorpoLista"></tbody></table></div>
+   <p class="nota">La lista e il documento della giornata: resta li anche se chiudi la pagina, e ogni riga porta con se perche e entrata.</p>
  </div></div>
- <div id="vArch" class="nascosto"><div class="foglio">
+
+<div id="vArch" class="nascosto"><div class="foglio">
    <h1>Archivio delle liste</h1>
-   <p class="occhio">Ogni lista e un foglio: chi c era, cosa e successo, quando. Quelle in lavorazione stanno in cima con la fascetta accesa; premi un foglio per riaprirlo e continuare a lavorarci.</p>
+   <p class="occhio">Ogni lista messa via resta qui come un foglio: chi c era, cosa e successo, quando. Premi il foglio per riaprirlo e lavorarlo.</p>
    <div class="fogli" id="cFogli"></div>
  </div></div>
+
+<div class="veloC" id="cVeloImp"><div class="finestra">
+  <div class="testa"><h2>Carica contatti a mano</h2><button class="azione" id="impChiudi">chiudi</button></div>
+  <div class="dentro">
+    <div class="vie">
+      <button class="via2" data-via="file" aria-selected="true">Da un file</button>
+      <button class="via2" data-via="incolla" aria-selected="false">Incolla da Excel</button>
+      <button class="via2" data-via="uno" aria-selected="false">Uno alla volta</button>
+    </div>
+
+    <div id="viaFile">
+      <div class="zona" id="zonaFile"><b>Trascina qui il file, o premi per sceglierlo</b>
+        Excel (.xlsx, .xls), CSV o testo separato da tabulazioni. L Excel si legge direttamente: non serve convertirlo.
+        <input type="file" id="fileIn" accept=".csv,.txt,.tsv,.xlsx,.xls" hidden></div>
+    </div>
+
+    <div id="viaIncolla" class="nascosto">
+      <p class="nota" style="margin:0 0 9px">Seleziona le righe in Excel, copia, e incolla qui dentro. La prima riga sono i titoli delle colonne.</p>
+      <textarea class="incolla" id="testoIn" placeholder="nome	telefono	comune	provincia"></textarea>
+      <div style="margin-top:10px"><button class="bott" id="bLeggi">Leggi quello che ho incollato</button></div>
+    </div>
+
+    <div id="viaUno" class="nascosto">
+      <div class="campi">
+        <div><label>Nome e cognome</label><input id="u_nome" placeholder="Mario Rossi"></div>
+        <div><label>Telefono</label><input id="u_tel" placeholder="339 1234567"></div>
+        <div><label>Email</label><input id="u_mail" placeholder="mario@esempio.it"></div>
+        <div><label>Comune</label><input id="u_comune" placeholder="Musile di Piave"></div>
+        <div><label>Provincia</label><input id="u_prov" placeholder="VE"></div>
+        <div><label>Indirizzo</label><input id="u_ind" placeholder="Via Milano 9"></div>
+        <div><label>Note</label><input id="u_note" placeholder="conosciuto in fiera"></div>
+      </div>
+    </div>
+
+    <div id="sceltaFoglio" class="nascosto" style="margin-top:12px">
+      <span class="fetichetta" style="flex:0 0 auto">Foglio</span>
+      <span id="fogliBox" style="display:inline-flex;gap:7px;flex-wrap:wrap;margin-left:8px"></span>
+    </div>
+
+    <div id="impAnteprima" class="nascosto">
+      <div class="mappa" id="mappaCol"></div>
+      <div class="esiti" id="impEsiti"></div>
+      <div class="avvolgi" style="max-height:230px;overflow-y:auto"><table class="tabella" style="min-width:640px"><thead><tr id="antTesta"></tr></thead><tbody id="antCorpo"></tbody></table></div>
+    </div>
+
+    <h3 style="font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 9px;font-weight:500">Da dove viene questa lista &mdash; obbligatorio</h3>
+    <div class="campi">
+      <div><label>Origine</label><select id="impOrigine">
+        <option value="">&mdash; scegli &mdash;</option>
+        <option value="form">Modulo nostro (sito, landing, Facebook)</option>
+        <option value="cliente">Cliente o ex cliente Next</option>
+        <option value="fiera">Evento o fiera: consenso raccolto su carta</option>
+        <option value="segnalato">Segnalato da un cliente o da un installatore</option>
+        <option value="comprata">Lista acquistata da terzi</option>
+      </select></div>
+      <div><label>Data del consenso</label><input type="date" id="impData"></div>
+      <div><label>Nome della lista</label><input id="impNome" placeholder="Fiera Pordenone settembre"></div>
+    </div>
+    <div id="impAvviso"></div>
+
+    <div class="piedeF">
+      <span class="mono" id="impStato">Nessun dato letto.</span>
+      <button class="bott calmo spinge" id="impAnnulla">Annulla</button>
+      <button class="bott forte" id="impConferma" disabled>Aggiungi all archivio</button>
+    </div>
+  </div>
+</div></div>
+
 <script src="https://sdk.twilio.com/js/voice/releases/2.11.0/twilio.min.js"></script>
 <script>
 /* se qualcosa si rompe, lo si vede: meglio un avviso brutto che una pagina
@@ -1650,18 +1854,40 @@ document.querySelectorAll('.per').forEach(b => b.onclick = () => {
    domani sono migliaia e la pagina si apre in dieci secondi.
    ============================================================================ */
 const CAPI = () => API.replace(/regia$/, 'contatti');
-let cVoci = null, cRighe = [], cListe = [], cListaId = null, cListaRighe = [], cVisto = false;
+let cVoci = null, cRighe = [], cListe = [], cListaId = null, cListaRighe = [];
 const cScelti = new Set();
 const cFiltro = { cerca:'', campagne:new Set(), regioni:new Set(), province:new Set(),
-                  stati:new Set(), semafori:new Set(), min:0, giorni:null, dal:null, al:null,
-                  tel:true, geo:false, arr:false, daarr:false, dnd:false, ordina:'punteggio' };
+                  stati:new Set(), semafori:new Set(), presc:new Set(), min:0, giorni:null, dal:null, al:null,
+                  tel:true, geo:false, arr:false, daarr:false, dnd:false, nodnd:false };
+/* gli ordinamenti si impilano: il primo comanda, gli altri sciolgono i pari merito */
+let cOrdini = [{ campo:'punteggio', giu:true }];
+const CORD = { punteggio:'punteggio', nome:'nome', semaforo:'vincoli', reg:'regione', prov:'provincia',
+               comune:'comune', campagna:'campagna', creato_at:'data d ingresso', stato:'stato' };
+const ORDSEM = { verde:3, giallo:2, dati_assenti:1, mai:1, rosso:0 };
 const SEMN = { verde:['verde','Libero','si monta complanare'], giallo:['giallo','Con prescrizioni','si puo, a certe condizioni'],
                rosso:['rosso','Vincolato','serve autorizzazione'], dati_assenti:['grigio','Dato non buono','coordinate di ripiego'],
                mai:['grigio','Mai guardato','manca la croce sulla mappa'] };
 const STATN = { nuovo:'mai chiamato', senza_recapito:'senza recapito', numero_non_valido:'numero non valido',
                 solo_email:'solo email', numero_fisso:'numero fisso', non_disturbare:'nel registro', numero_estero:'estero' };
+/* le famiglie di prescrizione: una riga puo starne in piu di una */
+const FAMIGLIE = [
+  ['centro storico',            p => /centro storico|zona A\b/i.test(p)],
+  ['art. 136 - bellezze d insieme', p => /136|notevole interesse/i.test(p)],
+  ['art. 142 - tutela per legge',   p => /142|fascia fluviale|fascia di rispetto/i.test(p)],
+  ['bosco',                     p => /bosco|boscat|forestal/i.test(p)],
+  ['sensibilita paesistica',    p => /sensibilit/i.test(p)],
+  ['zona da confermare col Comune', p => /confermare|PAT\b|PGT\b|PRG\b/i.test(p)],
+  ['croce da rifare',           p => /NON VERIFICATO|ripiego/i.test(p)]
+];
+function cFamiglie(r){
+  const pres = Array.isArray(r.prescrizioni) ? r.prescrizioni : [];
+  return FAMIGLIE.filter(f => pres.some(p => f[1](String(p)))).map(f => f[0]);
+}
+
 function cUrl(){
-  const p = new URLSearchParams({ t: PASS, elenco:'1', ordina: cFiltro.ordina, limite:'400' });
+  const primo = cOrdini[0] ? cOrdini[0].campo : 'punteggio';
+  const perIlServer = ['punteggio','nome'].includes(primo) ? primo : (primo==='creato_at' ? 'recente' : 'punteggio');
+  const p = new URLSearchParams({ t: PASS, elenco: '1', ordina: perIlServer, limite: '400' });
   if(cFiltro.cerca) p.set('cerca', cFiltro.cerca);
   const j = (s) => [...s].join('|');
   if(cFiltro.campagne.size) p.set('campagne', j(cFiltro.campagne));
@@ -1673,32 +1899,55 @@ function cUrl(){
   if(cFiltro.giorni !== null) p.set('giorni', cFiltro.giorni);
   if(cFiltro.dal) p.set('dal', cFiltro.dal);
   if(cFiltro.al)  p.set('al',  cFiltro.al);
-  const solo = ['tel','geo','arr','daarr','dnd'].filter(k => cFiltro[k]);
+  const solo = ['tel','geo','arr','daarr','dnd','nodnd'].filter(k => cFiltro[k]);
   if(solo.length) p.set('solo', solo.join(','));
   return CAPI() + '?' + p.toString();
 }
+/* l ordinamento a piu livelli si fa qui: il database ne sa fare uno solo,
+   e con quattrocento righe riordinare nel browser costa niente */
+function cChiaveOrd(r, campo){
+  if(campo === 'semaforo') return ORDSEM[r.semaforo] == null ? -1 : ORDSEM[r.semaforo];
+  if(campo === 'punteggio') return r.punteggio == null ? -1 : r.punteggio;
+  if(campo === 'creato_at') return r.creato_at || '';
+  return String(r[campo] == null ? '' : r[campo]).toLowerCase();
+}
+function cRiordina(){
+  cRighe.sort((a,b) => {
+    for(const o of cOrdini){
+      const x = cChiaveOrd(a,o.campo), y = cChiaveOrd(b,o.campo);
+      if(x < y) return o.giu ? 1 : -1;
+      if(x > y) return o.giu ? -1 : 1;
+    }
+    return 0;
+  });
+}
 async function cCarica(){
   try{
-    if(!cVoci){ const rv = await fetch(CAPI()+'?voci=1&t='+encodeURIComponent(PASS)); cVoci = (await rv.json()).voci || null; }
-    const j = await (await fetch(cUrl())).json();
-    cRighe = j.contatti || []; cDisegna();
-  }catch(e){ if($('cCorpo')) $('cCorpo').innerHTML = '<tr><td colspan="12" class="attesa">Non riesco a leggere i contatti.</td></tr>'; }
+    if(!cVoci){
+      const rv = await fetch(CAPI()+'?voci=1&t='+encodeURIComponent(PASS));
+      const jv = await rv.json(); cVoci = jv.voci || null;
+    }
+    const r = await fetch(cUrl());
+    const j = await r.json();
+    cRighe = (j.contatti || []).map(x => { x.fam = cFamiglie(x); return x; });
+    if(cFiltro.presc.size) cRighe = cRighe.filter(x => x.fam.some(f => cFiltro.presc.has(f)));
+    cRiordina();
+    cDisegna();
+  }catch(e){ $('cCorpo').innerHTML = '<tr><td colspan="12" class="attesa">Non riesco a leggere i contatti.</td></tr>'; }
 }
 async function cCaricaListe(){
   try{
-    const j = await (await fetch(CAPI()+'?liste=1&t='+encodeURIComponent(PASS))).json();
+    const r = await fetch(CAPI()+'?liste=1&t='+encodeURIComponent(PASS));
+    const j = await r.json();
     cListe = j.liste || [];
-    if(!cListaId || !cListe.some(l => l.id === cListaId && l.stato === 'aperta')){
-      const a = cListe.find(l => l.stato === 'aperta'); cListaId = a ? a.id : null;
-    }
-    if($('nListe')) $('nListe').textContent = cListe.filter(l => l.stato === 'aperta').reduce((s,l) => s + (l.in_lista||0), 0);
-    if($('nArch')) $('nArch').textContent = cListe.length;
+    if(!cListaId || !cListe.some(l => l.id === cListaId)){ const a = cListe.find(l => l.stato === 'aperta'); cListaId = a ? a.id : null; }
     if(cListaId) await cCaricaLista(cListaId); else { cListaRighe = []; cDisegnaLista(); }
   }catch(e){}
 }
 async function cCaricaLista(id){
   try{
-    const j = await (await fetch(CAPI()+'?lista='+id+'&t='+encodeURIComponent(PASS))).json();
+    const r = await fetch(CAPI()+'?lista='+id+'&t='+encodeURIComponent(PASS));
+    const j = await r.json();
     cListaId = id; cListaRighe = j.righe || [];
     const l = cListe.find(x => x.id === id); if(l && j.lista) Object.assign(l, j.lista);
     cDisegnaLista();
@@ -1709,18 +1958,23 @@ async function cComando(corpo){
     body: JSON.stringify(Object.assign({ t: PASS, chi: CHI }, corpo)) });
   return await r.json().catch(() => ({}));
 }
+
+/* --- i conteggi in alto, che sono anche pulsanti --- */
 function cConteggi(){
   const n = (cVoci && cVoci.conteggi) || {};
-  const box = (k, eti, val, cls) => '<button class="cnt '+(cls||'')+'" data-cnt="'+k+'" aria-pressed="'+cAcceso(k)+'"><b>'+
-    (val==null?'-':val)+'</b><span>'+eti+'</span></button>';
-  if($('cConta')) $('cConta').innerHTML =
-    box('tutti','in archivio', n.tutti,'morbido') + box('tel','con telefono', n.con_tel,'bene') +
-    box('geo','geolocalizzati', n.geo,'') + box('daarr','da arricchire', n.da_arricchire,'male') +
-    box('mai','mai chiamati', n.mai_chiamati,'') + box('fatti','chiamati', n.chiamati,'') +
-    box('dnd','nel registro', n.nel_registro,'');
-  if($('nCont')) $('nCont').textContent = n.tutti || 0;
+  const box = (k, eti, val, cls) =>
+    '<button class="cnt '+(cls||'')+'" data-cnt="'+k+'" aria-pressed="'+cCntAcceso(k)+'">'+
+    '<b>'+(val==null?'-':val)+'</b><span>'+eti+'</span></button>';
+  $('cConta').innerHTML =
+    box('tutti','in archivio', n.tutti, 'morbido') +
+    box('tel','con telefono', n.con_tel, 'bene') +
+    box('geo','geolocalizzati', n.geo, '') +
+    box('daarr','da arricchire', n.da_arricchire, 'male') +
+    box('mai','mai chiamati', n.mai_chiamati, '') +
+    box('fatti','chiamati', n.chiamati, '') +
+    box('dnd','nel registro', n.nel_registro, '');
 }
-function cAcceso(k){
+function cCntAcceso(k){
   if(k === 'tutti') return cQuanti() === 0;
   if(k === 'mai')   return cFiltro.stati.has('nuovo');
   if(k === 'fatti') return false;
@@ -1728,48 +1982,77 @@ function cAcceso(k){
 }
 function cQuanti(){
   let q = 0;
-  ['campagne','regioni','province','stati','semafori'].forEach(k => { if(cFiltro[k].size) q++; });
-  ['geo','arr','daarr','dnd'].forEach(k => { if(cFiltro[k]) q++; });
-  if(!cFiltro.tel) q++; if(cFiltro.min > 0) q++; if(cFiltro.cerca) q++;
+  ['campagne','regioni','province','stati','semafori','presc'].forEach(k => { if(cFiltro[k].size) q++; });
+  ['geo','arr','daarr','dnd','nodnd'].forEach(k => { if(cFiltro[k]) q++; });
+  if(!cFiltro.tel) q++;
+  if(cFiltro.min > 0) q++;
+  if(cFiltro.cerca) q++;
   if(cFiltro.giorni !== null || cFiltro.dal) q++;
   return q;
 }
 function cAzzera(){
   cFiltro.cerca=''; cFiltro.min=0; cFiltro.giorni=null; cFiltro.dal=null; cFiltro.al=null;
-  ['campagne','regioni','province','stati','semafori'].forEach(k => cFiltro[k].clear());
-  cFiltro.tel=true; cFiltro.geo=false; cFiltro.arr=false; cFiltro.daarr=false; cFiltro.dnd=false;
-  if($('cCerca')) $('cCerca').value='';
-  if($('cSlid')){ $('cSlid').value=0; $('cSlidV').textContent='0'; }
-  if($('cIntervallo')) $('cIntervallo').hidden = true;
+  ['campagne','regioni','province','stati','semafori','presc'].forEach(k => cFiltro[k].clear());
+  cFiltro.tel=true; cFiltro.geo=false; cFiltro.arr=false; cFiltro.daarr=false; cFiltro.dnd=false; cFiltro.nodnd=false;
+  const i = $('cCerca'); if(i) i.value='';
+  const s = $('cSlid'); if(s){ s.value=0; $('cSlidV').textContent='0'; }
   document.querySelectorAll('#vCont [data-p]').forEach(b => b.setAttribute('aria-pressed', b.dataset.p==='tutto'));
-  document.querySelectorAll('#vCont [data-int]').forEach(b => b.setAttribute('aria-pressed', b.dataset.int==='tel'));
+  document.querySelectorAll('#vCont .filtri [data-int]').forEach(b => b.setAttribute('aria-pressed', b.dataset.int==='tel'));
 }
+
+/* --- le tendine con le spunte --- */
 function cNomeVoce(t, v){
   if(t==='stati') return STATN[v] || v;
   if(t==='semafori') return (SEMN[v]||[null,v])[1];
   return v;
 }
+function cVociDi(t){
+  if(t !== 'presc') return (cVoci && cVoci[t]) || [];
+  /* le prescrizioni si contano su quello che e in tavola: nessuno le ha
+     precalcolate, e finche il tetto non e stato guardato sono zero */
+  const conta = {};
+  FAMIGLIE.forEach(f => conta[f[0]] = 0);
+  cRighe.forEach(r => (r.fam||[]).forEach(f => conta[f]++));
+  return FAMIGLIE.map(f => ({ v:f[0], n:conta[f[0]] }));
+}
 function cTenda(t){
-  const el = $('cL'+t); if(!el || !cVoci) return;
+  const el = $('cL'+t); if(!el) return;
   const cerca = ($('cF'+t) ? $('cF'+t).value : '').toLowerCase();
-  const voci = (cVoci[t]||[]).filter(o => cNomeVoce(t,o.v).toLowerCase().includes(cerca));
-  el.innerHTML = voci.map(o => '<label class="tv"><input type="checkbox" data-voce="'+t+'" value="'+esc(o.v)+'" '+
+  const voci = cVociDi(t).filter(o => cNomeVoce(t,o.v).toLowerCase().includes(cerca));
+  el.innerHTML = voci.map(o =>
+    '<label class="tv"><input type="checkbox" data-voce="'+t+'" value="'+esc(o.v)+'" '+
     (cFiltro[t].has(o.v)?'checked':'')+'><span>'+esc(cNomeVoce(t,o.v))+'</span><small>'+o.n+'</small></label>').join('')
     || '<div class="tv vuoto">niente</div>';
-  const b = document.querySelector('#vCont [data-apre="'+t+'"]');
-  if(b){ const q = cFiltro[t].size;
-    const eti = { campagne:'Tutte le campagne', regioni:'Tutte le regioni', province:'Tutte le province', stati:'Stato: tutti', semafori:'Vincoli: tutti' };
+  const b = document.querySelector('[data-apre="'+t+'"]');
+  if(b){
+    const q = cFiltro[t].size;
+    const eti = { campagne:'Tutte le campagne', regioni:'Tutte le regioni', province:'Tutte le province',
+                  stati:'Stato: tutti', semafori:'Vincoli: tutti', presc:'Prescrizioni: tutte' };
     b.querySelector('span').textContent = q===0 ? eti[t] : q===1 ? cNomeVoce(t,[...cFiltro[t]][0]) : q+' scelte';
-    b.classList.toggle('attiva', q>0); }
+    b.classList.toggle('attiva', q>0);
+  }
 }
+function cDisegnaOrdini(){
+  const box = $('cOrdini'); if(!box) return;
+  box.innerHTML = cOrdini.map((o,i) =>
+    '<span class="ord"><select data-ord="'+i+'">'+
+    Object.keys(CORD).map(k => '<option value="'+k+'" '+(k===o.campo?'selected':'')+'>'+CORD[k]+'</option>').join('')+
+    '</select><button class="verso" data-verso="'+i+'">'+(o.giu?'&#8595;':'&#8593;')+'</button>'+
+    (i>0 ? '<button class="viaord" data-viaord="'+i+'">&times;</button>' : '')+'</span>').join('');
+  const p = $('cPiuOrd'); if(p) p.hidden = cOrdini.length >= 4;
+}
+
+/* --- la tabella --- */
 function cFascia(p){ return p>=70?'alto':p>=40?'medio':'basso'; }
-function cGiorni(g){ return g===0?'oggi':g===1?'ieri':g+' giorni fa'; }
+function cQuando(g){ return g===0?'oggi':g===1?'ieri':g+' giorni fa'; }
 function cFaro(r){
   const s = SEMN[r.semaforo] || SEMN.mai;
   const pres = Array.isArray(r.prescrizioni) ? r.prescrizioni : [];
   const sotto = r.semaforo==='verde' ? (r.zona || s[2]) : (pres[0] ? String(pres[0]).slice(0,52)+'...' : s[2]);
-  return '<span class="vinc '+s[0]+'"><span class="faro '+s[0]+'"></span><span class="testo"><b>'+s[1]+'</b><small>'+esc(sotto)+'</small>'+
-    (pres.length ? '<button class="perche" data-vinc="'+r.id+'">'+pres.length+' prescrizion'+(pres.length===1?'e':'i')+'</button>' : '')+'</span></span>';
+  return '<span class="vinc '+s[0]+'"><span class="faro '+s[0]+'"></span><span class="testo">'+
+    '<b>'+s[1]+'</b><small>'+esc(sotto)+'</small>'+
+    (pres.length ? '<button class="perche" data-vinc="'+r.id+'">'+pres.length+' prescrizion'+(pres.length===1?'e':'i')+'</button>' : '')+
+    '</span></span>';
 }
 function cModulo(m){
   if(!Array.isArray(m) || !m.length) return '<div class="vuoto">modulo non compilato</div>';
@@ -1777,86 +2060,130 @@ function cModulo(m){
 }
 function cDisegna(){
   cConteggi();
-  ['campagne','regioni','province','stati','semafori'].forEach(cTenda);
+  ['campagne','regioni','province','stati','semafori','presc'].forEach(cTenda);
+  cDisegnaOrdini();
   const q = cQuanti();
-  if($('cQuantiF')){ $('cQuantiF').textContent = q; $('cQuantiF').classList.toggle('nascosto', !q); }
-  if($('cImbuto')) $('cImbuto').classList.toggle('attivo', q>0);
-  if($('cAzzeraB')) $('cAzzeraB').classList.toggle('nascosto', !q);
-  if(!$('cCorpo')) return;
+  $('cQuantiF').textContent = q; $('cQuantiF').classList.toggle('nascosto', !q);
+  $('cImbuto').classList.toggle('attivo', q>0);
+  $('cAzzeraB').classList.toggle('nascosto', !q);
   $('cCorpo').innerHTML = cRighe.length ? cRighe.map(r =>
     '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
     '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
     '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small></td>'+
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span>'+
       '<button class="perche" data-pt="'+r.id+'">perche</button></td>'+
-    '<td>'+cFaro(r)+'</td><td>'+esc(r.reg||'-')+'</td><td class="mono">'+esc(r.prov||'-')+'</td><td>'+esc(r.comune||'-')+'</td>'+
+    '<td>'+cFaro(r)+'</td>'+
+    '<td>'+esc(r.reg||'-')+'</td><td class="mono">'+esc(r.prov||'-')+'</td><td>'+esc(r.comune||'-')+'</td>'+
     '<td class="mono">'+esc(String(r.campagna||'').replace('(senza campagna)','-').replace(' - settembre 2025 - lead',''))+'</td>'+
-    '<td class="mono">'+cGiorni(r.giorni)+'</td>'+
-    '<td><span class="stc">'+esc(STATN[r.stato]||r.stato||'')+'</span>'+(r.dnd?'<br><span class="tag att">nel registro</span>':'')+'</td>'+
+    '<td class="mono">'+cQuando(r.giorni)+'</td>'+
+    '<td><span class="stc">'+esc(STATN[r.stato]||r.stato||'')+'</span>'+
+      (r.dnd ? '<br><span class="tag att">nel registro &middot; occhio</span>' : '')+
+      (Array.isArray(r.in_liste) && r.in_liste.length
+        ? '<br><span class="tag att" title="'+esc(r.in_liste.map(x => '#'+x.id+' '+x.nome).join(' - '))+'">gia in '+
+          r.in_liste.length+' list'+(r.in_liste.length===1?'a':'e')+': '+r.in_liste.map(x => '#'+x.id).join(' ')+'</span>' : '')+'</td>'+
     '<td class="chiesto">'+cModulo(r.modulo)+'</td>'+
     '<td class="sap">'+(r.sintesi ? '<p>'+esc(String(r.sintesi).slice(0,150))+'...</p>' : '<p class="vuoto">mai arricchito</p>')+
-      (r.segnali ? '<button class="perche" data-sap="'+r.id+'">apri, '+r.segnali+' segnali</button>' : '')+'</td></tr>').join('')
-    : '<tr><td colspan="12" class="attesa">Nessun contatto con questi filtri.</td></tr>';
+      (r.segnali ? '<button class="perche" data-sap="'+r.id+'">apri &middot; '+r.segnali+' segnali</button>' : '')+'</td>'+
+    '</tr>').join('') : '<tr><td colspan="12" class="attesa">Nessun contatto con questi filtri.</td></tr>';
   $('cQuante').textContent = cRighe.length + ' contatti con questi filtri.';
-  $('cSelN').textContent = cScelti.size + (cScelti.size===1?' selezionato':' selezionati');
+  $('cSelN').textContent = cScelti.size + (cScelti.size===1 ? ' selezionato' : ' selezionati');
+}
+
+/* --- la lista di oggi, la colonna di destra e l archivio --- */
+function cDisegnaCoda(){
+  const vive = cListaRighe.filter(r => r.stato === 'attesa' || r.stato === 'linea');
+  const nc = $('cNCoda'); if(nc) nc.textContent = vive.length + ' in coda';
+  const box = $('cCodaBox'); if(!box) return;
+  box.innerHTML = vive.length
+    ? '<div class="coda">'+vive.slice(0,6).map((c,i) =>
+        '<div class="cod '+(c.stato==='linea'?'viva':'')+'"><span class="pos">'+(i+1)+'</span>'+
+        '<span class="chi"><b>'+esc(c.nome||'')+'</b><small>'+esc(c.comune||'-')+' &middot; '+(c.punteggio==null?'-':c.punteggio)+' punti</small></span>'+
+        (c.stato==='linea' ? '<span class="mono" style="color:var(--sage)">in linea</span>'
+                           : '<button class="via" data-fuori="'+c.contatto_id+'">&times;</button>')+'</div>').join('')+
+      (vive.length>6 ? '<div class="cod"><span class="chi"><small>e altri '+(vive.length-6)+'</small></span></div>' : '')+'</div>'
+    : '<div class="vuota">Nessuno in lista.<br>Scegli i contatti a sinistra e premi <b>Aggiungi alla lista</b>.</div>';
 }
 function cDisegnaLista(){
-  if(!$('cBarraListe')) return;
   const aperte = cListe.filter(l => l.stato === 'aperta');
   const l = cListe.find(x => x.id === cListaId) || null;
   $('cBarraListe').innerHTML =
-    aperte.map(x => '<button class="chiplista" data-lista="'+x.id+'" aria-pressed="'+(x.id===cListaId)+'">'+esc(x.nome)+' <small>'+(x.in_lista||0)+'</small></button>').join('') +
+    aperte.map(x => '<button class="chiplista" data-lista="'+x.id+'" aria-pressed="'+(x.id===cListaId)+'">'+
+      esc(x.nome)+' <small>'+(x.in_lista||0)+'</small></button>').join('') +
     '<button class="chiplista" id="cNuovaLista">+ nuova lista</button>' +
     (l && (l.in_lista||0) > 0 ? '<button class="chiplista" id="cMettiVia" style="margin-left:auto">metti via</button>' : '');
-  $('cNomeLista').value = l ? l.nome : ''; $('cNomeLista').disabled = !l;
+  $('cNomeLista').value = l ? l.nome : '';
+  $('cNomeLista').disabled = !l;
   $('cPassoRpo').className = 'passo ' + (l && l.rpo_il ? 'fatto' : 'ora');
   $('cP1').textContent = l ? (l.in_lista||0)+' contatti scelti' : 'nessuna lista aperta';
   $('cP2').textContent = l && l.rpo_il ? 'controllato: '+(l.nel_registro||0)+' da trattare con riguardo' : 'da controllare prima di partire';
-  $('cP3').textContent = l ? ((l.fatte||0)+' fatte, '+Math.max(0,(l.in_lista||0)-(l.fatte||0)-(l.tolte||0))+' in attesa') : '-';
+  $('cP3').textContent = l ? ((l.fatte||0)+' fatte, '+((l.in_lista||0)-(l.fatte||0)-(l.tolte||0))+' in attesa') : '-';
   $('cAvvia').disabled = !l || !l.rpo_il || !(l.in_lista||0);
-  document.querySelectorAll('#vListe [data-m2]').forEach(b => b.setAttribute('aria-pressed', Boolean(l && b.dataset.m2===l.modo)));
+  document.querySelectorAll('[data-m2]').forEach(b => b.setAttribute('aria-pressed', Boolean(l) && b.dataset.m2===l.modo));
   $('cQuanteLinee').hidden = !(l && l.modo === 'gruppo');
-  if(l) $('cNPar').textContent = l.quante;
+  $('cQuanteLinee2').hidden = !(l && l.modo === 'gruppo');
+  if(l){ $('cNPar').textContent = l.quante; $('cNPar2').textContent = l.quante; }
+  if(l){
+    if(l.dalle1) $('cOra1').value = String(l.dalle1).slice(0,5);
+    if(l.alle1)  $('cOra2').value = String(l.alle1).slice(0,5);
+    if(l.dalle2) $('cOra3').value = String(l.dalle2).slice(0,5);
+    if(l.alle2)  $('cOra4').value = String(l.alle2).slice(0,5);
+    if(l.tetto_giorno) $('cTettoG').value = l.tetto_giorno;
+  }
+  $('cRiepilogo').textContent = l ? (l.in_lista||0)+' in lista &middot; '+(l.fatte||0)+' fatte' : '';
   $('cCorpoLista').innerHTML = cListaRighe.length ? cListaRighe.map((r,i) =>
     '<tr class="'+(r.stato==='linea'?'inlinea':r.stato==='fatta'?'fatta':'')+'">'+
     '<td class="grip"><b class="mono">'+(i+1)+'</b> <button data-su="'+r.contatto_id+'">&#8593;</button><button data-giu="'+r.contatto_id+'">&#8595;</button></td>'+
     '<td class="nomeC"><b>'+esc(r.nome||'')+'</b><small>'+esc(r.tel||'')+'</small></td>'+
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span></td>'+
-    '<td>'+cFaro(r)+'</td><td>'+esc(r.comune||'-')+(r.prov?' <span class="mono">('+esc(r.prov)+')</span>':'')+'</td>'+
-    '<td><span class="rpo '+(r.rpo==='iscritto'?'occhio':(r.rpo||'att'))+'">'+(r.rpo==='ok'?'libero':r.rpo==='iscritto'?'iscritto, occhio':'da controllare')+'</span></td>'+
+    '<td>'+cFaro(r)+'</td>'+
+    '<td>'+esc(r.comune||'-')+(r.prov?' <span class="mono">('+esc(r.prov)+')</span>':'')+'</td>'+
+    '<td><span class="rpo '+(r.rpo==='iscritto'?'occhio':r.rpo||'att')+'">'+
+      (r.rpo==='ok'?'libero':r.rpo==='iscritto'?'iscritto &middot; occhio':'da controllare')+'</span></td>'+
     '<td><span class="stc">'+(r.stato==='linea'?'in linea':r.stato==='fatta'?'chiusa':r.stato==='saltata'?'tolta':'in attesa')+'</span></td>'+
     '<td class="mono">'+esc(r.esito||'-')+'</td>'+
-    '<td>'+(r.stato==='attesa' ? '<button class="azione" data-chiama="'+r.contatto_id+'">chiama adesso</button> <button class="azione calmo" data-fuori="'+r.contatto_id+'">togli</button>' : '')+'</td></tr>').join('')
+    '<td>'+(r.stato==='attesa' ? '<button class="azione" data-chiama="'+r.contatto_id+'">chiama adesso</button> '+
+      '<button class="azione calmo" data-fuori="'+r.contatto_id+'">togli</button>' : '')+'</td></tr>').join('')
     : '<tr><td colspan="9" class="attesa">La lista e vuota. Scegli dei contatti e premi Aggiungi alla lista.</td></tr>';
   const tutte = [...cListe].sort((a,b) => b.id - a.id);
   $('cFogli').innerHTML = tutte.length ? tutte.map(x => {
     const nomi = String(x.chi_c_era||'').split(' | ').filter(Boolean);
     return '<div class="foglioA4 '+(x.stato==='aperta'?'aperta':'chiusa')+'">'+
       '<span class="bollino">'+(x.stato==='aperta'?'in lavorazione':'messa via')+'</span>'+
-      '<span class="dataF">'+esc(String(x.creata_il||'').slice(0,16).replace('T',' '))+'</span>'+
-      '<h4>'+esc(x.nome)+'</h4><div class="righeF">'+
-      (nomi.slice(0,9).map(nm => '<div>'+esc(nm)+'</div>').join('') || '<div>vuota</div>')+
-      (nomi.length>9 ? '<div>e altri '+(nomi.length-9)+'</div>' : '')+'</div>'+
-      '<div class="fondoF"><span><b>'+(x.in_lista||0)+'</b>in lista</span><span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
-      '<span class="re"><b>'+(x.nel_registro||0)+'</b>nel registro</span></div>'+
+      '<span class="dataF">#'+x.id+' &middot; '+esc(String(x.creata_il||'').slice(0,16).replace('T',' '))+'</span>'+
+      '<h4>'+esc(x.nome)+'</h4>'+
+      '<div class="righeF">'+(nomi.slice(0,9).map(nm => '<div>'+esc(nm)+'</div>').join('') || '<div>vuota</div>')+
+        (nomi.length>9 ? '<div>... e altri '+(nomi.length-9)+'</div>' : '')+'</div>'+
+      '<div class="fondoF"><span><b>'+(x.in_lista||0)+'</b>in lista</span>'+
+        '<span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
+        '<span class="re"><b>'+(x.nel_registro||0)+'</b>nel registro</span></div>'+
       '<button class="apriF" data-riapri="'+x.id+'"></button></div>';
   }).join('') : '<div class="vuotone">Nessuna lista ancora.</div>';
+  cDisegnaCoda();
 }
+
+/* --- i pannelli che si aprono --- */
 function cPannello(titolo, dentro){
   let v = $('cVelo');
   if(!v){
     v = document.createElement('div'); v.className = 'velo'; v.id = 'cVelo';
-    v.innerHTML = '<div class="pannello"><div class="testa"><h2 id="cPTit"></h2><button class="azione" id="cPChiudi">chiudi</button></div><div style="padding:16px 17px" id="cPCorpo"></div></div>';
+    v.innerHTML = '<div class="pannello"><div class="testa"><h2 id="cPTit"></h2>'+
+      '<button class="azione" id="cPChiudi">chiudi</button></div><div style="padding:16px 17px" id="cPCorpo"></div></div>';
     document.body.appendChild(v);
-    v.addEventListener('click', (e) => { if(e.target === v || e.target.id === 'cPChiudi') v.classList.remove('apri'); });
+    /* il chiudi si ascolta qui, in cattura, cosi nessun altro gestore lo mangia */
+    v.addEventListener('click', (e) => {
+      if(e.target === v || (e.target.closest && e.target.closest('#cPChiudi'))) cChiudiPannello();
+    }, true);
   }
   $('cPTit').textContent = titolo; $('cPCorpo').innerHTML = dentro; v.classList.add('apri');
 }
+function cChiudiPannello(){ const v = $('cVelo'); if(v) v.classList.remove('apri'); }
 function cApriPunteggio(id){
   const r = cRighe.find(x => x.id === id); if(!r) return;
   const voci = Array.isArray(r.punteggio_perche) ? r.punteggio_perche : [];
-  cPannello(r.nome || 'Contatto', '<p class="occhio">Punteggio '+(r.punteggio||0)+' su 100, voce per voce.</p><table class="voci">'+
-    voci.map(v => '<tr><td>'+esc(v.voce)+'</td><td style="color:'+((v.peso<0)?'var(--brick)':'var(--ink-2)')+'">'+(v.peso>0?'+':'')+v.peso+'</td></tr>').join('')+
+  cPannello(r.nome || 'Contatto',
+    '<p class="occhio">Punteggio '+(r.punteggio||0)+' su 100, voce per voce.</p><table class="voci">'+
+    voci.map(v => '<tr><td>'+esc(v.voce)+'</td><td style="color:'+((v.peso<0)?'var(--brick)':'var(--ink-2)')+'">'+
+      (v.peso>0?'+':'')+v.peso+'</td></tr>').join('')+
     '<tr class="somma"><td>Totale</td><td>'+(r.punteggio||0)+'</td></tr></table>'+
     '<p class="nota">Non e un giudizio del modello: e una somma di voci scritte. Se una non convince si cambia il peso e si ricalcola tutto.</p>');
 }
@@ -1868,89 +2195,373 @@ function cApriVincoli(id){
     '<p class="occhio"><span class="faro '+s[0]+'" style="display:inline-block;margin-right:7px"></span><b>'+s[1]+'</b> - '+s[2]+'</p>'+
     '<table class="voci"><tr><td>Zona urbanistica</td><td style="text-align:left">'+esc(r.zona||'non nota')+'</td></tr>'+
     '<tr><td>Punto sulla mappa</td><td style="text-align:left">'+(r.croce?'croce confermata dal cliente':r.geo?'ricavato dall indirizzo':'mai messo')+'</td></tr></table>'+
-    (pres.length ? '<div class="gtit">Prescrizioni</div><ul class="presc">'+pres.map(p => '<li>'+esc(p)+'</li>').join('')+'</ul>' : '<p class="nota">Nessuna prescrizione registrata.</p>'));
+    (pres.length ? '<div class="gtit">Prescrizioni</div><ul class="presc">'+pres.map(p => '<li>'+esc(p)+'</li>').join('')+'</ul>'
+                 : '<p class="nota">Nessuna prescrizione registrata.</p>'));
 }
-function cApriSegnali(id){
+async function cApriSegnali(id){
   const r = cRighe.find(x => x.id === id); if(!r) return;
-  cPannello(r.nome || 'Contatto',
-    (r.sintesi ? '<div class="gtit">La sintesi</div><div class="sintesiBox">'+esc(r.sintesi)+'</div>' : '')+
-    '<p class="nota">I '+r.segnali+' segnali per esteso si leggono dalla scheda Arricchimento: qui c e la sintesi, che e quella che serve prima di chiamare.</p>');
+  cPannello(r.nome || 'Contatto', '<p class="attesa">Sto leggendo i segnali...</p>');
+  try{
+    const rr = await fetch(API.replace(/regia$/,'lead-scheda')+'?t='+encodeURIComponent(PASS)+'&contatto='+id);
+    const j = await rr.json();
+    const segnali = j.segnali || [];
+    $('cPCorpo').innerHTML = (r.sintesi ? '<div class="gtit">La sintesi</div><div class="sintesiBox">'+esc(r.sintesi)+'</div>' : '') +
+      (segnali.length ? segnali.map(s => '<div class="seg"><div class="k">'+esc(s.chiave)+
+        '<span class="conf '+esc(s.confidenza||'')+'">'+esc(s.confidenza||'')+'</span></div>'+
+        '<div class="v">'+esc(s.valore||'')+'</div><div class="f">fonte: '+esc(s.fonte||'')+'</div></div>').join('')
+        : '<p class="nota">Nessun segnale: questo contatto non e mai passato dall arricchimento.</p>');
+  }catch(e){
+    $('cPCorpo').innerHTML = (r.sintesi ? '<div class="sintesiBox">'+esc(r.sintesi)+'</div>' : '')+
+      '<p class="nota">I segnali per esteso non si leggono da qui: serve la funzione lead-scheda.</p>';
+  }
 }
+/* GUARDA IL TETTO: la passata sulle mappe la fa il verificatore, non la pagina.
+   Qui si dice, per i selezionati, chi e gia stato guardato e a chi manca
+   l indirizzo per poterlo guardare. */
+function cApriTetto(){
+  if(!cScelti.size){ avvisa('prima scegli qualcuno'); return; }
+  const sc = cRighe.filter(r => cScelti.has(r.id));
+  const gia = sc.filter(r => r.semaforo !== 'mai');
+  const senzaDove = sc.filter(r => !r.comune);
+  cPannello('Guarda il tetto - '+sc.length+' selezionati',
+    '<table class="voci">'+
+    '<tr><td>Gia guardati</td><td>'+gia.length+'</td></tr>'+
+    '<tr><td>Mai guardati</td><td>'+(sc.length-gia.length)+'</td></tr>'+
+    '<tr><td>Senza comune: non si possono guardare</td><td>'+senzaDove.length+'</td></tr>'+
+    '<tr><td>Geolocalizzati</td><td>'+sc.filter(r => r.geo).length+'</td></tr></table>'+
+    '<p class="nota">La verifica del tetto non parte da qui: la fa il verificatore, che legge da solo '+
+    'la lista degli immobili da guardare. Da questa scheda si vede il risultato - il semaforo nella colonna '+
+    '<b>Vincoli sul tetto</b> - e si capisce a chi manca l indirizzo perche possa entrarci.</p>'+
+    (senzaDove.length ? '<div class="gtit">A questi manca il comune</div><ul class="presc">'+
+      senzaDove.slice(0,20).map(r => '<li>'+esc(r.nome||r.tel||('#'+r.id))+'</li>').join('')+'</ul>' : ''));
+}
+
+/* ============================================================================
+   CARICARE CONTATTI A MANO: da un file, incollati da Excel, o uno alla volta.
+   Gli .xlsx si leggono qui dentro, senza passare per il CSV.
+   ============================================================================ */
+const COLONNE = { ignora:'- non importare -', nome:'Nome e cognome', tel:'Telefono', mail:'Email',
+  ind:'Indirizzo', comune:'Comune', prov:'Provincia', note:'Note' };
+const INDIZI = { nome:/nome|nominativ|cliente|contatto|cognome/i, tel:/tel|cell|phone|mobile|numero/i,
+  mail:/mail|e-?mail|posta/i, ind:/indiriz|via|address/i, comune:/comune|citt|city|paese|localit/i,
+  prov:/prov|pv\b|sigla/i, note:/note|commento|osserv/i };
+let impRighe = [], impTitoli = [], impMappa = [], impVia = 'file', impCartella = null;
+
+function impNormTel(t){
+  let x = String(t||'').replace(/[^0-9+]/g,'');
+  if(!x) return '';
+  if(x.startsWith('0039')) x = '+'+x.slice(2);
+  if(x.startsWith('00')) x = '+'+x.slice(2);
+  if(!x.startsWith('+')) x = '+39'+x.replace(/^39/,'');
+  return x;
+}
+function impSpezza(testo){
+  const righe = String(testo||'').split(/\r?\n/).filter(r => r.trim() !== '');
+  if(!righe.length) return [];
+  const sep = righe[0].includes('\t') ? '\t' : (righe[0].split(';').length > righe[0].split(',').length ? ';' : ',');
+  return righe.map(r => r.split(sep).map(c => c.trim().replace(/^"|"$/g,'')));
+}
+function impDici(t){ $('impStato').textContent = t; }
+function impLeggiFile(f){
+  if(!f) return;
+  const nome = (f.name||'').toLowerCase();
+  if(/\.xlsx?$/.test(nome)){
+    if(typeof XLSX === 'undefined'){ impDici('La libreria per leggere gli Excel non si e caricata: salva il file come CSV.'); return; }
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        impCartella = XLSX.read(new Uint8Array(r.result), { type:'array' });
+        impFoglietti(); impApriFoglio(impCartella.SheetNames[0]);
+      }catch(e){ impDici('Non riesco ad aprire questo Excel: '+e.message); }
+    };
+    r.readAsArrayBuffer(f);
+  } else {
+    impCartella = null; $('sceltaFoglio').classList.add('nascosto');
+    const r = new FileReader(); r.onload = () => impLeggiTesto(r.result); r.readAsText(f,'utf-8');
+  }
+}
+function impFoglietti(){
+  const box = $('sceltaFoglio');
+  if(!impCartella || impCartella.SheetNames.length < 2){ box.classList.add('nascosto'); return; }
+  box.classList.remove('nascosto');
+  $('fogliBox').innerHTML = impCartella.SheetNames.map(n =>
+    '<button class="chip" data-foglio="'+esc(n)+'" aria-pressed="false">'+esc(n)+'</button>').join('');
+}
+function impApriFoglio(nome){
+  if(!impCartella) return;
+  const righe = XLSX.utils.sheet_to_json(impCartella.Sheets[nome], { header:1, blankrows:false, defval:'', raw:false });
+  document.querySelectorAll('[data-foglio]').forEach(b => b.setAttribute('aria-pressed', b.dataset.foglio===nome));
+  if(!righe.length){ impDici('Il foglio '+nome+' e vuoto.'); return; }
+  /* i titoli possono non stare sulla prima riga: si prende la prima riga con
+     almeno due caselle piene, cosi un foglio con l intestazione aziendale in
+     cima non manda tutto storto */
+  let i = righe.findIndex(r => r.filter(c => String(c).trim() !== '').length >= 2);
+  if(i < 0) i = 0;
+  impTitoli = righe[i].map(c => String(c).trim());
+  impRighe = righe.slice(i+1).filter(r => r.some(c => String(c).trim() !== ''))
+                  .map(r => impTitoli.map((_,k) => String(r[k]==null?'':r[k]).trim()));
+  impIndovina(); impAnteprima();
+}
+function impLeggiTesto(testo){
+  const t = impSpezza(testo);
+  if(t.length < 2){ impDici('Non ho trovato righe utili: serve una riga di titoli e almeno una riga di dati.'); return; }
+  impTitoli = t[0]; impRighe = t.slice(1);
+  impIndovina(); impAnteprima();
+}
+function impIndovina(){
+  impMappa = impTitoli.map(h => { for(const k of Object.keys(INDIZI)) if(INDIZI[k].test(h)) return k; return 'ignora'; });
+}
+function impConvertite(){
+  return impRighe.map(r => {
+    const o = {};
+    impMappa.forEach((k,i) => { if(k !== 'ignora' && r[i]) o[k] = (o[k] ? o[k]+' ' : '')+r[i]; });
+    o.telN = impNormTel(o.tel);
+    o.valido = /^\+\d{10,14}$/.test(o.telN);
+    o.doppio = cRighe.some(c => c.tel && impNormTel(c.tel) === o.telN);
+    return o;
+  });
+}
+function impAnteprima(){
+  $('impAnteprima').classList.remove('nascosto');
+  $('mappaCol').innerHTML = impTitoli.map((h,i) =>
+    '<div class="mc"><div class="ori">colonna <b>'+esc(h || ('n.'+(i+1)))+'</b></div>'+
+    '<select data-map="'+i+'">'+Object.keys(COLONNE).map(k =>
+      '<option value="'+k+'" '+(impMappa[i]===k?'selected':'')+'>'+COLONNE[k]+'</option>').join('')+'</select>'+
+    '<div class="es">es: '+esc((impRighe[0]||[])[i] || '-')+'</div></div>').join('');
+  const c = impConvertite();
+  const nuovi = c.filter(x => x.valido && !x.doppio).length, dop = c.filter(x => x.doppio).length, ko = c.filter(x => !x.valido).length;
+  $('impEsiti').innerHTML =
+    '<div><b>'+c.length+'</b><span>righe lette</span></div>'+
+    '<div class="ok"><b>'+nuovi+'</b><span>nuovi, numero buono</span></div>'+
+    '<div class="dop"><b>'+dop+'</b><span>gia in archivio</span></div>'+
+    '<div class="ko"><b>'+ko+'</b><span>senza numero valido</span></div>';
+  const usate = impMappa.map((k,i) => ({k,i})).filter(x => x.k !== 'ignora');
+  $('antTesta').innerHTML = usate.map(u => '<th>'+COLONNE[u.k]+'</th>').join('')+'<th>esito</th>';
+  $('antCorpo').innerHTML = c.slice(0,25).map((o,n) =>
+    '<tr>'+usate.map(u => '<td>'+esc(u.k==='tel' ? (o.telN || impRighe[n][u.i] || '') : (impRighe[n][u.i] || ''))+'</td>').join('')+
+    '<td>'+(!o.valido ? '<span class="tag no">numero non valido</span>' : o.doppio ? '<span class="tag att">doppione</span>' : '<span class="tag ok">nuovo</span>')+'</td></tr>').join('');
+  impDici(c.length+' righe lette, '+nuovi+' da aggiungere.');
+  impControlla();
+}
+function impControlla(){
+  const o = $('impOrigine').value;
+  const box = $('impAvviso');
+  if(!o) box.innerHTML = '';
+  else if(o === 'comprata') box.innerHTML = '<div class="avviso"><b>Attenzione</b><span>Una lista comprata non porta con se un consenso valido per noi: il consenso dato a un altro non vale per Next. Questi numeri entrano in archivio marcati <b>nel registro</b> e vanno trattati con riguardo - e comunque dopo un parere del tuo legale.</span></div>';
+  else if(o === 'fiera') box.innerHTML = '<div class="avviso buono"><b>Bene</b><span>Consenso su carta: tieni i moduli firmati, sono la prova. Metti la data vera della fiera, non quella di oggi.</span></div>';
+  else box.innerHTML = '<div class="avviso buono"><b>Bene</b><span>Consenso riconducibile a noi. Le righe entrano chiamabili, e passeranno comunque dal registro delle opposizioni prima della lista.</span></div>';
+  const quanti = (impVia === 'uno') ? ($('u_tel').value.trim() ? 1 : 0) : impConvertite().filter(x => x.valido && !x.doppio).length;
+  $('impConferma').disabled = !(o && quanti > 0);
+  $('impConferma').textContent = quanti ? ('Aggiungi '+quanti+' contatt'+(quanti===1?'o':'i')) : 'Aggiungi all archivio';
+}
+function impApri(){
+  const d = $('impData'); if(d && !d.value) d.value = new Date().toISOString().slice(0,10);
+  $('cVeloImp').classList.add('apri'); impControlla();
+}
+function impChiudi(){ $('cVeloImp').classList.remove('apri'); }
+function impVai(v){
+  impVia = v;
+  document.querySelectorAll('[data-via]').forEach(b => b.setAttribute('aria-selected', b.dataset.via === v));
+  $('viaFile').classList.toggle('nascosto', v !== 'file');
+  $('viaIncolla').classList.toggle('nascosto', v !== 'incolla');
+  $('viaUno').classList.toggle('nascosto', v !== 'uno');
+  $('impAnteprima').classList.toggle('nascosto', v === 'uno' || !impRighe.length);
+  impControlla();
+}
+
+/* FAR PARTIRE UNA TELEFONATA dalla lista. La chiave di Valentino non passa
+   di qui: la pagina chiede alla funzione contatti, che la legge dal database
+   e inoltra. Sempre una sola, sempre con la conferma davanti. */
+async function cFaiPartire(contattoId, bottone){
+  const r = cListaRighe.find(x => x.contatto_id === Number(contattoId));
+  if(!r){ avvisa('questa riga non e piu nella lista'); return; }
+  if(!r.tel){ avvisa('questo contatto non ha un numero'); return; }
+  if(!confirm('Faccio squillare adesso?\n\n'+(r.nome||'(senza nome)')+'\n'+r.tel+
+              (r.rpo === 'iscritto' ? '\n\nATTENZIONE: risulta iscritto al registro delle opposizioni.' : '')))
+    return;
+  if(bottone) bottone.disabled = true;
+  const e = await cComando({ lista: cListaId, chiama: Number(contattoId) });
+  if(bottone) bottone.disabled = false;
+  if(e.ok){
+    avvisa('sta squillando: '+(e.nome || r.nome || e.chiamato));
+    await cCaricaLista(cListaId);
+    if(typeof aggiorna === 'function') aggiorna();
+  } else {
+    avvisa('la chiamata non e partita: '+String((e.dice && (e.dice.errore || e.dice.dice)) || e.errore || '').slice(0,160));
+  }
+}
+
+/* --- i comandi --- */
 document.addEventListener('click', async (e) => {
-  const t = e.target.closest('button, input[type=checkbox]');
-  if(!t) return;
-  if(t.id === 'cPChiudi'){ if($('cVelo')) $('cVelo').classList.remove('apri'); return; }
-  if(!t.closest('#vCont') && !t.closest('#vListe')) return;
+  const t = e.target.closest('button, input[type=checkbox], label.tv');
   if(!e.target.closest('.tenda')) document.querySelectorAll('#vCont .tpannello.apri').forEach(p => p.classList.remove('apri'));
+  if(t && t.id === 'cPChiudi'){ cChiudiPannello(); return; }
+  if(!t || !t.closest('#vCont, #vListe, #vArch, #cVeloImp')) return;
   const d = t.dataset;
+
+  if(t.id === 'cCaricaMano'){ impApri(); return; }
+  if(t.id === 'impChiudi' || t.id === 'impAnnulla'){ impChiudi(); return; }
+  if(d.via){ impVai(d.via); return; }
+  if(t.id === 'zonaFile' || (t.closest && t.closest('#zonaFile'))){ $('fileIn').click(); return; }
+  if(t.id === 'bLeggi'){ impLeggiTesto($('testoIn').value); return; }
+  if(d.foglio){ impApriFoglio(d.foglio); return; }
+  if(t.id === 'impConferma'){
+    const o = $('impOrigine').value;
+    let righe;
+    if(impVia === 'uno'){
+      righe = [{ nome:$('u_nome').value, tel:$('u_tel').value, mail:$('u_mail').value,
+                 comune:$('u_comune').value, prov:$('u_prov').value, ind:$('u_ind').value, note:$('u_note').value }]
+              .map(x => { x.telN = impNormTel(x.tel); return x; });
+    } else {
+      righe = impConvertite().filter(x => x.valido && !x.doppio);
+    }
+    t.disabled = true; impDici('Sto scrivendo in archivio...');
+    const r = await cComando({ importa: { origine:o, consenso:$('impData').value || null,
+      lista:$('impNome').value || null, righe: righe.map(x => ({ nome:x.nome||null, tel:x.telN||null,
+      email:x.mail||null, comune:x.comune||null, provincia:x.prov||null, indirizzo:x.ind||null, note:x.note||null })) } });
+    t.disabled = false;
+    if(r.ok){
+      impDici(r.messi+' contatti aggiunti.');
+      avvisa(r.messi+' contatti aggiunti all archivio'+(r.saltati?' ('+r.saltati+' saltati: gia c erano)':''));
+      impRighe = []; impTitoli = []; cVoci = null; impChiudi(); cCarica();
+    } else { impDici('Non sono riuscito a scriverli: '+String(r.errore || JSON.stringify(r.dice||'')).slice(0,180)); }
+    return; }
+
   if(t.id === 'cImbuto'){ const b = $('cFiltri'); b.classList.toggle('nascosto'); t.setAttribute('aria-expanded', !b.classList.contains('nascosto')); return; }
   if(t.id === 'cAzzeraB'){ cAzzera(); cCarica(); return; }
   if(d.apre){ const p = $('cP'+d.apre); const era = p.classList.contains('apri');
     document.querySelectorAll('#vCont .tpannello.apri').forEach(x => x.classList.remove('apri'));
     p.classList.toggle('apri', !era); return; }
   if(d.voce){ const k = d.voce; cFiltro[k].has(t.value) ? cFiltro[k].delete(t.value) : cFiltro[k].add(t.value); cCarica(); return; }
-  if(d.tutte){ (cVoci[d.tutte]||[]).forEach(o => cFiltro[d.tutte].add(o.v)); cCarica(); return; }
+  if(d.tutte){ cVociDi(d.tutte).forEach(o => cFiltro[d.tutte].add(o.v)); cCarica(); return; }
   if(d.nessuna){ cFiltro[d.nessuna].clear(); cCarica(); return; }
-  if(d.int !== undefined){ cFiltro[d.int] = !cFiltro[d.int]; t.setAttribute('aria-pressed', cFiltro[d.int]); cCarica(); return; }
+  if(d.int !== undefined){ if(t.disabled) return; cFiltro[d.int] = !cFiltro[d.int]; t.setAttribute('aria-pressed', cFiltro[d.int]); cCarica(); return; }
   if(d.p !== undefined){
     document.querySelectorAll('#vCont [data-p]').forEach(b => b.setAttribute('aria-pressed', b===t));
     if(d.p === 'date'){ $('cIntervallo').hidden = false; }
-    else { $('cIntervallo').hidden = true; cFiltro.dal = null; cFiltro.al = null; cFiltro.giorni = d.p === 'tutto' ? null : Number(d.p); }
+    else { $('cIntervallo').hidden = true; cFiltro.dal = null; cFiltro.al = null;
+           cFiltro.giorni = d.p === 'tutto' ? null : Number(d.p); }
     cCarica(); return; }
+  if(t.id === 'cPiuOrd'){
+    const usati = cOrdini.map(o => o.campo);
+    const libero = Object.keys(CORD).find(k => !usati.includes(k));
+    if(libero){ cOrdini.push({ campo:libero, giu:true }); cRiordina(); cDisegna(); }
+    return; }
+  if(d.verso !== undefined){ const i = Number(d.verso); cOrdini[i].giu = !cOrdini[i].giu; cRiordina(); cDisegna(); return; }
+  if(d.viaord !== undefined){ cOrdini.splice(Number(d.viaord), 1); cRiordina(); cDisegna(); return; }
   if(d.cnt){
     const k = d.cnt;
-    if(k === 'tutti') cAzzera();
-    else if(k === 'mai'){ if(cFiltro.stati.has('nuovo')) cFiltro.stati.delete('nuovo'); else { cFiltro.stati.clear(); cFiltro.stati.add('nuovo'); } }
+    if(k === 'tutti'){ cAzzera(); }
+    else if(k === 'mai'){ cFiltro.stati.has('nuovo') ? cFiltro.stati.delete('nuovo') : (cFiltro.stati.clear(), cFiltro.stati.add('nuovo')); }
     else if(k === 'fatti'){ scheda('tListe'); return; }
-    else cFiltro[k] = !cFiltro[k];
-    document.querySelectorAll('#vCont [data-int]').forEach(b => b.setAttribute('aria-pressed', Boolean(cFiltro[b.dataset.int])));
+    else { cFiltro[k] = !cFiltro[k]; }
     cCarica(); return; }
   if(d.csel){ const id = Number(d.csel); cScelti.has(id) ? cScelti.delete(id) : cScelti.add(id); cDisegna(); return; }
   if(t.id === 'cTutti'){ cRighe.forEach(r => t.checked ? cScelti.add(r.id) : cScelti.delete(r.id)); cDisegna(); return; }
   if(t.id === 'cPrimi'){ cRighe.slice(0, Number($('cPrimiN').value)||0).forEach(r => cScelti.add(r.id)); cDisegna(); return; }
   if(t.id === 'cPulisci'){ cScelti.clear(); cDisegna(); return; }
+  if(t.id === 'cTetto'){ cApriTetto(); return; }
   if(d.pt){ cApriPunteggio(Number(d.pt)); return; }
   if(d.vinc){ cApriVincoli(Number(d.vinc)); return; }
   if(d.sap){ cApriSegnali(Number(d.sap)); return; }
-  if(t.id === 'cArricchisci'){ if(!cScelti.size) return;
-    t.disabled = true; const r = await cComando({ arricchisci: [...cScelti] }); t.disabled = false; cScelti.clear();
-    avvisa(r.ok ? (r.messi+' messi in coda: fra dieci minuti hanno la loro scheda') : 'non sono riuscito a metterli in coda');
-    cVoci = null; cCarica(); return; }
-  if(t.id === 'cRicalcola'){ t.disabled = true; await cComando({ ricalcola: true }); t.disabled = false; cVoci = null; cCarica(); avvisa('punteggi rifatti'); return; }
+
+  if(t.id === 'cArricchisci'){
+    if(!cScelti.size) return;
+    t.disabled = true; const r = await cComando({ arricchisci: [...cScelti] });
+    t.disabled = false; cScelti.clear();
+    avvisa(r.ok ? (r.messi+' messi in coda all arricchimento: fra dieci minuti hanno la loro scheda') : 'non sono riuscito a metterli in coda');
+    cCarica(); return; }
+  if(t.id === 'cRicalcola'){ t.disabled = true; await cComando({ ricalcola: true }); t.disabled = false; cVoci = null; cCarica(); return; }
+
+  if(t.id === 'cApriLista'){ scheda('tListe'); return; }
   if(t.id === 'cNuovaLista'){ const r = await cComando({ lista_nuova: {} }); if(r.lista) cListaId = r.lista.id; await cCaricaListe(); return; }
   if(d.lista){ await cCaricaLista(Number(d.lista)); return; }
   if(t.id === 'cMettiVia'){ await cComando({ lista: cListaId, archivia: true }); cListaId = null; await cCaricaListe(); return; }
-  if(d.riapri){ await cComando({ lista: Number(d.riapri), riapri: true }); cListaId = Number(d.riapri); await cCaricaListe(); return; }
-  if(t.id === 'cAggiungi'){ if(!cScelti.size) return;
+  /* dall archivio il foglio si apre: se era messa via la si rimette in
+     lavorazione, se era gia aperta la si porta solo davanti agli occhi */
+  if(d.riapri){
+    const id = Number(d.riapri);
+    const f = cListe.find(x => x.id === id);
+    if(f && f.stato !== 'aperta') await cComando({ lista: id, riapri: true });
+    cListaId = id; await cCaricaListe(); scheda('tListe'); return; }
+  if(t.id === 'cAggiungi'){
+    if(!cScelti.size){ avvisa('prima scegli qualcuno: la spunta a sinistra della riga'); return; }
+    /* se qualcuno di questi e gia in una lista lo si dice PRIMA: chiamare due
+       volte la stessa persona nello stesso giro e la figura peggiore */
+    const doppi = cRighe.filter(r => cScelti.has(r.id) && Array.isArray(r.in_liste) && r.in_liste.length);
+    if(doppi.length){
+      const q = doppi.slice(0,8).map(r => (r.nome||r.tel)+' (gia in '+r.in_liste.map(x => '#'+x.id).join(', ')+')').join('\n');
+      if(!confirm(doppi.length+' di questi sono gia in un altra lista:\n\n'+q+
+        (doppi.length>8 ? '\n... e altri '+(doppi.length-8) : '')+'\n\nLi metto lo stesso?')) return;
+    }
+    t.disabled = true;
     if(!cListaId){ const r = await cComando({ lista_nuova: {} }); if(r.lista) cListaId = r.lista.id; }
-    await cComando({ lista: cListaId, aggiungi: [...cScelti] });
-    cScelti.clear(); await cCaricaListe(); cDisegna(); scheda('tListe'); return; }
-  if(d.fuori){ await cComando({ lista: cListaId, togli: Number(d.fuori) }); await cCaricaListe(); return; }
+    if(!cListaId){ t.disabled = false; avvisa('non sono riuscito ad aprire una lista'); return; }
+    const r = await cComando({ lista: cListaId, aggiungi: [...cScelti] });
+    t.disabled = false;
+    if(!r.ok){ avvisa('non sono riuscito ad aggiungerli: '+String(r.dice||r.errore||'').slice(0,120)); return; }
+    const quanti = cScelti.size; cScelti.clear();
+    await cCaricaListe(); cDisegna();
+    avvisa(quanti+' aggiunti alla lista'); return; }
+  if(d.fuori){ await cComando({ lista: cListaId, togli: Number(d.fuori) }); await cCaricaLista(cListaId); return; }
   if(d.su){ await cComando({ lista: cListaId, sposta: { id: Number(d.su), verso: 'su' } }); await cCaricaLista(cListaId); return; }
   if(d.giu){ await cComando({ lista: cListaId, sposta: { id: Number(d.giu), verso: 'giu' } }); await cCaricaLista(cListaId); return; }
-  if(d.m2){ await cComando({ lista: cListaId, modo: d.m2 }); await cCaricaListe(); return; }
-  if(t.id === 'cMeno' || t.id === 'cPiu'){
+  if(d.m2){ if(!cListaId){ avvisa('prima apri o crea una lista'); return; } await cComando({ lista: cListaId, modo: d.m2 }); await cCaricaListe(); return; }
+  if(t.id === 'cMeno' || t.id === 'cPiu' || t.id === 'cMeno2' || t.id === 'cPiu2'){
     const l = cListe.find(x => x.id === cListaId); if(!l) return;
-    await cComando({ lista: cListaId, quante: Math.max(1, Math.min(5, (l.quante||2) + (t.id==='cPiu'?1:-1))) });
-    await cCaricaListe(); return; }
-  if(t.id === 'cRpo'){ const r = await cComando({ lista: cListaId, rpo: true }); avvisa(r.nota || 'registro controllato'); await cCaricaListe(); return; }
-  if(d.chiama){ avvisa('il tasto che fa partire la telefonata dalla lista si accende quando colleghiamo la coda a valentino-chiama'); return; }
-  if(t.id === 'cAvvia'){ avvisa('la partenza automatica si accende quando il registro delle opposizioni e collegato davvero'); return; }
+    const su = (t.id === 'cPiu' || t.id === 'cPiu2');
+    const q = Math.max(1, Math.min(5, (l.quante||2) + (su?1:-1)));
+    await cComando({ lista: cListaId, quante: q }); await cCaricaListe(); return; }
+  if(t.id === 'cSvuota'){
+    if(!cListaId || !cListaRighe.length) return;
+    if(!confirm('Tolgo tutti i '+cListaRighe.length+' nomi da questa lista? La lista resta, si svuota.')) return;
+    t.disabled = true; await cComando({ lista: cListaId, svuota: true }); t.disabled = false;
+    await cCaricaListe(); avvisa('lista svuotata'); return; }
+  if(t.id === 'cRpo'){ const r = await cComando({ lista: cListaId, rpo: true });
+    avvisa(r.nota || 'registro controllato'); await cCaricaListe(); return; }
+  /* LA TELEFONATA PARTE DAVVERO. Una alla volta, sempre con la conferma che
+     porta scritto nome e numero: chi preme sa chi sta per squillare. */
+  if(d.chiama){ await cFaiPartire(Number(d.chiama), t); return; }
+  if(t.id === 'cAvvia'){
+    const prossimo = cListaRighe.find(x => x.stato === 'attesa');
+    if(!prossimo){ avvisa('non c e nessuno in attesa in questa lista'); return; }
+    if(cListaRighe.some(x => x.stato === 'linea')){ avvisa('c e gia una telefonata in linea: chiudila prima di far partire la prossima'); return; }
+    await cFaiPartire(prossimo.contatto_id, t); return; }
 });
 document.addEventListener('input', (e) => {
-  if(!e.target.closest || (!e.target.closest('#vCont') && !e.target.closest('#vListe'))) return;
+  if(!e.target.closest) return;
+  if(e.target.id === 'fileIn'){ impLeggiFile(e.target.files && e.target.files[0]); return; }
+  if(!e.target.closest('#vCont, #vListe, #cVeloImp')) return;
   if(e.target.id === 'cCerca'){ clearTimeout(window._cT); window._cT = setTimeout(() => { cFiltro.cerca = e.target.value; cCarica(); }, 350); return; }
   if(e.target.id === 'cSlid'){ cFiltro.min = Number(e.target.value); $('cSlidV').textContent = cFiltro.min;
     clearTimeout(window._cS); window._cS = setTimeout(cCarica, 300); return; }
   if(e.target.id === 'cD1' || e.target.id === 'cD2'){ cFiltro.dal = $('cD1').value || null; cFiltro.al = $('cD2').value || null;
     cFiltro.giorni = null; clearTimeout(window._cD); window._cD = setTimeout(cCarica, 400); return; }
+  if(e.target.id === 'u_tel'){ impControlla(); return; }
   if(e.target.dataset && e.target.dataset.filtra){ cTenda(e.target.dataset.filtra); return; }
 });
 document.addEventListener('change', async (e) => {
-  if(!e.target.closest || (!e.target.closest('#vCont') && !e.target.closest('#vListe'))) return;
-  if(e.target.id === 'cOrdina'){ cFiltro.ordina = e.target.value; cCarica(); }
-  if(e.target.id === 'cNomeLista' && cListaId){ await cComando({ lista: cListaId, nome: e.target.value }); await cCaricaListe(); }
+  if(!e.target.closest) return;
+  if(e.target.id === 'fileIn'){ impLeggiFile(e.target.files && e.target.files[0]); return; }
+  if(!e.target.closest('#vCont, #vListe, #cVeloImp')) return;
+  if(e.target.dataset && e.target.dataset.ord !== undefined){
+    cOrdini[Number(e.target.dataset.ord)].campo = e.target.value; cRiordina(); cDisegna(); return; }
+  if(e.target.dataset && e.target.dataset.map !== undefined){
+    impMappa[Number(e.target.dataset.map)] = e.target.value; impAnteprima(); return; }
+  if(e.target.id === 'impOrigine'){ impControlla(); return; }
+  if(e.target.id === 'cNomeLista' && cListaId){ await cComando({ lista: cListaId, nome: e.target.value }); await cCaricaListe(); return; }
+  if(['cOra1','cOra2','cOra3','cOra4','cTettoG'].includes(e.target.id) && cListaId){
+    await cComando({ lista: cListaId, orari: { dalle1:$('cOra1').value||null, alle1:$('cOra2').value||null,
+      dalle2:$('cOra3').value||null, alle2:$('cOra4').value||null, tetto: Number($('cTettoG').value)||null } });
+    avvisa('orari salvati sulla lista'); return; }
 });
+/* trascinare il file sopra il riquadro */
+document.addEventListener('dragover', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
+  if(z){ e.preventDefault(); z.classList.add('sopra'); } });
+document.addEventListener('dragleave', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
+  if(z) z.classList.remove('sopra'); });
+document.addEventListener('drop', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
+  if(z){ e.preventDefault(); z.classList.remove('sopra'); impLeggiFile(e.dataTransfer.files && e.dataTransfer.files[0]); } });
 function scheda(q){
   ['tCont','tListe','tArch','tLinea','tArric','tRich','tChiuse'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
   $('vCont').classList.toggle('nascosto', q!=='tCont');
