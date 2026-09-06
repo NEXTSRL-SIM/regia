@@ -536,6 +536,13 @@ tr.fatta td{opacity:.55}
 @media (max-width:900px){.impDue{grid-template-columns:1fr;gap:0}}
 #cPCorpo .duecol{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
 @media (max-width:900px){#cPCorpo .duecol{grid-template-columns:1fr}}
+.avvisoLez{border:1px solid var(--amber);background:var(--amber-wash);padding:11px 14px;margin-bottom:14px;font-size:13px;line-height:1.5}
+.avvisoLez b{color:var(--amber);font-family:var(--mono);font-size:15px;margin-right:4px}
+.lezBox{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+.lez{display:flex;gap:10px;align-items:baseline;font-size:12.5px;padding:4px 0;line-height:1.5}
+.stz{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line-2);padding:2px 6px;color:var(--ink-3);white-space:nowrap}
+.stz.approvata{color:var(--sage);border-color:var(--sage)}
+.stz.scartata{color:var(--brick);border-color:var(--brick)}
 .scartateBox{border-top:1px dashed var(--line-2);margin-top:12px;padding-top:10px}
 .scartata{display:flex;gap:9px;align-items:baseline;font-size:12px;color:var(--ink-3);padding:4px 0}
 .scartata span{flex:1 1 auto;text-decoration:line-through}
@@ -1506,6 +1513,10 @@ function apriFormazione(convRacconto, nomeRacconto){
   const v = convRacconto ? null : ((stato.vive||[]).find(x=>x.conversazione===sel) || null);
   const conv = convRacconto || (v ? v.conversazione : null);
   voceSuTelefonata = convRacconto || null;
+  /* se si parte da una carta, il collegamento si apre da solo e comincia lui:
+     premere un secondo tasto per sentirsi raccontare una cosa che gli hai
+     appena chiesto non ha senso */
+  const parteDaSolo = Boolean(convRacconto);
   const velo = document.createElement('div');
   velo.className = 'velo';
   velo.innerHTML =
@@ -1536,6 +1547,7 @@ function apriFormazione(convRacconto, nomeRacconto){
       '<div class="fblocco"><p class="etich">Gia insegnato</p><div id="fElenco"><p class="attesa">Sto guardando&hellip;</p></div></div>'+
     '</div>';
   document.body.appendChild(velo);
+  if(parteDaSolo) setTimeout(() => accendiVoce(velo), 120);
   const via = () => { spegniVoce(); try{ riconF && riconF.stop(); }catch(e){} riconF = null; velo.remove(); };
   velo.querySelector('.via').onclick = via;
   velo.onclick = (e) => { if(e.target === velo) via(); };
@@ -2273,24 +2285,35 @@ const RAPI = () => API.replace(/regia$/, 'regia-riepilogo');
 async function caricaImparato(){
   const box = $('impCorpo'); if(!box) return;
   box.innerHTML = '<p class="attesa">Sto raccogliendo quello che ha imparato...</p>';
-  let righe = [];
+  let righe = [], lezioni = [], inAttesa = 0;
   try{
     const r = await fetch(RAPI()+'?imparato=1&t='+encodeURIComponent(PASS));
     const j = await r.json(); righe = j.imparato || [];
   }catch(e){ box.innerHTML = '<p class="attesa">Non riesco a leggerlo.</p>'; return; }
-  if(!righe.length){ box.innerHTML = '<div class="carta"><p class="attesa">Ancora niente. Si riempie da solo mentre Valentino telefona.</p></div>'; return; }
+  /* le lezioni depositate: il seguito di quello che si vede qui sopra, e deve
+     stare nello stesso posto - altrimenti dipende da chi se ne ricorda */
+  try{
+    const r2 = await fetch(RAPI()+'?lezioni=1&t='+encodeURIComponent(PASS));
+    const j2 = await r2.json(); lezioni = j2.lezioni || []; inAttesa = j2.in_attesa || 0;
+  }catch(e){}
+  const lezioniDi = (conv) => lezioni.filter(z => z.conversazione === conv);
+  const avviso = inAttesa
+    ? '<div class="avvisoLez"><b>'+inAttesa+'</b> '+(inAttesa===1? 'lezione depositata e in attesa' : 'lezioni depositate e in attesa')+
+      ': le ho da guardare io e da approvare lei, prima che entrino nelle istruzioni.</div>'
+    : '';
+  if(!righe.length){ box.innerHTML = avviso + '<div class="carta"><p class="attesa">Ancora niente. Si riempie da solo mentre Valentino telefona.</p></div>'; return; }
   const conX = (dentro, tipo, id) =>
     '<div class="rigaImp">'+dentro+
       '<button class="butta" data-scarta="'+tipo+':'+id+'" title="scarta: non ne tiene piu conto">&times;</button>'+
     '</div>';
-  box.innerHTML = righe.map(x => {
+  box.innerHTML = avviso + righe.map(x => {
     const me = x.mercato || [], ob = x.obiezioni || [], tr = x.tratti || [], sc = x.scartate || [];
     return '<div class="carta impara">'+
       '<div class="impTesta">'+
         '<h4>'+esc(Nome(x.chi)||x.telefono||'senza nome')+'</h4>'+
         '<span class="mono">'+esc(String(x.quando||"").slice(0,16).replace("T"," "))+
           (x.durata_sec? " · "+mmss(x.durata_sec) : "")+'</span>'+
-        '<button class="azione" data-racconta="'+esc(x.conversazione)+'" data-chi="'+esc(Nome(x.chi)||x.telefono||'')+'">fattelo raccontare</button>'+
+        '<button class="azione" data-racconta="'+esc(x.conversazione)+'" data-chi="'+esc(Nome(x.chi)||x.telefono||'')+'">ascolta il racconto</button>'+
         '<button class="azione" data-riep="'+esc(x.conversazione)+'">apri la telefonata</button>'+
         '<button class="minif ross" data-scartatutto="'+esc(x.conversazione)+'">scarta la lezione</button>'+
       '</div>'+
@@ -2319,6 +2342,13 @@ async function caricaImparato(){
         ? '<p class="attesa">Di questa telefonata non e rimasto niente: era tutto da scartare, o non ha imparato nulla.</p>' : "")+
       /* le scartate non spariscono: restano qui in fondo, sbarrate, e si
          rimettono con un tasto. Una prova sbagliata si annulla, non si perde */
+      /* il seguito: cosa e successo dopo che gliel hai fatto raccontare */
+      (lezioniDi(x.conversazione).length
+        ? '<div class="lezBox"><p class="etich">Lezione depositata</p>'+
+          lezioniDi(x.conversazione).map(z =>
+            '<div class="lez"><span class="stz '+esc(z.stato||'in-attesa')+'">'+esc(z.stato||'in attesa')+'</span>'+
+            '<span>'+esc(z.titolo || String(z.regola||'').slice(0,140) || 'senza titolo')+'</span></div>').join("")+
+          '</div>' : "")+
       (sc.length ? '<div class="scartateBox"><p class="etich">Scartate ('+sc.length+')</p>'+sc.map(s =>
         '<div class="scartata"><span>'+esc(String(s.testo||"").slice(0,180))+'</span>'+
         '<button class="minif" data-rimetti="'+esc(s.tipo)+':'+s.id+'">rimetti</button></div>').join("")+'</div>' : "")+
