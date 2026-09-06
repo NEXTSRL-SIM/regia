@@ -460,6 +460,21 @@ tr.fatta td{opacity:.55}
    sopra tutto e la pagina smette di rispondere ai click) --- */
 #cVelo{display:none}
 #cVelo.apri{display:flex}
+
+/* --- CONTATTI: le liste messe via, piccole come icone --- */
+.archTesta{padding:12px 16px 0}
+.minif{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line-2);padding:4px 8px;background:var(--surface)}
+.minif.ross{color:var(--brick);border-color:var(--brick)}
+.azioniF{display:flex;gap:6px;margin-top:9px;position:relative;z-index:2}
+.fogliniA4{display:grid;grid-template-columns:repeat(auto-fill,minmax(134px,1fr));gap:10px;padding:12px 16px 18px}
+.foglino{position:relative;border:1px solid var(--line-2);background:var(--surface);min-height:94px}
+.foglino .apriFno{display:block;width:100%;text-align:left;padding:9px 22px 9px 10px;background:none;border:none}
+.foglino .nf{display:block;font-size:12px;font-weight:500;line-height:1.25;max-height:3.7em;overflow:hidden}
+.foglino .qf{display:block;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);margin-top:7px}
+.foglino .df{display:block;font-family:var(--mono);font-size:9.5px;color:var(--ink-3)}
+.foglino .cestino{position:absolute;top:2px;right:2px;width:20px;height:20px;line-height:1;color:var(--ink-3);border:1px solid transparent;font-size:15px;background:none}
+.foglino .cestino:hover{color:var(--brick);border-color:var(--brick)}
+.vuotone.piccolo{font-size:12px;padding:14px 16px}
 #vCont .telaio{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1px;background:var(--line)}
 #vCont .col{background:var(--ground);min-width:0}
 #vCont .col.dx{position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto}
@@ -2180,6 +2195,33 @@ function cDisegnaCoda(){
       (vive.length>6 ? '<div class="cod"><span class="chi"><small>e altri '+(vive.length-6)+'</small></span></div>' : '')+'</div>'
     : '<div class="vuota">Nessuno in lista.<br>Scegli i contatti a sinistra e premi <b>Aggiungi alla lista</b>.</div>';
 }
+/* LE LISTE MESSE VIA. Stanno sotto i fogli grandi, piccole come icone del
+   desktop: servono a ritrovarle, non a lavorarci. Da qui si riaprono o si
+   cancellano; e la stessa cosa vale per le prove, che altrimenti in un mese
+   riempiono l archivio di roba che non e mai stata una telefonata. */
+function cDisegnaArchivio(){
+  const via = cListe.filter(x => x.stato !== 'aperta').sort((a,b) => b.id - a.id);
+  let box = $('cArchivio');
+  if(!box){
+    const f = $('cFogli'); if(!f) return;
+    f.insertAdjacentHTML('afterend',
+      '<div class="archTesta"><button class="minif" id="cToggleArch"></button></div>'+
+      '<div id="cArchivio" class="fogliniA4" hidden></div>');
+    box = $('cArchivio');
+  }
+  const t = $('cToggleArch');
+  if(t) t.textContent = (box.hidden ? 'liste messe via (' : 'nascondi le liste messe via (') + via.length + ')';
+  box.innerHTML = via.length ? via.map(x =>
+    '<div class="foglino">'+
+      '<button class="apriFno" data-riapri="'+x.id+'" title="'+esc(x.nome)+'">'+
+        '<span class="nf">'+esc(x.nome)+'</span>'+
+        '<span class="qf">'+(x.in_lista||0)+' in lista &middot; '+(x.fatte||0)+' fatte</span>'+
+        '<span class="df">id '+x.id+'</span>'+
+      '</button>'+
+      '<button class="cestino" data-cancella="'+x.id+'" title="cancella la lista">&times;</button>'+
+    '</div>').join('') : '<div class="vuotone piccolo">Niente nell archivio.</div>';
+}
+
 function cDisegnaLista(){
   const aperte = cListe.filter(l => l.stato === 'aperta');
   const l = cListe.find(x => x.id === cListaId) || null;
@@ -2222,7 +2264,10 @@ function cDisegnaLista(){
     '<td>'+(r.stato==='attesa' ? '<button class="azione" data-chiama="'+r.contatto_id+'">chiama adesso</button> '+
       '<button class="azione calmo" data-fuori="'+r.contatto_id+'">togli</button>' : '')+'</td></tr>').join('')
     : '<tr><td colspan="9" class="attesa">La lista e vuota. Scegli dei contatti e premi Aggiungi alla lista.</td></tr>';
-  const tutte = [...cListe].sort((a,b) => b.id - a.id);
+  /* i fogli grandi sono solo le liste in lavorazione: le altre stanno
+     nell archivio qui sotto, piccole */
+  const tutte = cListe.filter(x => x.stato === 'aperta').sort((a,b) => b.id - a.id);
+  cDisegnaArchivio();
   $('cFogli').innerHTML = tutte.length ? tutte.map(x => {
     const nomi = String(x.chi_c_era||'').split(' | ').filter(Boolean);
     return '<div class="foglioA4 '+(x.stato==='aperta'?'aperta':'chiusa')+'">'+
@@ -2234,7 +2279,9 @@ function cDisegnaLista(){
       '<div class="fondoF"><span><b>'+(x.in_lista||0)+'</b>in lista</span>'+
         '<span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
         '<span class="re"><b>'+(x.nel_registro||0)+'</b>nel registro</span></div>'+
-      '<button class="apriF" data-riapri="'+x.id+'"></button></div>';
+      '<button class="apriF" data-riapri="'+x.id+'"></button>'+
+      '<div class="azioniF"><button class="minif" data-viafoglio="'+x.id+'">metti via</button>'+
+      '<button class="minif ross" data-cancella="'+x.id+'">cancella</button></div></div>';
   }).join('') : '<div class="vuotone">Nessuna lista ancora.</div>';
   cDisegnaCoda();
 }
@@ -2570,6 +2617,24 @@ document.addEventListener('click', async (e) => {
   if(t.id === 'cNuovaLista'){ await cCreaLista(); await cCaricaListe(); return; }
   if(d.lista){ await cCaricaLista(Number(d.lista)); return; }
   if(t.id === 'cMettiVia'){ await cComando({ lista: cListaId, archivia: true }); cListaId = null; await cCaricaListe(); scheda('tArch'); return; }
+  if(t.id === 'cToggleArch'){ const b = $('cArchivio'); if(b){ b.hidden = !b.hidden; cDisegnaArchivio(); } return; }
+  if(d.viafoglio){
+    const id = Number(d.viafoglio);
+    await cComando({ lista: id, archivia: true });
+    if(cListaId === id) cListaId = null;
+    await cCaricaListe(); return; }
+  /* cancellare una lista: la conferma dice quanto si sta buttando, e dice
+     anche cosa NON si butta - i contatti restano dove sono */
+  if(d.cancella){
+    const id = Number(d.cancella);
+    const f = cListe.find(x => x.id === id);
+    if(!confirm('Cancello la lista "'+(f ? f.nome : '#'+id)+'"?\n\n'+
+      (f ? (f.in_lista||0) : 0)+' contatti in lista, '+(f ? (f.fatte||0) : 0)+' gia chiamati.\n'+
+      'La lista sparisce per sempre. I contatti restano dove sono.')) return;
+    const r = await cComando({ lista: id, cancella: true });
+    if(!r.ok){ avvisa('non sono riuscito a cancellarla'); return; }
+    if(cListaId === id) cListaId = null;
+    await cCaricaListe(); avvisa('lista cancellata'); return; }
   /* dall archivio il foglio si apre: se era messa via la si rimette in
      lavorazione, se era gia aperta la si porta solo davanti agli occhi */
   if(d.riapri){
