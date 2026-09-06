@@ -556,6 +556,15 @@ tr.fatta td{opacity:.55}
 .leg i.verde{background:var(--sage)}
 .leg i.giallo{background:var(--amber)}
 .leg i.rosso{background:var(--brick)}
+
+/* --- LA SECONDA SCHEDA: cosa impariamo mentre si parla --- */
+.imparo .imp{display:grid;grid-template-columns:40px 1fr;gap:9px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;line-height:1.45}
+.imparo .imp:first-of-type{border-top:none}
+.imparo .imp .ora{font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.imparo .imp small{display:block;color:var(--ink-3);font-size:11.5px;margin-top:2px}
+.imparo .imp small.risp{color:var(--sage)}
+.imparo .imp.merc b{color:var(--amber)}
+.imparo .imp.obie b{color:var(--brick)}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -1659,6 +1668,7 @@ function disegna(){
       '<div class="carta"><h4>Il contatto</h4>'+righe([['Comune',''],['Indirizzo',''],['Provincia',''],['Campagna',''],['Quando ha chiesto',''],['Stato','']])+'</div>';
   } else {
   const m = v.momenti||[], s = v.scheda||{}, t = s.tetto||{}, voci = s.voci||null;
+  const mercato = Array.isArray(v.mercato) ? v.mercato : [], obiezioni = Array.isArray(v.obiezioni) ? v.obiezioni : [];
   parlatoDb = Array.isArray(v.battute) ? v.battute : [];
   /* ascolto dal vivo sospeso: il canale di ElevenLabs rifiuta la chiave, riaprirlo ogni giro bloccava la pagina */
   $('centro').innerHTML =
@@ -1737,7 +1747,20 @@ function disegna(){
 
     '<div class="blocco"><p class="etich">Sul tavolo</p>'+ (s.prezzo
       ? '<div class="offerta"><div class="prezzo">'+esc(s.prezzo)+'</div><div class="righe">'+esc(s.configurazione||'')+'</div></div>'
-      : '<p class="attesa">Nessuna proposta ancora messa sul tavolo.</p>')+'</div>';
+      : '<p class="attesa">Nessuna proposta ancora messa sul tavolo.</p>')+'</div>'+
+    /* LA SECONDA SCHEDA: non quello che sappiamo di lui, ma quello che stiamo
+       imparando NOI mentre parla. Sono due cose diverse e vanno tenute
+       separate: la sua pratica riguarda lui, questa riguarda il mercato e il
+       nostro mestiere, e resta anche quando la telefonata e finita. */
+    '<div class="blocco imparo"><p class="etich">Cosa impariamo</p>'+
+      ((mercato.length || obiezioni.length)
+        ? mercato.map(x => '<div class="imp merc"><span class="ora">'+esc(x.ora)+'</span><span>'+
+            esc(x.detto)+(x.cifra? ' <b>'+esc(String(x.cifra))+' euro</b>':'')+
+            (x.configurazione? '<small>'+esc(x.configurazione)+(x.zona? ' - '+esc(x.zona):'')+'</small>':'')+'</span></div>').join('')+
+          obiezioni.map(o => '<div class="imp obie"><span class="ora">'+esc(o.ora)+'</span><span><b>'+
+            esc(o.famiglia)+'</b>'+(o.parole? '<small>&laquo;'+esc(o.parole)+'&raquo;</small>':'')+
+            (o.risposta? '<small class="risp">hai risposto: '+esc(o.risposta)+'</small>':'')+'</span></div>').join('')
+        : '<p class="attesa">Quello che il cliente racconta della concorrenza, e le obiezioni che fa, compaiono qui mentre parla.</p>')+'</div>';
 
   /* a sinistra, sotto le linee: chi e e cosa ha chiesto - quello che sapevamo
      prima di telefonare. A destra resta solo cio che nasce parlando. */
