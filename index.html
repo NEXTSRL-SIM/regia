@@ -692,8 +692,9 @@ tr.fatta td{opacity:.55}
 
 <div id="vListe" class="nascosto"><div class="foglio">
    <div class="barraliste" id="cBarraListe"></div>
+   <label class="fetichetta" for="cNomeLista" style="display:block;margin:12px 0 4px">Nome della lista <span class="mono" id="cIdLista" style="color:var(--amber);text-transform:none;letter-spacing:0"></span></label>
    <input class="nomelista" id="cNomeLista" placeholder="Lista di oggi">
-   <p class="occhio">Chi si chiama, in che ordine, e a che punto siamo.</p>
+   <p class="occhio">Scrivi qui dentro per rinominarla: il nome si salva appena esci dalla casella. L id no, quello resta per sempre ed e come la ritrovi in archivio.</p>
    <div class="passi">
      <div class="passo fatto"><span class="num">1</span><span><b>Scelti</b><small id="cP1">&mdash;</small></span></div>
      <div class="passo ora" id="cPassoRpo"><span class="num">2</span><span><b>Registro opposizioni</b><small id="cP2">&mdash;</small></span></div>
@@ -2081,8 +2082,8 @@ function cDisegna(){
     '<td><span class="stc">'+esc(STATN[r.stato]||r.stato||'')+'</span>'+
       (r.dnd ? '<br><span class="tag att">nel registro &middot; occhio</span>' : '')+
       (Array.isArray(r.in_liste) && r.in_liste.length
-        ? '<br><span class="tag att" title="'+esc(r.in_liste.map(x => '#'+x.id+' '+x.nome).join(' - '))+'">gia in '+
-          r.in_liste.length+' list'+(r.in_liste.length===1?'a':'e')+': '+r.in_liste.map(x => '#'+x.id).join(' ')+'</span>' : '')+'</td>'+
+        ? '<br><span class="tag att" title="'+esc(r.in_liste.map(x => 'id lista '+x.id+': '+x.nome).join(' - '))+'">gia in '+
+          r.in_liste.length+' list'+(r.in_liste.length===1?'a':'e')+': '+r.in_liste.map(x => 'id '+x.id).join(' ')+'</span>' : '')+'</td>'+
     '<td class="chiesto">'+cModulo(r.modulo)+'</td>'+
     '<td class="sap">'+(r.sintesi ? '<p>'+esc(String(r.sintesi).slice(0,150))+'...</p>' : '<p class="vuoto">mai arricchito</p>')+
       (r.segnali ? '<button class="perche" data-sap="'+r.id+'">apri &middot; '+r.segnali+' segnali</button>' : '')+'</td>'+
@@ -2115,6 +2116,7 @@ function cDisegnaLista(){
     (l && (l.in_lista||0) > 0 ? '<button class="chiplista" id="cMettiVia" style="margin-left:auto">metti via</button>' : '');
   $('cNomeLista').value = l ? l.nome : '';
   $('cNomeLista').disabled = !l;
+  $('cIdLista').textContent = l ? '(id lista '+l.id+')' : '';
   $('cPassoRpo').className = 'passo ' + (l && l.rpo_il ? 'fatto' : 'ora');
   $('cP1').textContent = l ? (l.in_lista||0)+' contatti scelti' : 'nessuna lista aperta';
   $('cP2').textContent = l && l.rpo_il ? 'controllato: '+(l.nel_registro||0)+' da trattare con riguardo' : 'da controllare prima di partire';
@@ -2151,7 +2153,7 @@ function cDisegnaLista(){
     const nomi = String(x.chi_c_era||'').split(' | ').filter(Boolean);
     return '<div class="foglioA4 '+(x.stato==='aperta'?'aperta':'chiusa')+'">'+
       '<span class="bollino">'+(x.stato==='aperta'?'in lavorazione':'messa via')+'</span>'+
-      '<span class="dataF">#'+x.id+' &middot; '+esc(String(x.creata_il||'').slice(0,16).replace('T',' '))+'</span>'+
+      '<span class="dataF">id lista '+x.id+' &middot; '+esc(String(x.creata_il||'').slice(0,16).replace('T',' '))+'</span>'+
       '<h4>'+esc(x.nome)+'</h4>'+
       '<div class="righeF">'+(nomi.slice(0,9).map(nm => '<div>'+esc(nm)+'</div>').join('') || '<div>vuota</div>')+
         (nomi.length>9 ? '<div>... e altri '+(nomi.length-9)+'</div>' : '')+'</div>'+
@@ -2393,6 +2395,17 @@ async function cFaiPartire(contattoId, bottone){
   }
 }
 
+/* una lista nasce col suo numero nel nome: fra tre giorni, due liste dello
+   stesso giorno non si distinguono in nessun altro modo */
+async function cCreaLista(){
+  const r = await cComando({ lista_nuova: {} });
+  if(!r.lista) return null;
+  cListaId = r.lista.id;
+  const giorno = new Date().toLocaleDateString('it-IT', { day:'numeric', month:'long' });
+  await cComando({ lista: cListaId, nome: 'Lista id '+cListaId+' - '+giorno });
+  return cListaId;
+}
+
 /* --- i comandi --- */
 document.addEventListener('click', async (e) => {
   const t = e.target.closest('button, input[type=checkbox], label.tv');
@@ -2476,9 +2489,9 @@ document.addEventListener('click', async (e) => {
   if(t.id === 'cRicalcola'){ t.disabled = true; await cComando({ ricalcola: true }); t.disabled = false; cVoci = null; cCarica(); return; }
 
   if(t.id === 'cApriLista'){ scheda('tListe'); return; }
-  if(t.id === 'cNuovaLista'){ const r = await cComando({ lista_nuova: {} }); if(r.lista) cListaId = r.lista.id; await cCaricaListe(); return; }
+  if(t.id === 'cNuovaLista'){ await cCreaLista(); await cCaricaListe(); return; }
   if(d.lista){ await cCaricaLista(Number(d.lista)); return; }
-  if(t.id === 'cMettiVia'){ await cComando({ lista: cListaId, archivia: true }); cListaId = null; await cCaricaListe(); return; }
+  if(t.id === 'cMettiVia'){ await cComando({ lista: cListaId, archivia: true }); cListaId = null; await cCaricaListe(); scheda('tArch'); return; }
   /* dall archivio il foglio si apre: se era messa via la si rimette in
      lavorazione, se era gia aperta la si porta solo davanti agli occhi */
   if(d.riapri){
@@ -2492,12 +2505,12 @@ document.addEventListener('click', async (e) => {
        volte la stessa persona nello stesso giro e la figura peggiore */
     const doppi = cRighe.filter(r => cScelti.has(r.id) && Array.isArray(r.in_liste) && r.in_liste.length);
     if(doppi.length){
-      const q = doppi.slice(0,8).map(r => (r.nome||r.tel)+' (gia in '+r.in_liste.map(x => '#'+x.id).join(', ')+')').join('\n');
+      const q = doppi.slice(0,8).map(r => (r.nome||r.tel)+' (gia in: '+r.in_liste.map(x => 'lista id '+x.id).join(', ')+')').join('\n');
       if(!confirm(doppi.length+' di questi sono gia in un altra lista:\n\n'+q+
         (doppi.length>8 ? '\n... e altri '+(doppi.length-8) : '')+'\n\nLi metto lo stesso?')) return;
     }
     t.disabled = true;
-    if(!cListaId){ const r = await cComando({ lista_nuova: {} }); if(r.lista) cListaId = r.lista.id; }
+    if(!cListaId) await cCreaLista();
     if(!cListaId){ t.disabled = false; avvisa('non sono riuscito ad aprire una lista'); return; }
     const r = await cComando({ lista: cListaId, aggiungi: [...cScelti] });
     t.disabled = false;
