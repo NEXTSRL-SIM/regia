@@ -531,6 +531,11 @@ tr.fatta td{opacity:.55}
 .rigaImp .imp{border-top:none}
 .rigaImp .butta{width:22px;height:22px;line-height:1;margin-top:9px;color:var(--ink-3);border:1px solid transparent;background:none;font-size:14px}
 .rigaImp .butta:hover{color:var(--brick);border-color:var(--brick)}
+.impDue{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+.impCol{min-width:0}
+@media (max-width:900px){.impDue{grid-template-columns:1fr;gap:0}}
+#cPCorpo .duecol{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
+@media (max-width:900px){#cPCorpo .duecol{grid-template-columns:1fr}}
 .scartateBox{border-top:1px dashed var(--line-2);margin-top:12px;padding-top:10px}
 .scartata{display:flex;gap:9px;align-items:baseline;font-size:12px;color:var(--ink-3);padding:4px 0}
 .scartata span{flex:1 1 auto;text-decoration:line-through}
@@ -1317,6 +1322,9 @@ let riconF = null;
    il biglietto a formazione-voce, che glielo da gia firmato e con dentro le
    istruzioni vive di Valentino da passare all allievo come materiale. */
 let vocePronta = null;
+/* se la lezione parte da una telefonata, l allievo deve saperlo prima di
+   aprire bocca: il biglietto se lo porta dietro */
+let voceSuTelefonata = null;
 /* quello che ci si e detti a voce, tenuto qui perche il tasto Manda possa
    spedirlo anche se l allievo si dimentica di depositarlo da solo */
 let voceBattute = [];
@@ -1340,7 +1348,8 @@ async function accendiVoce(velo){
   fVoceStato(velo, 'apro il microfono...', false);
   let j;
   try{
-    const r = await fetch(API.replace(/regia$/,'formazione-voce') + '?t=' + encodeURIComponent(PASS));
+    const r = await fetch(API.replace(/regia$/,'formazione-voce') + '?t=' + encodeURIComponent(PASS) +
+      (voceSuTelefonata ? '&telefonata=' + encodeURIComponent(voceSuTelefonata) : ''));
     j = await r.json();
   }catch(e){ fVoceStato(velo, 'non riesco a chiedere il collegamento', false); return; }
   if(!j || !j.ok){ fVoceStato(velo, (j && j.errore) || 'collegamento negato', false); return; }
@@ -1488,18 +1497,23 @@ async function accendiVoce(velo){
 function spegniVoce(){
   if(vocePronta){ try{ vocePronta.chiudi(); }catch(e){} vocePronta = null; }
 }
-function apriFormazione(){
+function apriFormazione(convRacconto, nomeRacconto){
   /* un pannello solo: due aperti vorrebbero dire due collegamenti con
      l allievo, e due voci che si accavallano */
   if(document.querySelector('.velo .fparlato')) return;
-  const v = (stato.vive||[]).find(x=>x.conversazione===sel) || null;
-  const conv = v ? v.conversazione : null;
+  /* due strade: dalla telefonata in corso (come prima), oppure da una gia
+     chiusa, quando gli si chiede di raccontare cosa ha imparato */
+  const v = convRacconto ? null : ((stato.vive||[]).find(x=>x.conversazione===sel) || null);
+  const conv = convRacconto || (v ? v.conversazione : null);
+  voceSuTelefonata = convRacconto || null;
   const velo = document.createElement('div');
   velo.className = 'velo';
   velo.innerHTML =
     '<div class="pannello">'+
       '<div class="testa"><div><h2>Formazione</h2>'+
-        '<p>'+(v? 'sulla telefonata di '+esc(Nome(v.nome)||v.telefono||'') : 'insegnamento generale')+'</p></div>'+
+        '<p>'+(convRacconto
+            ? 'se lo fa raccontare da lui: la telefonata con '+esc(nomeRacconto||'')
+            : (v? 'sulla telefonata di '+esc(Nome(v.nome)||v.telefono||'') : 'insegnamento generale'))+'</p></div>'+
         '<button class="via" aria-label="chiudi">&times;</button></div>'+
       '<div class="fblocco"><p class="etich">Parli con l allievo</p>'+
         '<p class="fspiega">E Valentino a scuola: stessa voce, stesse conoscenze, ma qui non vende. '+
@@ -2276,22 +2290,31 @@ async function caricaImparato(){
         '<h4>'+esc(Nome(x.chi)||x.telefono||'senza nome')+'</h4>'+
         '<span class="mono">'+esc(String(x.quando||"").slice(0,16).replace("T"," "))+
           (x.durata_sec? " · "+mmss(x.durata_sec) : "")+'</span>'+
+        '<button class="azione" data-racconta="'+esc(x.conversazione)+'" data-chi="'+esc(Nome(x.chi)||x.telefono||'')+'">fattelo raccontare</button>'+
         '<button class="azione" data-riep="'+esc(x.conversazione)+'">apri la telefonata</button>'+
         '<button class="minif ross" data-scartatutto="'+esc(x.conversazione)+'">scarta la lezione</button>'+
       '</div>'+
-      (me.length ? '<p class="etich">Mercato e concorrenza</p>'+me.map(v => conX(
-        '<div class="imp merc"><span>'+esc(v.detto||"")+
-          (v.cifra? ' <b>'+esc(String(v.cifra))+' euro</b>':"")+
-          (v.configurazione? '<small>'+esc(v.configurazione)+(v.zona? " - "+esc(v.zona):"")+'</small>':"")+
-        '</span></div>', 'mercato', v.id)).join("") : "")+
+      /* due colonne: da una parte le obiezioni, dall altra tutto il resto.
+         Prima era una colonna sola e mezza carta restava bianca. */
+      '<div class="impDue">'+
+      '<div class="impCol">'+
       (ob.length ? '<p class="etich">Obiezioni</p>'+ob.map(o => conX(
         '<div class="imp obie"><span><b>'+esc(o.famiglia||"")+'</b>'+
           (o.parole? '<small>&laquo;'+esc(o.parole)+'&raquo;</small>':"")+
           (o.risposta? '<small class="risp">hai risposto: '+esc(o.risposta)+'</small>':"")+
           (o.esito? '<small class="risp">com e finita: '+esc(o.esito)+'</small>':"")+
-        '</span></div>', 'obiezione', o.id)).join("") : "")+
+        '</span></div>', 'obiezione', o.id)).join("")
+        : '<p class="etich">Obiezioni</p><p class="attesa">Nessuna in questa telefonata.</p>')+
+      '</div><div class="impCol">'+
+      (me.length ? '<p class="etich">Mercato e concorrenza</p>'+me.map(v => conX(
+        '<div class="imp merc"><span>'+esc(v.detto||"")+
+          (v.cifra? ' <b>'+esc(String(v.cifra))+' euro</b>':"")+
+          (v.configurazione? '<small>'+esc(v.configurazione)+(v.zona? " - "+esc(v.zona):"")+'</small>':"")+
+        '</span></div>', 'mercato', v.id)).join("")
+        : '<p class="etich">Mercato e concorrenza</p><p class="attesa">Niente sulla concorrenza.</p>')+
       (tr.length ? '<p class="etich">Cose sul cliente che non scadono</p>'+tr.map(t => conX(
         '<div class="imp"><span>'+esc(t.testo||"")+'</span></div>', 'tratto', t.id)).join("") : "")+
+      '</div></div>'+
       (!me.length && !ob.length && !tr.length
         ? '<p class="attesa">Di questa telefonata non e rimasto niente: era tutto da scartare, o non ha imparato nulla.</p>' : "")+
       /* le scartate non spariscono: restano qui in fondo, sbarrate, e si
@@ -2302,6 +2325,11 @@ async function caricaImparato(){
     '</div>';
   }).join("");
   box.querySelectorAll('[data-riep]').forEach(b => b.onclick = () => apriRiepilogo(b.dataset.riep));
+  /* la sintesi detta da lui: si apre la stessa finestra della formazione a
+     voce, ma l allievo arriva sapendo di che telefonata si parla e comincia
+     lui, raccontando. Cosi lo si corregge parlando invece che leggendo. */
+  box.querySelectorAll('[data-racconta]').forEach(b => b.onclick = () =>
+    apriFormazione(b.dataset.racconta, b.dataset.chi));
   box.querySelectorAll('[data-scarta]').forEach(b => b.onclick = () => {
     const [tipo, id] = b.dataset.scarta.split(':');
     scartaLezione({ tipo, id: Number(id) }, false);
@@ -2357,6 +2385,8 @@ async function apriRiepilogo(conv){
     (ric? '<div class="blocco"><p class="etich">Richiamo preso</p><p class="sintesi">'+
       esc(orario(ric.quando))+(ric.perche? ' - '+esc(ric.perche):"")+
       (ric.annullato? ' <b>(annullato)</b>':"")+(ric.fatto? ' <b>(fatto)</b>':"")+'</p></div>' : "")+
+    /* affiancati: da soli lasciavano mezza scheda bianca */
+    '<div class="duecol">'+
     (me.length? '<div class="blocco"><p class="etich">Mercato e concorrenza</p>'+me.map(v =>
       '<div class="imp merc"><span>'+esc(v.detto||"")+(v.cifra? ' <b>'+esc(String(v.cifra))+' euro</b>':"")+
       (v.configurazione? '<small>'+esc(v.configurazione)+(v.zona? " - "+esc(v.zona):"")+'</small>':"")+'</span></div>').join("")+'</div>' : "")+
@@ -2364,6 +2394,7 @@ async function apriRiepilogo(conv){
       '<div class="imp obie"><span><b>'+esc(o.famiglia||"")+'</b>'+
       (o.parole? '<small>&laquo;'+esc(o.parole)+'&raquo;</small>':"")+
       (o.risposta? '<small class="risp">hai risposto: '+esc(o.risposta)+'</small>':"")+'</span></div>').join("")+'</div>' : "")+
+    '</div>'+
     '<div class="blocco"><p class="etich">Quello che ha detto</p>'+
       righe([['Bolletta',s.bolletta],['Consumo',s.consumo],['In casa',s.persone],['Di giorno',s.giorno],
              ['Riscaldamento',s.riscaldamento],['Contatore',s.contatore],['Auto',s.auto],
