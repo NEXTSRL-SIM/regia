@@ -1504,13 +1504,20 @@ async function accendiVoce(velo){
        settembre). Una lezione nasce solo se qualcuno ha insegnato qualcosa.
        E se glielo si dice a voce - "non memorizzare niente, volevo solo
        sentire" - non parte comunque. */
-    const mie = voceBattute.filter(x => x.chi === 'io');
+    /* NON BASTA CHE ABBIA APERTO BOCCA. Mentre l allievo parla, il microfono
+       raccoglie anche mezze parole e pezzi della sua stessa voce: due
+       frammenti da dieci caratteri ("e troppo alto", "un po di") facevano
+       partire una lezione (successo a Sante tre volte di fila). Si contano
+       solo gli interventi veri - almeno una dozzina di caratteri - e ne
+       servono due, con ottanta caratteri in tutto, oppure uno lungo. */
+    const mie = voceBattute.filter(x => x.chi === 'io' && String(x.testo||'').trim().length >= 12);
     const quanto = mie.reduce((n,x) => n + String(x.testo||'').trim().length, 0);
-    const soloSentire = mie.some(x => /non memorizzar|non salvare|non tenere|non registrar|solo (per )?sentire|lascia perdere/i.test(String(x.testo||'')));
+    const soloSentire = voceBattute.some(x => x.chi === 'io' &&
+      /non memorizzar|non salvare|non tenere|non registrar|solo (per )?sentire|lascia perdere/i.test(String(x.testo||'')));
     if(soloSentire){
       fVoceStato(velo, 'chiuso - come mi ha detto lei, non ho messo via niente', false);
       elencoFormazione(velo);
-    } else if(mie.length >= 2 || quanto >= 60){
+    } else if((mie.length >= 2 && quanto >= 80) || quanto >= 120){
       fVoceStato(velo, 'chiuso - sto mandando a Claude quello che ci siamo detti...', false);
       mandaFormazione(velo, voceSuTelefonata);
     } else {
