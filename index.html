@@ -530,6 +530,32 @@ tr.fatta td{opacity:.55}
 .piedeF{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:14px;margin-top:16px}
 .piedeF .spinge{margin-left:auto}
 @media (max-width:1100px){#vCont .telaio{grid-template-columns:minmax(0,1fr)}#vCont .col.dx{position:static;max-height:none}}
+
+/* --- GLI STATI SI DEVONO VEDERE. Al buio le vecchie regole coloravano solo
+   un filo di 2px, e la banda in alto usava sfondi cosi scuri da confondersi
+   col fondo: verde, giallo e rosso c erano ma non si distinguevano. --- */
+.sal{border-left-width:4px;padding:4px 10px 4px 11px;border-radius:0 3px 3px 0}
+.sal.verde{border-left-color:var(--sage);background:rgba(127,176,139,.13)}
+.sal.verde span{color:#BEE0C6}
+.sal.giallo{border-left-color:var(--amber);background:rgba(226,162,76,.15)}
+.sal.giallo span{color:#F0CFA0}
+.sal.rosso{border-left-color:var(--brick);background:rgba(206,106,69,.16)}
+.sal.rosso span{color:#F0B49B}
+.banda{border-left:5px solid transparent}
+.banda.verde{background:rgba(127,176,139,.14);border-left-color:var(--sage)}
+.banda.giallo{background:rgba(226,162,76,.16);border-left-color:var(--amber)}
+.banda.rosso{background:rgba(206,106,69,.18);border-left-color:var(--brick)}
+.banda.spenta{border-left-color:var(--line-2)}
+:root[data-tema="chiaro"] .sal.verde span{color:#0B4A28}
+:root[data-tema="chiaro"] .sal.giallo span{color:#6E4A03}
+:root[data-tema="chiaro"] .sal.rosso span{color:#8E2409}
+/* la legenda: cosa vogliono dire i tre colori, scritta dove servono */
+.leg{float:right;display:inline-flex;align-items:center;font-family:var(--mono);font-size:9.5px;
+     letter-spacing:.06em;text-transform:none;color:var(--ink-3);font-weight:400}
+.leg i{width:8px;height:8px;border-radius:50%;display:inline-block;margin:0 5px 0 12px;flex:none}
+.leg i.verde{background:var(--sage)}
+.leg i.giallo{background:var(--amber)}
+.leg i.rosso{background:var(--brick)}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -1577,7 +1603,7 @@ function disegna(){
         '<p>Quando Valentino chiama, qui compare chi ha al telefono e cosa sta succedendo.</p></span></div>'+
       '<div class="capo"><div><h1 class="spento">&mdash;</h1><div class="sotto"><span>comune</span><span>telefono</span><span>campagna</span></div></div>'+
         '<div class="grosso spento">00:00<small>in linea</small></div></div>'+
-      '<div class="salienti"><p class="et">Punti salienti</p><p class="attesa">Qui compaiono i momenti che Valentino segnala mentre parla.</p></div>'+
+      '<div class="salienti"><p class="et">Punti salienti<span class="leg"><i class="verde"></i>cammina<i class="giallo"></i>serve un occhio<i class="rosso"></i>si sta mettendo male</span></p><p class="attesa">Qui compaiono i momenti che Valentino segnala mentre parla.</p></div>'+
       '<div class="parlato"><p class="et">Cosa si stanno dicendo</p>'+
         '<p class="attesa">La conversazione si scrive qui, parola per parola, mentre si parla.</p></div>'+
       '<div class="suggerisci"><input placeholder="Suggerisci a Valentino cosa dire&hellip;" disabled>'+
@@ -1613,7 +1639,7 @@ function disegna(){
   $('centro').innerHTML =
     '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
     '<div class="capo"><div><h1>'+esc(Nome(v.nome)||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
-    '<div class="salienti"><p class="et">Punti salienti</p>'+ (m.length
+    '<div class="salienti"><p class="et">Punti salienti<span class="leg"><i class="verde"></i>cammina<i class="giallo"></i>serve un occhio<i class="rosso"></i>si sta mettendo male</span></p>'+ (m.length
       ? '<div class="sal-righe">'+m.slice().reverse().map(x=>'<div class="sal '+esc(x.livello)+'"><time>'+esc(x.ora)+'</time><span>'+esc(x.cosa)+'</span></div>').join('')+'</div>'
       : '<p class="attesa">Qui compaiono i momenti che Valentino segnala mentre parla.</p>')+'</div>'+
     (muto? '<div class="avviso muto"><span class="pt"></span>Sta ascoltando la telefonata: il cliente non la sente</div>':'')+
