@@ -306,6 +306,151 @@ audio{width:230px;height:34px;vertical-align:middle}
 .ascCell{white-space:nowrap}
 .ascCell .apri{margin-left:9px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);border-bottom:1px dotted var(--amber-dim);text-decoration:none}
 .ascCell .apri:hover{border-bottom-style:solid}
+
+/* ================= LA SCHEDA CONTATTI ================= */
+.testaCont{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.testaCont>div{flex:1 1 auto;min-width:0}
+#vCont .foglio,#vListe .foglio{padding-bottom:96px}
+.conta1{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:13px}
+.cnt{background:var(--surface);padding:6px 12px;display:flex;align-items:baseline;gap:7px;white-space:nowrap;flex:1 1 auto}
+.cnt b{font-family:var(--mono);font-size:15px;font-variant-numeric:tabular-nums}
+.cnt span{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.cnt[aria-pressed=true]{background:var(--amber-wash)}
+.cnt[aria-pressed=true] b,.cnt[aria-pressed=true] span{color:var(--amber)}
+.cnt.bene b{color:var(--sage)}.cnt.male b{color:var(--brick)}.cnt.morbido b{color:var(--ink-3)}
+.banda{display:flex;gap:10px;align-items:flex-start;padding:9px 13px;border:1px solid var(--amber-dim);background:var(--amber-wash);margin-bottom:13px;font-size:12.5px}
+.banda b{color:var(--amber);white-space:nowrap}
+.testafiltri{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.imbuto{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);padding:6px 11px;font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+.imbuto svg{width:13px;height:13px;flex:0 0 auto}
+.imbuto.attivo{border-color:var(--amber);color:var(--amber)}
+.imbuto .conta{background:var(--amber);color:#1A1206;border-radius:8px;padding:0 6px;font-size:10px}
+.pulisci{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);border-bottom:1px dotted var(--line-2)}
+.filtri{border:1px solid var(--line);background:var(--surface);margin-bottom:12px}
+.friga{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:9px 13px;border-bottom:1px solid var(--line)}
+.friga:last-child{border-bottom:none}
+.fetichetta{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);flex:0 0 62px}
+.cerca{flex:1 1 170px;background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:7px 10px;font-family:var(--mono);font-size:12.5px}
+.cerca:focus{outline:2px solid var(--amber);outline-offset:1px}
+.scelta{background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:6px 9px;font-family:var(--mono);font-size:11.5px}
+.tenda{position:relative}
+.tbott{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);padding:6px 10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);min-width:140px;justify-content:space-between}
+.tbott.attiva{border-color:var(--amber);color:var(--amber)}
+.tbott .frecc{color:var(--ink-3);font-size:9px}
+.tpannello{position:absolute;top:calc(100% + 3px);left:0;z-index:40;width:274px;background:var(--surface);border:1px solid var(--line-2);box-shadow:0 12px 32px rgba(0,0,0,.45);display:none}
+.tpannello.apri{display:block}
+.tcerca{width:100%;background:var(--ground);border:none;border-bottom:1px solid var(--line);color:var(--ink);padding:8px 10px;font-family:var(--mono);font-size:12px}
+.tazioni{display:flex;gap:14px;padding:7px 10px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+.tazioni button{color:var(--amber)}
+.tlista{max-height:250px;overflow-y:auto}
+.tv{display:flex;align-items:center;gap:9px;padding:6px 10px;cursor:pointer;font-size:13px}
+.tv:hover{background:var(--surface-2)}
+.tv small{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.tv.vuoto{color:var(--ink-3);font-style:italic}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.04em;padding:5px 9px;border:1px solid var(--line-2);color:var(--ink-3);white-space:nowrap}
+.chip[aria-pressed=true]{border-color:var(--amber);color:var(--amber);background:var(--amber-wash)}
+.chip.si[aria-pressed=true]{border-color:var(--sage);color:var(--sage);background:var(--sage-dim)}
+.dataint{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.dataint input{background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:5px 7px;font-family:var(--mono);font-size:11.5px}
+.slider{display:flex;align-items:center;gap:9px}
+.slider input{width:120px;accent-color:var(--amber)}
+.slider b{font-family:var(--mono);font-size:12.5px;color:var(--amber);min-width:26px}
+.tCont{min-width:1460px}
+.tCont td{vertical-align:top}
+.tCont tr.scelto td{background:var(--amber-wash)}
+.nomeC b{font-weight:600}
+.nomeC small{display:block;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.pt{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pallino{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.pt.alto .pallino{background:var(--sage)}.pt.alto b{color:var(--sage)}
+.pt.medio .pallino{background:var(--amber)}.pt.medio b{color:var(--amber)}
+.pt.basso .pallino{background:var(--ink-3)}.pt.basso b{color:var(--ink-3)}
+.perche{display:block;margin-top:2px;font-family:var(--mono);font-size:10px;color:var(--ink-3);border-bottom:1px dotted var(--line-2)}
+.perche:hover{color:var(--amber);border-color:var(--amber-dim)}
+.vinc{display:inline-flex;align-items:flex-start;gap:7px;min-width:146px}
+.faro{width:11px;height:11px;border-radius:50%;flex:0 0 auto;margin-top:4px;border:1px solid transparent}
+.faro.verde{background:var(--sage)}.faro.giallo{background:var(--amber)}.faro.rosso{background:var(--brick)}
+.faro.grigio{background:transparent;border-color:var(--line-2)}
+.vinc .testo{font-size:12.5px;line-height:1.4}
+.vinc .testo b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.vinc.verde .testo b{color:var(--sage)}.vinc.giallo .testo b{color:var(--amber)}
+.vinc.rosso .testo b{color:var(--brick)}.vinc.grigio .testo b{color:var(--ink-3)}
+.vinc .testo small{color:var(--ink-3);font-size:11.5px}
+.chiesto{font-size:12.5px;line-height:1.5;min-width:224px}
+.chiesto div{color:var(--ink-3)}
+.chiesto b{color:var(--ink);font-weight:600}
+.chiesto .vuoto,.sap .vuoto{color:var(--ink-3);font-style:italic}
+.sap{font-size:12.5px;line-height:1.5;min-width:250px;max-width:330px}
+.sap p{margin:0 0 4px;color:var(--ink-2)}
+.tag{display:inline-block;font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;padding:2px 5px;border:1px solid var(--line-2);color:var(--ink-3);margin:3px 3px 0 0;white-space:nowrap}
+.tag.att{border-color:var(--amber-dim);color:var(--amber)}
+.stc{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.barrasel{position:fixed;left:0;right:0;bottom:0;background:var(--surface-2);border-top:1px solid var(--amber-dim);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;z-index:30}
+.barrasel b{font-family:var(--mono);color:var(--amber)}
+.bott{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 13px;border:1px solid var(--line-2);color:var(--ink-2)}
+.bott.forte{background:var(--amber-dim);border-color:var(--amber);color:#1A1206}
+:root[data-tema="chiaro"] .bott.forte{color:#3A2A0C}
+.bott.calmo{color:var(--ink-3)}
+.bott:disabled{opacity:.4;cursor:not-allowed}
+.presa{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.presa input{width:50px;background:var(--ground);border:1px solid var(--line-2);color:var(--amber);padding:5px 7px;font-family:var(--mono);text-align:center}
+.azione{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);border-bottom:1px dotted var(--amber-dim);white-space:nowrap}
+.azione.calmo{color:var(--ink-3);border-color:var(--line-2)}
+.barraliste{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.chiplista{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);padding:6px 11px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.chiplista[aria-pressed=true]{border-color:var(--amber);color:var(--amber);background:var(--amber-wash)}
+.nomelista{background:transparent;border:none;border-bottom:1px dashed var(--line-2);color:var(--ink);font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.02em;padding:0 0 2px;min-width:min(320px,90%)}
+.nomelista:focus{outline:none;border-bottom-color:var(--amber)}
+.passi{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);margin:14px 0;flex-wrap:wrap}
+.passo{background:var(--surface);padding:9px 13px;flex:1 1 200px;display:flex;gap:10px;align-items:flex-start}
+.passo .num{font-family:var(--mono);font-size:10px;color:var(--ink-3);border:1px solid var(--line-2);width:19px;height:19px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:2px}
+.passo.fatto{background:var(--sage-dim)}.passo.fatto .num{border-color:var(--sage);color:var(--sage)}
+.passo.ora{background:var(--amber-wash)}.passo.ora .num{border-color:var(--amber);color:var(--amber)}
+.passo b{display:block;font-size:13px}
+.passo small{color:var(--ink-3);font-size:11.5px;line-height:1.4}
+.quanti{display:flex;align-items:center;gap:7px}
+.quanti button{width:26px;height:26px;border:1px solid var(--line-2);color:var(--ink-2);font-family:var(--mono)}
+.quanti b{font-family:var(--mono);font-size:16px;color:var(--amber);min-width:18px;text-align:center}
+.quanti span{font-size:11.5px;color:var(--ink-3)}
+.grip{color:var(--ink-3);font-family:var(--mono);font-size:11px;white-space:nowrap}
+.grip button{color:var(--ink-3);padding:0 2px}
+.grip button:hover{color:var(--amber)}
+.rpo{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.rpo.att{color:var(--ink-3)}.rpo.ok{color:var(--sage)}.rpo.occhio{color:var(--amber)}
+tr.inlinea td{background:var(--sage-dim)!important}
+tr.fatta td{opacity:.55}
+.titoloArch{font-family:var(--display);font-weight:600;font-size:19px;margin:30px 0 4px}
+.fogli{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:14px}
+.foglioA4{background:var(--surface);border:1px solid var(--line-2);aspect-ratio:1/1.414;display:flex;flex-direction:column;padding:15px;position:relative;overflow:hidden}
+.foglioA4:hover{border-color:var(--amber)}
+.foglioA4 .dataF{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.foglioA4 h4{font-family:var(--display);font-weight:600;font-size:15px;margin:5px 0 9px;line-height:1.25}
+.foglioA4 .righeF{flex:1 1 auto;overflow:hidden;font-size:11.5px;line-height:1.6;color:var(--ink-3);border-top:1px solid var(--line);padding-top:8px}
+.foglioA4 .righeF div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foglioA4 .fondoF{border-top:1px solid var(--line);padding-top:8px;display:flex;gap:10px;font-family:var(--mono);font-size:10px}
+.foglioA4 .fondoF b{font-size:13px;display:block}
+.foglioA4 .fondoF .ok b{color:var(--sage)}.foglioA4 .fondoF .re b{color:var(--amber)}
+.foglioA4 .bollino{position:absolute;top:0;right:0;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;background:var(--surface-2);color:var(--ink-3);border-left:1px solid var(--line);border-bottom:1px solid var(--line)}
+.foglioA4.aperta .bollino{background:var(--amber-wash);color:var(--amber)}
+.foglioA4.chiusa{opacity:.72}
+.foglioA4 .apriF{position:absolute;inset:0;background:transparent}
+.vuotone{padding:40px 20px;text-align:center;color:var(--ink-3);border:1px dashed var(--line-2);background:var(--surface)}
+.gtit{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:18px 0 8px}
+.seg{border:1px solid var(--line);background:var(--surface);padding:9px 11px;margin-bottom:1px}
+.seg .k{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);display:flex;gap:8px;align-items:center;margin-bottom:3px}
+.seg .conf{border:1px solid var(--line-2);padding:1px 5px;font-size:9px}
+.seg .conf.certo,.seg .conf.alta{border-color:var(--sage-dim);color:var(--sage)}
+.seg .conf.media{border-color:var(--amber-dim);color:var(--amber)}
+.seg .conf.da_verificare{border-color:var(--brick);color:var(--brick)}
+.seg .v{font-size:13px;line-height:1.5;word-break:break-word}
+.seg .f{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-top:4px}
+.sintesiBox{border:1px solid var(--amber-dim);background:var(--amber-wash);padding:11px 13px;font-size:13.5px;line-height:1.6}
+.presc{margin:0;padding-left:17px;font-size:13px;line-height:1.55;color:var(--ink-2)}
+.presc li{margin-bottom:7px}
+.voci{width:100%;border-collapse:collapse;font-size:13px}
+.voci td{padding:7px 0;border-bottom:1px solid var(--line)}
+.voci td:last-child{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.voci tr.somma td{border-bottom:none;padding-top:11px;font-weight:600;color:var(--amber)}
 @media(max-width:1000px){.telaio{grid-template-columns:1fr}.col.centro{order:-1}}
 </style></head><body>
 <div class="porta" id="porta">
@@ -318,6 +463,8 @@ audio{width:230px;height:34px;vertical-align:middle}
 <div id="dentro" class="nascosto">
  <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
  <div class="schede">
+  <button class="st" id="tCont">Contatti <span id="nCont">0</span></button>
+  <button class="st" id="tListe">Liste <span id="nListe">0</span></button>
   <button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button>
   <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
   <button class="st" id="tRich" aria-selected="false">Da richiamare <span id="nRich">0</span></button>
@@ -344,6 +491,103 @@ audio{width:230px;height:34px;vertical-align:middle}
    <div class="avvolgi"><table class="tabella"><thead><tr><th>Cliente</th><th>Quando</th><th>Durata</th><th>Di cosa si e parlato</th><th>Ascolta</th></tr></thead><tbody id="corpoChiuse"></tbody></table></div>
  </div></div>
 </div>
+<div id="vCont" class="nascosto"><div class="foglio">
+   <div class="testaCont">
+     <div><h1>Contatti dalle campagne</h1>
+       <p class="occhio">Tutto quello che e arrivato da Facebook, da Squadd e dagli import. I numeri qui sotto sono pulsanti: premili per filtrare.</p></div>
+     <button class="bott" id="cRicalcola" title="rifa il punteggio di tutti i contatti">Ricalcola i punteggi</button>
+   </div>
+   <div class="conta1" id="cConta"></div>
+   <div class="banda"><b>Registro opposizioni</b>
+     <span>Qui il registro <b>informa, non blocca</b>: queste sono persone che hanno compilato un nostro modulo o che ci ha segnalato un cliente, il consenso l hanno dato a noi. La targhetta serve a sapere che quella persona il registro l ha fatto, e ad andarci piano.</span></div>
+   <div class="testafiltri">
+     <button class="imbuto" id="cImbuto" aria-expanded="false">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-7 8v7l-4 2v-9z"/></svg>
+       <span>Filtri</span><span class="conta nascosto" id="cQuantiF">0</span></button>
+     <button class="pulisci nascosto" id="cAzzeraB">azzera tutto</button>
+     <span class="mono" id="cQuante" style="margin-left:auto"></span>
+   </div>
+   <div class="filtri nascosto" id="cFiltri">
+     <div class="friga"><span class="fetichetta">Cerca</span>
+       <input class="cerca" id="cCerca" placeholder="nome, telefono, email, comune...">
+       <div class="tenda"><button class="tbott" data-apre="stati"><span>Stato: tutti</span><span class="frecc">&#9660;</span></button>
+         <div class="tpannello" id="cPstati"><div class="tazioni"><button data-tutte="stati">tutti</button><button data-nessuna="stati">nessuno</button></div>
+         <div class="tlista" id="cLstati"></div></div></div>
+       <button class="chip si" data-int="tel" aria-pressed="true">solo con telefono</button>
+       <button class="chip" data-int="dnd" aria-pressed="false">solo quelli nel registro</button></div>
+     <div class="friga"><span class="fetichetta">Campagna</span>
+       <div class="tenda"><button class="tbott" data-apre="campagne"><span>Tutte le campagne</span><span class="frecc">&#9660;</span></button>
+         <div class="tpannello" id="cPcampagne"><input class="tcerca" data-filtra="campagne" id="cFcampagne" placeholder="cerca...">
+         <div class="tazioni"><button data-tutte="campagne">tutte</button><button data-nessuna="campagne">nessuna</button></div>
+         <div class="tlista" id="cLcampagne"></div></div></div>
+       <span class="fetichetta" style="flex:0 0 auto">Regione</span>
+       <div class="tenda"><button class="tbott" data-apre="regioni"><span>Tutte le regioni</span><span class="frecc">&#9660;</span></button>
+         <div class="tpannello" id="cPregioni"><input class="tcerca" data-filtra="regioni" id="cFregioni" placeholder="cerca...">
+         <div class="tazioni"><button data-tutte="regioni">tutte</button><button data-nessuna="regioni">nessuna</button></div>
+         <div class="tlista" id="cLregioni"></div></div></div>
+       <span class="fetichetta" style="flex:0 0 auto">Provincia</span>
+       <div class="tenda"><button class="tbott" data-apre="province"><span>Tutte le province</span><span class="frecc">&#9660;</span></button>
+         <div class="tpannello" id="cPprovince"><input class="tcerca" data-filtra="province" id="cFprovince" placeholder="cerca...">
+         <div class="tazioni"><button data-tutte="province">tutte</button><button data-nessuna="province">nessuna</button></div>
+         <div class="tlista" id="cLprovince"></div></div></div></div>
+     <div class="friga"><span class="fetichetta">Tetto</span>
+       <div class="tenda"><button class="tbott" data-apre="semafori"><span>Vincoli: tutti</span><span class="frecc">&#9660;</span></button>
+         <div class="tpannello" id="cPsemafori"><div class="tazioni"><button data-tutte="semafori">tutti</button><button data-nessuna="semafori">nessuno</button></div>
+         <div class="tlista" id="cLsemafori"></div></div></div>
+       <button class="chip si" data-int="geo" aria-pressed="false">solo geolocalizzati</button>
+       <button class="chip si" data-int="arr" aria-pressed="false">solo arricchiti</button>
+       <button class="chip" data-int="daarr" aria-pressed="false">solo da arricchire</button></div>
+     <div class="friga"><span class="fetichetta">Entrato</span>
+       <button class="chip" data-p="0" aria-pressed="false">oggi</button>
+       <button class="chip" data-p="1" aria-pressed="false">ieri</button>
+       <button class="chip" data-p="7" aria-pressed="false">ultimi 7 giorni</button>
+       <button class="chip" data-p="30" aria-pressed="false">ultimo mese</button>
+       <button class="chip" data-p="tutto" aria-pressed="true">sempre</button>
+       <button class="chip" data-p="date" aria-pressed="false">da data a data</button>
+       <span class="dataint" id="cIntervallo" hidden><span>dal</span><input type="date" id="cD1"><span>al</span><input type="date" id="cD2"></span></div>
+     <div class="friga"><span class="fetichetta">Punteggio</span>
+       <div class="slider"><span class="mono">almeno</span><input type="range" id="cSlid" min="0" max="100" step="5" value="0"><b id="cSlidV">0</b></div>
+       <span class="fetichetta" style="flex:0 0 auto;margin-left:12px">Ordina</span>
+       <select id="cOrdina" class="scelta"><option value="punteggio">per punteggio</option><option value="recente">dal piu recente</option><option value="nome">per nome</option></select></div>
+   </div>
+   <div class="avvolgi"><table class="tabella tCont">
+     <thead><tr><th style="width:34px"><input type="checkbox" id="cTutti"></th>
+       <th>Contatto</th><th>Punteggio</th><th>Vincoli sul tetto</th><th>Regione</th><th>Prov.</th><th>Comune</th>
+       <th>Campagna</th><th>Entrato</th><th>Chiamate</th><th>Cosa ha chiesto</th><th>Cosa sappiamo di lui</th></tr></thead>
+     <tbody id="cCorpo"></tbody></table></div>
+   <div class="barrasel">
+     <b id="cSelN">0 selezionati</b>
+     <div class="presa"><span>prendi i primi</span><input id="cPrimiN" value="20"><button class="bott" id="cPrimi">dell ordinamento</button></div>
+     <button class="bott forte" id="cAggiungi">Aggiungi alla lista</button>
+     <button class="bott" id="cArricchisci">Manda ad arricchire</button>
+     <button class="bott calmo" id="cPulisci">Deseleziona</button>
+   </div>
+ </div></div>
+ <div id="vListe" class="nascosto"><div class="foglio">
+   <div class="barraliste" id="cBarraListe"></div>
+   <input class="nomelista" id="cNomeLista" placeholder="Lista di oggi">
+   <p class="occhio">Chi si chiama, in che ordine, e a che punto siamo.</p>
+   <div class="passi">
+     <div class="passo fatto"><span class="num">1</span><span><b>Scelti</b><small id="cP1">-</small></span></div>
+     <div class="passo ora" id="cPassoRpo"><span class="num">2</span><span><b>Registro opposizioni</b><small id="cP2">-</small></span></div>
+     <div class="passo" id="cPasso3"><span class="num">3</span><span><b>Chiamate</b><small id="cP3">-</small></span></div>
+   </div>
+   <div class="filtri" style="margin:14px 0"><div class="friga">
+       <span class="fetichetta">Modo</span>
+       <button class="chip" data-m2="una">una alla volta</button>
+       <button class="chip" data-m2="gruppo">a gruppi</button>
+       <button class="chip" data-m2="mano">a mano</button>
+       <span class="quanti" id="cQuanteLinee" hidden><button id="cMeno">-</button><b id="cNPar">2</b><button id="cPiu">+</button><span>linee</span></span>
+       <button class="bott" id="cRpo" style="margin-left:auto">Controlla il registro</button>
+       <button class="bott forte" id="cAvvia" disabled>Avvia le chiamate</button></div></div>
+   <div class="avvolgi"><table class="tabella">
+     <thead><tr><th style="width:84px">Ordine</th><th>Chi</th><th>Punteggio</th><th>Vincoli</th><th>Dove</th>
+       <th>Registro</th><th>Stato</th><th>Esito</th><th></th></tr></thead>
+     <tbody id="cCorpoLista"></tbody></table></div>
+   <h2 class="titoloArch">Archivio delle liste</h2>
+   <p class="occhio">Ogni lista messa via resta qui come un foglio: chi c era, cosa e successo, quando.</p>
+   <div class="fogli" id="cFogli"></div>
+ </div></div>
 <script src="https://sdk.twilio.com/js/voice/releases/2.11.0/twilio.min.js"></script>
 <script>
 /* se qualcosa si rompe, lo si vede: meglio un avviso brutto che una pagina
@@ -1392,8 +1636,322 @@ document.querySelectorAll('.per').forEach(b => b.onclick = () => {
   document.querySelectorAll('.per').forEach(x => x.setAttribute('aria-pressed', x===b));
   tira();
 });
+
+/* ============================================================================
+   LA SCHEDA CONTATTI — chi c e, quanto vale, chi si chiama oggi.
+   Il filtro vero lo fa il database (edge contatti + contatti_elenco): qui si
+   disegna e si sceglie. Mandare 239 righe al browser oggi funzionerebbe, ma
+   domani sono migliaia e la pagina si apre in dieci secondi.
+   ============================================================================ */
+const CAPI = () => API.replace(/regia$/, 'contatti');
+let cVoci = null, cRighe = [], cListe = [], cListaId = null, cListaRighe = [], cVisto = false;
+const cScelti = new Set();
+const cFiltro = { cerca:'', campagne:new Set(), regioni:new Set(), province:new Set(),
+                  stati:new Set(), semafori:new Set(), min:0, giorni:null, dal:null, al:null,
+                  tel:true, geo:false, arr:false, daarr:false, dnd:false, ordina:'punteggio' };
+const SEMN = { verde:['verde','Libero','si monta complanare'], giallo:['giallo','Con prescrizioni','si puo, a certe condizioni'],
+               rosso:['rosso','Vincolato','serve autorizzazione'], dati_assenti:['grigio','Dato non buono','coordinate di ripiego'],
+               mai:['grigio','Mai guardato','manca la croce sulla mappa'] };
+const STATN = { nuovo:'mai chiamato', senza_recapito:'senza recapito', numero_non_valido:'numero non valido',
+                solo_email:'solo email', numero_fisso:'numero fisso', non_disturbare:'nel registro', numero_estero:'estero' };
+function cUrl(){
+  const p = new URLSearchParams({ t: PASS, elenco:'1', ordina: cFiltro.ordina, limite:'400' });
+  if(cFiltro.cerca) p.set('cerca', cFiltro.cerca);
+  const j = (s) => [...s].join('|');
+  if(cFiltro.campagne.size) p.set('campagne', j(cFiltro.campagne));
+  if(cFiltro.regioni.size)  p.set('regioni',  j(cFiltro.regioni));
+  if(cFiltro.province.size) p.set('province', j(cFiltro.province));
+  if(cFiltro.stati.size)    p.set('stati',    j(cFiltro.stati));
+  if(cFiltro.semafori.size) p.set('semafori', j(cFiltro.semafori));
+  if(cFiltro.min > 0) p.set('min', cFiltro.min);
+  if(cFiltro.giorni !== null) p.set('giorni', cFiltro.giorni);
+  if(cFiltro.dal) p.set('dal', cFiltro.dal);
+  if(cFiltro.al)  p.set('al',  cFiltro.al);
+  const solo = ['tel','geo','arr','daarr','dnd'].filter(k => cFiltro[k]);
+  if(solo.length) p.set('solo', solo.join(','));
+  return CAPI() + '?' + p.toString();
+}
+async function cCarica(){
+  try{
+    if(!cVoci){ const rv = await fetch(CAPI()+'?voci=1&t='+encodeURIComponent(PASS)); cVoci = (await rv.json()).voci || null; }
+    const j = await (await fetch(cUrl())).json();
+    cRighe = j.contatti || []; cDisegna();
+  }catch(e){ if($('cCorpo')) $('cCorpo').innerHTML = '<tr><td colspan="12" class="attesa">Non riesco a leggere i contatti.</td></tr>'; }
+}
+async function cCaricaListe(){
+  try{
+    const j = await (await fetch(CAPI()+'?liste=1&t='+encodeURIComponent(PASS))).json();
+    cListe = j.liste || [];
+    if(!cListaId || !cListe.some(l => l.id === cListaId && l.stato === 'aperta')){
+      const a = cListe.find(l => l.stato === 'aperta'); cListaId = a ? a.id : null;
+    }
+    if($('nListe')) $('nListe').textContent = cListe.filter(l => l.stato === 'aperta').reduce((s,l) => s + (l.in_lista||0), 0);
+    if(cListaId) await cCaricaLista(cListaId); else { cListaRighe = []; cDisegnaLista(); }
+  }catch(e){}
+}
+async function cCaricaLista(id){
+  try{
+    const j = await (await fetch(CAPI()+'?lista='+id+'&t='+encodeURIComponent(PASS))).json();
+    cListaId = id; cListaRighe = j.righe || [];
+    const l = cListe.find(x => x.id === id); if(l && j.lista) Object.assign(l, j.lista);
+    cDisegnaLista();
+  }catch(e){}
+}
+async function cComando(corpo){
+  const r = await fetch(CAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(Object.assign({ t: PASS, chi: CHI }, corpo)) });
+  return await r.json().catch(() => ({}));
+}
+function cConteggi(){
+  const n = (cVoci && cVoci.conteggi) || {};
+  const box = (k, eti, val, cls) => '<button class="cnt '+(cls||'')+'" data-cnt="'+k+'" aria-pressed="'+cAcceso(k)+'"><b>'+
+    (val==null?'-':val)+'</b><span>'+eti+'</span></button>';
+  if($('cConta')) $('cConta').innerHTML =
+    box('tutti','in archivio', n.tutti,'morbido') + box('tel','con telefono', n.con_tel,'bene') +
+    box('geo','geolocalizzati', n.geo,'') + box('daarr','da arricchire', n.da_arricchire,'male') +
+    box('mai','mai chiamati', n.mai_chiamati,'') + box('fatti','chiamati', n.chiamati,'') +
+    box('dnd','nel registro', n.nel_registro,'');
+  if($('nCont')) $('nCont').textContent = n.tutti || 0;
+}
+function cAcceso(k){
+  if(k === 'tutti') return cQuanti() === 0;
+  if(k === 'mai')   return cFiltro.stati.has('nuovo');
+  if(k === 'fatti') return false;
+  return Boolean(cFiltro[k]);
+}
+function cQuanti(){
+  let q = 0;
+  ['campagne','regioni','province','stati','semafori'].forEach(k => { if(cFiltro[k].size) q++; });
+  ['geo','arr','daarr','dnd'].forEach(k => { if(cFiltro[k]) q++; });
+  if(!cFiltro.tel) q++; if(cFiltro.min > 0) q++; if(cFiltro.cerca) q++;
+  if(cFiltro.giorni !== null || cFiltro.dal) q++;
+  return q;
+}
+function cAzzera(){
+  cFiltro.cerca=''; cFiltro.min=0; cFiltro.giorni=null; cFiltro.dal=null; cFiltro.al=null;
+  ['campagne','regioni','province','stati','semafori'].forEach(k => cFiltro[k].clear());
+  cFiltro.tel=true; cFiltro.geo=false; cFiltro.arr=false; cFiltro.daarr=false; cFiltro.dnd=false;
+  if($('cCerca')) $('cCerca').value='';
+  if($('cSlid')){ $('cSlid').value=0; $('cSlidV').textContent='0'; }
+  if($('cIntervallo')) $('cIntervallo').hidden = true;
+  document.querySelectorAll('#vCont [data-p]').forEach(b => b.setAttribute('aria-pressed', b.dataset.p==='tutto'));
+  document.querySelectorAll('#vCont [data-int]').forEach(b => b.setAttribute('aria-pressed', b.dataset.int==='tel'));
+}
+function cNomeVoce(t, v){
+  if(t==='stati') return STATN[v] || v;
+  if(t==='semafori') return (SEMN[v]||[null,v])[1];
+  return v;
+}
+function cTenda(t){
+  const el = $('cL'+t); if(!el || !cVoci) return;
+  const cerca = ($('cF'+t) ? $('cF'+t).value : '').toLowerCase();
+  const voci = (cVoci[t]||[]).filter(o => cNomeVoce(t,o.v).toLowerCase().includes(cerca));
+  el.innerHTML = voci.map(o => '<label class="tv"><input type="checkbox" data-voce="'+t+'" value="'+esc(o.v)+'" '+
+    (cFiltro[t].has(o.v)?'checked':'')+'><span>'+esc(cNomeVoce(t,o.v))+'</span><small>'+o.n+'</small></label>').join('')
+    || '<div class="tv vuoto">niente</div>';
+  const b = document.querySelector('#vCont [data-apre="'+t+'"]');
+  if(b){ const q = cFiltro[t].size;
+    const eti = { campagne:'Tutte le campagne', regioni:'Tutte le regioni', province:'Tutte le province', stati:'Stato: tutti', semafori:'Vincoli: tutti' };
+    b.querySelector('span').textContent = q===0 ? eti[t] : q===1 ? cNomeVoce(t,[...cFiltro[t]][0]) : q+' scelte';
+    b.classList.toggle('attiva', q>0); }
+}
+function cFascia(p){ return p>=70?'alto':p>=40?'medio':'basso'; }
+function cGiorni(g){ return g===0?'oggi':g===1?'ieri':g+' giorni fa'; }
+function cFaro(r){
+  const s = SEMN[r.semaforo] || SEMN.mai;
+  const pres = Array.isArray(r.prescrizioni) ? r.prescrizioni : [];
+  const sotto = r.semaforo==='verde' ? (r.zona || s[2]) : (pres[0] ? String(pres[0]).slice(0,52)+'...' : s[2]);
+  return '<span class="vinc '+s[0]+'"><span class="faro '+s[0]+'"></span><span class="testo"><b>'+s[1]+'</b><small>'+esc(sotto)+'</small>'+
+    (pres.length ? '<button class="perche" data-vinc="'+r.id+'">'+pres.length+' prescrizion'+(pres.length===1?'e':'i')+'</button>' : '')+'</span></span>';
+}
+function cModulo(m){
+  if(!Array.isArray(m) || !m.length) return '<div class="vuoto">modulo non compilato</div>';
+  return m.map(x => '<div>'+esc(String(x.domanda||'').replace(/[?:]$/,''))+': <b>'+esc(x.risposta||'')+'</b></div>').join('');
+}
+function cDisegna(){
+  cConteggi();
+  ['campagne','regioni','province','stati','semafori'].forEach(cTenda);
+  const q = cQuanti();
+  if($('cQuantiF')){ $('cQuantiF').textContent = q; $('cQuantiF').classList.toggle('nascosto', !q); }
+  if($('cImbuto')) $('cImbuto').classList.toggle('attivo', q>0);
+  if($('cAzzeraB')) $('cAzzeraB').classList.toggle('nascosto', !q);
+  if(!$('cCorpo')) return;
+  $('cCorpo').innerHTML = cRighe.length ? cRighe.map(r =>
+    '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
+    '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small></td>'+
+    '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span>'+
+      '<button class="perche" data-pt="'+r.id+'">perche</button></td>'+
+    '<td>'+cFaro(r)+'</td><td>'+esc(r.reg||'-')+'</td><td class="mono">'+esc(r.prov||'-')+'</td><td>'+esc(r.comune||'-')+'</td>'+
+    '<td class="mono">'+esc(String(r.campagna||'').replace('(senza campagna)','-').replace(' - settembre 2025 - lead',''))+'</td>'+
+    '<td class="mono">'+cGiorni(r.giorni)+'</td>'+
+    '<td><span class="stc">'+esc(STATN[r.stato]||r.stato||'')+'</span>'+(r.dnd?'<br><span class="tag att">nel registro</span>':'')+'</td>'+
+    '<td class="chiesto">'+cModulo(r.modulo)+'</td>'+
+    '<td class="sap">'+(r.sintesi ? '<p>'+esc(String(r.sintesi).slice(0,150))+'...</p>' : '<p class="vuoto">mai arricchito</p>')+
+      (r.segnali ? '<button class="perche" data-sap="'+r.id+'">apri, '+r.segnali+' segnali</button>' : '')+'</td></tr>').join('')
+    : '<tr><td colspan="12" class="attesa">Nessun contatto con questi filtri.</td></tr>';
+  $('cQuante').textContent = cRighe.length + ' contatti con questi filtri.';
+  $('cSelN').textContent = cScelti.size + (cScelti.size===1?' selezionato':' selezionati');
+}
+function cDisegnaLista(){
+  if(!$('cBarraListe')) return;
+  const aperte = cListe.filter(l => l.stato === 'aperta');
+  const l = cListe.find(x => x.id === cListaId) || null;
+  $('cBarraListe').innerHTML =
+    aperte.map(x => '<button class="chiplista" data-lista="'+x.id+'" aria-pressed="'+(x.id===cListaId)+'">'+esc(x.nome)+' <small>'+(x.in_lista||0)+'</small></button>').join('') +
+    '<button class="chiplista" id="cNuovaLista">+ nuova lista</button>' +
+    (l && (l.in_lista||0) > 0 ? '<button class="chiplista" id="cMettiVia" style="margin-left:auto">metti via</button>' : '');
+  $('cNomeLista').value = l ? l.nome : ''; $('cNomeLista').disabled = !l;
+  $('cPassoRpo').className = 'passo ' + (l && l.rpo_il ? 'fatto' : 'ora');
+  $('cP1').textContent = l ? (l.in_lista||0)+' contatti scelti' : 'nessuna lista aperta';
+  $('cP2').textContent = l && l.rpo_il ? 'controllato: '+(l.nel_registro||0)+' da trattare con riguardo' : 'da controllare prima di partire';
+  $('cP3').textContent = l ? ((l.fatte||0)+' fatte, '+Math.max(0,(l.in_lista||0)-(l.fatte||0)-(l.tolte||0))+' in attesa') : '-';
+  $('cAvvia').disabled = !l || !l.rpo_il || !(l.in_lista||0);
+  document.querySelectorAll('#vListe [data-m2]').forEach(b => b.setAttribute('aria-pressed', Boolean(l && b.dataset.m2===l.modo)));
+  $('cQuanteLinee').hidden = !(l && l.modo === 'gruppo');
+  if(l) $('cNPar').textContent = l.quante;
+  $('cCorpoLista').innerHTML = cListaRighe.length ? cListaRighe.map((r,i) =>
+    '<tr class="'+(r.stato==='linea'?'inlinea':r.stato==='fatta'?'fatta':'')+'">'+
+    '<td class="grip"><b class="mono">'+(i+1)+'</b> <button data-su="'+r.contatto_id+'">&#8593;</button><button data-giu="'+r.contatto_id+'">&#8595;</button></td>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'')+'</b><small>'+esc(r.tel||'')+'</small></td>'+
+    '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span></td>'+
+    '<td>'+cFaro(r)+'</td><td>'+esc(r.comune||'-')+(r.prov?' <span class="mono">('+esc(r.prov)+')</span>':'')+'</td>'+
+    '<td><span class="rpo '+(r.rpo==='iscritto'?'occhio':(r.rpo||'att'))+'">'+(r.rpo==='ok'?'libero':r.rpo==='iscritto'?'iscritto, occhio':'da controllare')+'</span></td>'+
+    '<td><span class="stc">'+(r.stato==='linea'?'in linea':r.stato==='fatta'?'chiusa':r.stato==='saltata'?'tolta':'in attesa')+'</span></td>'+
+    '<td class="mono">'+esc(r.esito||'-')+'</td>'+
+    '<td>'+(r.stato==='attesa' ? '<button class="azione" data-chiama="'+r.contatto_id+'">chiama adesso</button> <button class="azione calmo" data-fuori="'+r.contatto_id+'">togli</button>' : '')+'</td></tr>').join('')
+    : '<tr><td colspan="9" class="attesa">La lista e vuota. Scegli dei contatti e premi Aggiungi alla lista.</td></tr>';
+  const tutte = [...cListe].sort((a,b) => b.id - a.id);
+  $('cFogli').innerHTML = tutte.length ? tutte.map(x => {
+    const nomi = String(x.chi_c_era||'').split(' | ').filter(Boolean);
+    return '<div class="foglioA4 '+(x.stato==='aperta'?'aperta':'chiusa')+'">'+
+      '<span class="bollino">'+(x.stato==='aperta'?'in lavorazione':'messa via')+'</span>'+
+      '<span class="dataF">'+esc(String(x.creata_il||'').slice(0,16).replace('T',' '))+'</span>'+
+      '<h4>'+esc(x.nome)+'</h4><div class="righeF">'+
+      (nomi.slice(0,9).map(nm => '<div>'+esc(nm)+'</div>').join('') || '<div>vuota</div>')+
+      (nomi.length>9 ? '<div>e altri '+(nomi.length-9)+'</div>' : '')+'</div>'+
+      '<div class="fondoF"><span><b>'+(x.in_lista||0)+'</b>in lista</span><span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
+      '<span class="re"><b>'+(x.nel_registro||0)+'</b>nel registro</span></div>'+
+      '<button class="apriF" data-riapri="'+x.id+'"></button></div>';
+  }).join('') : '<div class="vuotone">Nessuna lista ancora.</div>';
+}
+function cPannello(titolo, dentro){
+  let v = $('cVelo');
+  if(!v){
+    v = document.createElement('div'); v.className = 'velo'; v.id = 'cVelo';
+    v.innerHTML = '<div class="pannello"><div class="testa"><h2 id="cPTit"></h2><button class="azione" id="cPChiudi">chiudi</button></div><div style="padding:16px 17px" id="cPCorpo"></div></div>';
+    document.body.appendChild(v);
+    v.addEventListener('click', (e) => { if(e.target === v || e.target.id === 'cPChiudi') v.classList.remove('apri'); });
+  }
+  $('cPTit').textContent = titolo; $('cPCorpo').innerHTML = dentro; v.classList.add('apri');
+}
+function cApriPunteggio(id){
+  const r = cRighe.find(x => x.id === id); if(!r) return;
+  const voci = Array.isArray(r.punteggio_perche) ? r.punteggio_perche : [];
+  cPannello(r.nome || 'Contatto', '<p class="occhio">Punteggio '+(r.punteggio||0)+' su 100, voce per voce.</p><table class="voci">'+
+    voci.map(v => '<tr><td>'+esc(v.voce)+'</td><td style="color:'+((v.peso<0)?'var(--brick)':'var(--ink-2)')+'">'+(v.peso>0?'+':'')+v.peso+'</td></tr>').join('')+
+    '<tr class="somma"><td>Totale</td><td>'+(r.punteggio||0)+'</td></tr></table>'+
+    '<p class="nota">Non e un giudizio del modello: e una somma di voci scritte. Se una non convince si cambia il peso e si ricalcola tutto.</p>');
+}
+function cApriVincoli(id){
+  const r = cRighe.find(x => x.id === id) || cListaRighe.find(x => x.contatto_id === id); if(!r) return;
+  const s = SEMN[r.semaforo] || SEMN.mai;
+  const pres = Array.isArray(r.prescrizioni) ? r.prescrizioni : [];
+  cPannello(r.nome || 'Contatto',
+    '<p class="occhio"><span class="faro '+s[0]+'" style="display:inline-block;margin-right:7px"></span><b>'+s[1]+'</b> - '+s[2]+'</p>'+
+    '<table class="voci"><tr><td>Zona urbanistica</td><td style="text-align:left">'+esc(r.zona||'non nota')+'</td></tr>'+
+    '<tr><td>Punto sulla mappa</td><td style="text-align:left">'+(r.croce?'croce confermata dal cliente':r.geo?'ricavato dall indirizzo':'mai messo')+'</td></tr></table>'+
+    (pres.length ? '<div class="gtit">Prescrizioni</div><ul class="presc">'+pres.map(p => '<li>'+esc(p)+'</li>').join('')+'</ul>' : '<p class="nota">Nessuna prescrizione registrata.</p>'));
+}
+function cApriSegnali(id){
+  const r = cRighe.find(x => x.id === id); if(!r) return;
+  cPannello(r.nome || 'Contatto',
+    (r.sintesi ? '<div class="gtit">La sintesi</div><div class="sintesiBox">'+esc(r.sintesi)+'</div>' : '')+
+    '<p class="nota">I '+r.segnali+' segnali per esteso si leggono dalla scheda Arricchimento: qui c e la sintesi, che e quella che serve prima di chiamare.</p>');
+}
+document.addEventListener('click', async (e) => {
+  const t = e.target.closest('button, input[type=checkbox]');
+  if(!t) return;
+  if(t.id === 'cPChiudi'){ if($('cVelo')) $('cVelo').classList.remove('apri'); return; }
+  if(!t.closest('#vCont') && !t.closest('#vListe')) return;
+  if(!e.target.closest('.tenda')) document.querySelectorAll('#vCont .tpannello.apri').forEach(p => p.classList.remove('apri'));
+  const d = t.dataset;
+  if(t.id === 'cImbuto'){ const b = $('cFiltri'); b.classList.toggle('nascosto'); t.setAttribute('aria-expanded', !b.classList.contains('nascosto')); return; }
+  if(t.id === 'cAzzeraB'){ cAzzera(); cCarica(); return; }
+  if(d.apre){ const p = $('cP'+d.apre); const era = p.classList.contains('apri');
+    document.querySelectorAll('#vCont .tpannello.apri').forEach(x => x.classList.remove('apri'));
+    p.classList.toggle('apri', !era); return; }
+  if(d.voce){ const k = d.voce; cFiltro[k].has(t.value) ? cFiltro[k].delete(t.value) : cFiltro[k].add(t.value); cCarica(); return; }
+  if(d.tutte){ (cVoci[d.tutte]||[]).forEach(o => cFiltro[d.tutte].add(o.v)); cCarica(); return; }
+  if(d.nessuna){ cFiltro[d.nessuna].clear(); cCarica(); return; }
+  if(d.int !== undefined){ cFiltro[d.int] = !cFiltro[d.int]; t.setAttribute('aria-pressed', cFiltro[d.int]); cCarica(); return; }
+  if(d.p !== undefined){
+    document.querySelectorAll('#vCont [data-p]').forEach(b => b.setAttribute('aria-pressed', b===t));
+    if(d.p === 'date'){ $('cIntervallo').hidden = false; }
+    else { $('cIntervallo').hidden = true; cFiltro.dal = null; cFiltro.al = null; cFiltro.giorni = d.p === 'tutto' ? null : Number(d.p); }
+    cCarica(); return; }
+  if(d.cnt){
+    const k = d.cnt;
+    if(k === 'tutti') cAzzera();
+    else if(k === 'mai'){ if(cFiltro.stati.has('nuovo')) cFiltro.stati.delete('nuovo'); else { cFiltro.stati.clear(); cFiltro.stati.add('nuovo'); } }
+    else if(k === 'fatti'){ scheda('tListe'); return; }
+    else cFiltro[k] = !cFiltro[k];
+    document.querySelectorAll('#vCont [data-int]').forEach(b => b.setAttribute('aria-pressed', Boolean(cFiltro[b.dataset.int])));
+    cCarica(); return; }
+  if(d.csel){ const id = Number(d.csel); cScelti.has(id) ? cScelti.delete(id) : cScelti.add(id); cDisegna(); return; }
+  if(t.id === 'cTutti'){ cRighe.forEach(r => t.checked ? cScelti.add(r.id) : cScelti.delete(r.id)); cDisegna(); return; }
+  if(t.id === 'cPrimi'){ cRighe.slice(0, Number($('cPrimiN').value)||0).forEach(r => cScelti.add(r.id)); cDisegna(); return; }
+  if(t.id === 'cPulisci'){ cScelti.clear(); cDisegna(); return; }
+  if(d.pt){ cApriPunteggio(Number(d.pt)); return; }
+  if(d.vinc){ cApriVincoli(Number(d.vinc)); return; }
+  if(d.sap){ cApriSegnali(Number(d.sap)); return; }
+  if(t.id === 'cArricchisci'){ if(!cScelti.size) return;
+    t.disabled = true; const r = await cComando({ arricchisci: [...cScelti] }); t.disabled = false; cScelti.clear();
+    avvisa(r.ok ? (r.messi+' messi in coda: fra dieci minuti hanno la loro scheda') : 'non sono riuscito a metterli in coda');
+    cVoci = null; cCarica(); return; }
+  if(t.id === 'cRicalcola'){ t.disabled = true; await cComando({ ricalcola: true }); t.disabled = false; cVoci = null; cCarica(); avvisa('punteggi rifatti'); return; }
+  if(t.id === 'cNuovaLista'){ const r = await cComando({ lista_nuova: {} }); if(r.lista) cListaId = r.lista.id; await cCaricaListe(); return; }
+  if(d.lista){ await cCaricaLista(Number(d.lista)); return; }
+  if(t.id === 'cMettiVia'){ await cComando({ lista: cListaId, archivia: true }); cListaId = null; await cCaricaListe(); return; }
+  if(d.riapri){ await cComando({ lista: Number(d.riapri), riapri: true }); cListaId = Number(d.riapri); await cCaricaListe(); return; }
+  if(t.id === 'cAggiungi'){ if(!cScelti.size) return;
+    if(!cListaId){ const r = await cComando({ lista_nuova: {} }); if(r.lista) cListaId = r.lista.id; }
+    await cComando({ lista: cListaId, aggiungi: [...cScelti] });
+    cScelti.clear(); await cCaricaListe(); cDisegna(); scheda('tListe'); return; }
+  if(d.fuori){ await cComando({ lista: cListaId, togli: Number(d.fuori) }); await cCaricaListe(); return; }
+  if(d.su){ await cComando({ lista: cListaId, sposta: { id: Number(d.su), verso: 'su' } }); await cCaricaLista(cListaId); return; }
+  if(d.giu){ await cComando({ lista: cListaId, sposta: { id: Number(d.giu), verso: 'giu' } }); await cCaricaLista(cListaId); return; }
+  if(d.m2){ await cComando({ lista: cListaId, modo: d.m2 }); await cCaricaListe(); return; }
+  if(t.id === 'cMeno' || t.id === 'cPiu'){
+    const l = cListe.find(x => x.id === cListaId); if(!l) return;
+    await cComando({ lista: cListaId, quante: Math.max(1, Math.min(5, (l.quante||2) + (t.id==='cPiu'?1:-1))) });
+    await cCaricaListe(); return; }
+  if(t.id === 'cRpo'){ const r = await cComando({ lista: cListaId, rpo: true }); avvisa(r.nota || 'registro controllato'); await cCaricaListe(); return; }
+  if(d.chiama){ avvisa('il tasto che fa partire la telefonata dalla lista si accende quando colleghiamo la coda a valentino-chiama'); return; }
+  if(t.id === 'cAvvia'){ avvisa('la partenza automatica si accende quando il registro delle opposizioni e collegato davvero'); return; }
+});
+document.addEventListener('input', (e) => {
+  if(!e.target.closest || (!e.target.closest('#vCont') && !e.target.closest('#vListe'))) return;
+  if(e.target.id === 'cCerca'){ clearTimeout(window._cT); window._cT = setTimeout(() => { cFiltro.cerca = e.target.value; cCarica(); }, 350); return; }
+  if(e.target.id === 'cSlid'){ cFiltro.min = Number(e.target.value); $('cSlidV').textContent = cFiltro.min;
+    clearTimeout(window._cS); window._cS = setTimeout(cCarica, 300); return; }
+  if(e.target.id === 'cD1' || e.target.id === 'cD2'){ cFiltro.dal = $('cD1').value || null; cFiltro.al = $('cD2').value || null;
+    cFiltro.giorni = null; clearTimeout(window._cD); window._cD = setTimeout(cCarica, 400); return; }
+  if(e.target.dataset && e.target.dataset.filtra){ cTenda(e.target.dataset.filtra); return; }
+});
+document.addEventListener('change', async (e) => {
+  if(!e.target.closest || (!e.target.closest('#vCont') && !e.target.closest('#vListe'))) return;
+  if(e.target.id === 'cOrdina'){ cFiltro.ordina = e.target.value; cCarica(); }
+  if(e.target.id === 'cNomeLista' && cListaId){ await cComando({ lista: cListaId, nome: e.target.value }); await cCaricaListe(); }
+});
 function scheda(q){
-  ['tLinea','tArric','tRich','tChiuse'].forEach(k => $(k).setAttribute('aria-selected', k===q));
+  ['tCont','tListe','tLinea','tArric','tRich','tChiuse'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
+  $('vCont').classList.toggle('nascosto', q!=='tCont');
+  $('vListe').classList.toggle('nascosto', q!=='tListe');
+  /* si caricano solo quando servono: aprire la regia non deve pagare il conto
+     di una scheda che magari oggi non si guarda nemmeno */
+  if(q==='tCont'){ if(!cVisto){ cVisto = true; cCarica(); cCaricaListe(); } else cCarica(); }
+  if(q==='tListe'){ cCaricaListe(); }
   $('vLinea').classList.toggle('nascosto', q!=='tLinea');
   $('vArric').classList.toggle('nascosto', q!=='tArric');
   $('vRich').classList.toggle('nascosto', q!=='tRich');
@@ -1401,6 +1959,8 @@ function scheda(q){
 }
 $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema') === 'chiaro' ? 'scuro' : 'chiaro');
 $('bPieno').onclick = () => schermoPieno();
+$('tCont').onclick = () => scheda('tCont');
+$('tListe').onclick = () => scheda('tListe');
 $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
