@@ -1196,6 +1196,15 @@ function apri(){
 }
 async function tira(){
   try{
+    /* IL BATTITO. Dice al sistema che in regia c e qualcuno davvero, e chi:
+       serve a Valentino per sapere a chi passare un cliente che chiede una
+       persona. Il responsabile e chi sta qui adesso, non un numero fisso, e
+       una pagina lasciata aperta senza nessuno davanti deve poter essere
+       distinta da una persona presente. Se fallisce non importa: si riprova
+       al giro dopo, e intanto la regia va avanti lo stesso. */
+    if(CHI) fetch(API.replace(/regia$/, 'regia-presenza'), { method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ t: PASS, chi: CHI }) }).catch(() => {});
     /* un errore dentro disegna() non deve fermare l aggiornamento */
     const r = await fetch(API + '?dati=1&periodo=' + periodo + '&t=' + encodeURIComponent(PASS));
     if(r.status === 401){ sessionStorage.clear(); location.reload(); return; }
