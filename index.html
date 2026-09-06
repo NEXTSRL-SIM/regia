@@ -2389,7 +2389,11 @@ async function cFaiPartire(contattoId, bottone){
   if(e.ok){
     avvisa('sta squillando: '+(e.nome || r.nome || e.chiamato));
     await cCaricaLista(cListaId);
-    if(typeof aggiorna === 'function') aggiorna();
+    /* la telefonata e partita: si va dove la si guarda, non si resta sulla
+       lista. In linea la riga compare appena la regia ripassa a prendere i
+       dati, e la si fa ripassare subito invece di aspettare il giro */
+    scheda('tLinea');
+    if(typeof tira === 'function') { tira(); setTimeout(tira, 2500); }
   } else {
     avvisa('la chiamata non e partita: '+String((e.dice && (e.dice.errore || e.dice.dice)) || e.errore || '').slice(0,160));
   }
