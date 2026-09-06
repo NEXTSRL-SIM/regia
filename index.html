@@ -1572,6 +1572,22 @@ async function chiudiRiga(c){
   await fetch(API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({t: PASS, chiudi: c})});
   sel = null; muto = false; tre = false; tira();
 }
+/* LO STATO DI ADESSO. La banda in alto e la riga a sinistra restavano ferme
+   su "Telefonata in corso / Al telefono" per tutta la chiamata: titolo, flash
+   e livello li aggiorna solo lo strumento "segnala", mentre "annota" (la
+   bolletta, la proposta, il riscaldamento) scrive il momento e non tocca la
+   banda. Cosi una telefonata che filava liscia sembrava una telefonata dove
+   non succedeva niente. Lo stato lo prende dall ultimo momento, che e sempre
+   il piu fresco; se non ce ne sono, resta quello che ha scritto la regia. */
+function statoVivo(v){
+  const m = Array.isArray(v.momenti) ? v.momenti : [];
+  const u = m.length ? m[m.length-1] : null;
+  return {
+    livello: (u && u.livello) || v.livello || 'verde',
+    testo:   (u && u.cosa) || v.flash || v.titolo || 'Telefonata in corso',
+    ora:     (u && u.ora) || String(v.cambiata_il||'').slice(11,16)
+  };
+}
 function disegna(){
   /* la pagina si ridisegna ogni tre secondi: senza questo, quello che si sta
      scrivendo (o dettando) nella barra dei suggerimenti sparisce da solo */
@@ -1584,10 +1600,10 @@ function disegna(){
   $('nLive').textContent = stato.vive.length; $('conta').textContent = stato.vive.length;
   $('linee').innerHTML = stato.vive.length ? stato.vive.map(v =>
     '<button class="linea" data-c="'+esc(v.conversazione)+'" aria-current="'+(v.conversazione===sel)+'">'+
-    '<span class="spia '+esc(v.livello)+'"></span><span>'+
+    '<span class="spia '+esc(statoVivo(v).livello)+'"></span><span>'+
     '<span class="l-nome">'+esc(Nome(v.nome)||v.telefono||'sconosciuto')+'</span>'+
     '<span class="l-dati">'+esc(v.dove||'')+' - <b>'+mmss(v.secondi)+'</b></span>'+
-    '<span class="l-flash '+esc(v.livello)+'">'+esc(v.flash||'')+'</span><span class="onda"><i></i><i></i><i></i><i></i><i></i><i></i></span></span></button>').join('')
+    '<span class="l-flash '+esc(statoVivo(v).livello)+'">'+esc(statoVivo(v).testo)+'</span><span class="onda"><i></i><i></i><i></i><i></i><i></i><i></i></span></span></button>').join('')
     : '<div class="linea spenta"><span class="spia"></span><span>'+
       '<span class="l-nome spento">Nessuno in linea</span>'+
       '<span class="l-dati">le telefonate compaiono qui appena partono</span></span></div>';
@@ -1637,7 +1653,7 @@ function disegna(){
   parlatoDb = Array.isArray(v.battute) ? v.battute : [];
   /* ascolto dal vivo sospeso: il canale di ElevenLabs rifiuta la chiave, riaprirlo ogni giro bloccava la pagina */
   $('centro').innerHTML =
-    '<div class="banda '+esc(v.livello)+'"><span class="bollo"></span><span><h3>'+esc(v.titolo||'Telefonata in corso')+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc((v.cambiata_il||'').slice(11,16))+'</span></div>'+
+    '<div class="banda '+esc(statoVivo(v).livello)+'"><span class="bollo"></span><span><h3>'+esc(statoVivo(v).testo)+'</h3><p>'+esc(v.motivo||'')+'</p></span><span class="quando">'+esc(statoVivo(v).ora)+'</span></div>'+
     '<div class="capo"><div><h1>'+esc(Nome(v.nome)||v.telefono||'sconosciuto')+'</h1><div class="sotto"><span>'+esc(v.dove||'')+'</span><span>'+esc(v.telefono||'')+'</span><span>'+esc(v.fonte||'')+'</span></div></div><div class="grosso">'+mmss(v.secondi)+'<small>in linea</small></div></div>'+
     '<div class="salienti"><p class="et">Punti salienti<span class="leg"><i class="verde"></i>cammina<i class="giallo"></i>serve un occhio<i class="rosso"></i>si sta mettendo male</span></p>'+ (m.length
       ? '<div class="sal-righe">'+m.slice().reverse().map(x=>'<div class="sal '+esc(x.livello)+'"><time>'+esc(x.ora)+'</time><span>'+esc(x.cosa)+'</span></div>').join('')+'</div>'
