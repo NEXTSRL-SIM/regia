@@ -509,6 +509,13 @@ tr.fatta td{opacity:.55}
 .ord .viaord{color:var(--ink-3);padding:0 5px;font-size:15px;line-height:1}
 .piu{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);border:1px dashed var(--amber-dim);padding:5px 9px}
 .chip[disabled]{opacity:.45;cursor:not-allowed}
+.carta.impara{margin-bottom:14px}
+.impTesta{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.impTesta h4{margin:0}
+.impTesta .mono{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.impTesta .azione{margin-left:auto}
+.rieC{text-align:left;color:var(--ink-2);font-size:13px;line-height:1.45;background:none;border:none;padding:0}
+.rieC:hover{color:var(--amber);text-decoration:underline}
 .esi{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line-2);padding:2px 6px}
 .esi.buono{color:var(--sage);border-color:var(--sage)}
 .orario{display:flex;gap:7px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
@@ -601,6 +608,7 @@ tr.fatta td{opacity:.55}
   <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
   <button class="st" id="tRich" aria-selected="false">Da richiamare <span id="nRich">0</span></button>
   <button class="st" id="tChiuse" aria-selected="false">Telefonate chiuse</button>
+  <button class="st" id="tImpara" aria-selected="false">Cosa impara</button>
  </div>
  <div class="telaio" id="vLinea">
   <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div><div class="sotto" id="sotto"></div></div>
@@ -784,6 +792,12 @@ tr.fatta td{opacity:.55}
    <div class="archTesta"><button class="minif" id="cToggleArch">archiviate</button></div>
    <div id="cArchivio" class="fogliniA4" hidden></div>
    <div class="fogli" id="cFogli"></div>
+ </div></div>
+
+<div id="vImpara" class="nascosto"><div class="foglio">
+   <h1>Cosa impara</h1>
+   <p class="occhio">Telefonata per telefonata, quello che Valentino ha portato a casa: i preventivi della concorrenza, le obiezioni con la risposta che ha dato, i fatti sul cliente che non scadono. Da ogni riga si risale alla chiamata e si ascolta.</p>
+   <div id="impCorpo"></div>
  </div></div>
 
 <div class="veloC" id="cVeloImp"><div class="finestra">
@@ -1889,13 +1903,16 @@ function disegna(){
         : esc(Nome(c.chi)||''))+'</td>'+
     '<td class="num">'+esc((c.quando||'').slice(0,16).replace('T',' '))+'</td>'+
     '<td class="num">'+mmss(c.durata_sec||0)+'</td>'+
-    '<td>'+esc(corto(c.di_cosa,220))+'</td>'+
+    /* il riassunto si clicca: sotto c e tutto quello che la telefonata ha
+       lasciato - la cifra sul tavolo, le obiezioni, il richiamo, i momenti */
+    '<td><button class="rieC" data-riep="'+esc(c.id)+'">'+esc(corto(c.di_cosa,220))+'</button></td>'+
     '<td class="ascCell">'+(c.audio
         ? '<audio controls preload="none" src="'+esc(c.audio)+'"></audio>'+
           '<a class="apri" href="'+esc(c.audio)+'" target="_blank" rel="noopener" title="apri in una scheda a parte">apri</a>'
         : '-')+'</td></tr>').join('')
     : '<tr><td colspan="5" style="color:var(--ink-3)">Nessuna telefonata in questo periodo.</td></tr>';
   document.querySelectorAll('.tastoNome').forEach(b => b.onclick = () => apriCliente(b.dataset.tel));
+  document.querySelectorAll('#corpoChiuse [data-riep]').forEach(b => b.onclick = () => apriRiepilogo(b.dataset.riep));
   $('sottoChiuse').textContent = stato.chiuse.length + ' telefonate';
   }
 }
@@ -2208,6 +2225,98 @@ function cDisegnaCoda(){
    desktop: servono a ritrovarle, non a lavorarci. Da qui si riaprono o si
    cancellano; e la stessa cosa vale per le prove, che altrimenti in un mese
    riempiono l archivio di roba che non e mai stata una telefonata. */
+/* ============================================================================
+   COSA IMPARA - la scheda della formazione sul campo.
+   Non un mucchio di righe sparse: una carta per telefonata, con dentro le
+   tre aree separate, e il riferimento alla chiamata per andarsela a sentire.
+   ============================================================================ */
+const RAPI = () => API.replace(/regia$/, 'regia-riepilogo');
+
+async function caricaImparato(){
+  const box = $('impCorpo'); if(!box) return;
+  box.innerHTML = '<p class="attesa">Sto raccogliendo quello che ha imparato...</p>';
+  let righe = [];
+  try{
+    const r = await fetch(RAPI()+'?imparato=1&t='+encodeURIComponent(PASS));
+    const j = await r.json(); righe = j.imparato || [];
+  }catch(e){ box.innerHTML = '<p class="attesa">Non riesco a leggerlo.</p>'; return; }
+  if(!righe.length){ box.innerHTML = '<div class="carta"><p class="attesa">Ancora niente. Si riempie da solo mentre Valentino telefona.</p></div>'; return; }
+  box.innerHTML = righe.map(x => {
+    const me = x.mercato || [], ob = x.obiezioni || [], tr = x.tratti || [];
+    return '<div class="carta impara">'+
+      '<div class="impTesta">'+
+        '<h4>'+esc(Nome(x.chi)||x.telefono||'senza nome')+'</h4>'+
+        '<span class="mono">'+esc(String(x.quando||"").slice(0,16).replace("T"," "))+
+          (x.durata_sec? " &middot; "+mmss(x.durata_sec) : "")+'</span>'+
+        '<button class="azione" data-riep="'+esc(x.conversazione)+'">apri la telefonata</button>'+
+      '</div>'+
+      (me.length ? '<p class="etich">Mercato e concorrenza</p>'+me.map(v =>
+        '<div class="imp merc"><span>'+esc(v.detto||"")+
+          (v.cifra? ' <b>'+esc(String(v.cifra))+' euro</b>':"")+
+          (v.configurazione? '<small>'+esc(v.configurazione)+(v.zona? " - "+esc(v.zona):"")+'</small>':"")+
+        '</span></div>').join("") : "")+
+      (ob.length ? '<p class="etich">Obiezioni</p>'+ob.map(o =>
+        '<div class="imp obie"><span><b>'+esc(o.famiglia||"")+'</b>'+
+          (o.parole? '<small>&laquo;'+esc(o.parole)+'&raquo;</small>':"")+
+          (o.risposta? '<small class="risp">hai risposto: '+esc(o.risposta)+'</small>':"")+
+          (o.esito? '<small class="risp">com e finita: '+esc(o.esito)+'</small>':"")+
+        '</span></div>').join("") : "")+
+      (tr.length ? '<p class="etich">Cose sul cliente che non scadono</p>'+tr.map(t =>
+        '<div class="imp"><span>'+esc(t.testo||"")+'</span></div>').join("") : "")+
+    '</div>';
+  }).join("");
+  box.querySelectorAll('[data-riep]').forEach(b => b.onclick = () => apriRiepilogo(b.dataset.riep));
+}
+
+/* IL RIEPILOGO DI UNA TELEFONATA CHIUSA. Prima, appena finita la chiamata,
+   restavano tre parole in tabella e tutto il resto spariva dagli occhi pur
+   essendo scritto nel database. */
+async function apriRiepilogo(conv){
+  if(!conv) return;
+  cPannello('Riepilogo della telefonata', '<p class="attesa">Sto raccogliendo tutto...</p>');
+  let j;
+  try{
+    const r = await fetch(RAPI()+'?telefonata='+encodeURIComponent(conv)+'&t='+encodeURIComponent(PASS));
+    j = await r.json();
+  }catch(e){ $('cPCorpo').innerHTML = '<p class="attesa">Non riesco a leggere il riepilogo.</p>'; return; }
+  const R = j.riepilogo || {}, t = R.testa || {}, s = R.scheda || {}, tet = s.tetto || {};
+  const tav = R.sul_tavolo, an = R.come_e_andata || {}, m = R.momenti || [];
+  const me = R.mercato || [], ob = R.obiezioni || [], nodi = R.nodi || [];
+  const ric = R.richiamo, lis = R.in_lista;
+  $('cPTit').textContent = (Nome(t.chi) || s.nome || t.telefono || 'Telefonata');
+  $('cPCorpo').innerHTML =
+    '<p class="occhio">'+esc(String(t.quando||"").slice(0,16).replace("T"," "))+
+      (t.durata_sec? ' &middot; '+mmss(t.durata_sec) : "")+
+      (t.agente? ' &middot; '+esc(t.agente) : "")+
+      (an.livello? ' &middot; <b class="liv-'+esc(an.livello)+'">'+esc(an.titolo||an.livello)+'</b>' : "")+'</p>'+
+    (t.di_cosa? '<div class="blocco"><p class="etich">Com e andata</p><p class="sintesi">'+esc(t.di_cosa)+'</p></div>' : "")+
+    (tav && tav.prezzo
+      ? '<div class="blocco"><p class="etich">Sul tavolo</p><div class="offerta"><div class="prezzo">'+esc(tav.prezzo)+
+        '</div><div class="righe">'+esc(tav.configurazione||"")+'</div></div></div>'
+      : '<div class="blocco"><p class="etich">Sul tavolo</p><p class="attesa">Nessuna cifra annotata in questa telefonata.</p></div>')+
+    (nodi.length? '<div class="blocco"><p class="etich">Dove siamo rimasti</p>'+
+      nodi.map(n => '<div class="imp"><span><b>'+esc(n.tipo)+'</b> '+esc(n.testo)+'</span></div>').join("")+'</div>' : "")+
+    (ric? '<div class="blocco"><p class="etich">Richiamo preso</p><p class="sintesi">'+
+      esc(orario(ric.quando))+(ric.perche? ' - '+esc(ric.perche):"")+
+      (ric.annullato? ' <b>(annullato)</b>':"")+(ric.fatto? ' <b>(fatto)</b>':"")+'</p></div>' : "")+
+    (me.length? '<div class="blocco"><p class="etich">Mercato e concorrenza</p>'+me.map(v =>
+      '<div class="imp merc"><span>'+esc(v.detto||"")+(v.cifra? ' <b>'+esc(String(v.cifra))+' euro</b>':"")+
+      (v.configurazione? '<small>'+esc(v.configurazione)+(v.zona? " - "+esc(v.zona):"")+'</small>':"")+'</span></div>').join("")+'</div>' : "")+
+    (ob.length? '<div class="blocco"><p class="etich">Obiezioni</p>'+ob.map(o =>
+      '<div class="imp obie"><span><b>'+esc(o.famiglia||"")+'</b>'+
+      (o.parole? '<small>&laquo;'+esc(o.parole)+'&raquo;</small>':"")+
+      (o.risposta? '<small class="risp">hai risposto: '+esc(o.risposta)+'</small>':"")+'</span></div>').join("")+'</div>' : "")+
+    '<div class="blocco"><p class="etich">Quello che ha detto</p>'+
+      righe([['Bolletta',s.bolletta],['Consumo',s.consumo],['In casa',s.persone],['Di giorno',s.giorno],
+             ['Riscaldamento',s.riscaldamento],['Contatore',s.contatore],['Auto',s.auto],
+             ['Comune',s.dove],['Sul tetto',tet.potenza]])+'</div>'+
+    (m.length? '<div class="blocco"><p class="etich">Momento per momento</p>'+m.map(x =>
+      '<div class="imp"><span class="ora">'+esc(x.ora)+'</span><span>'+esc(x.cosa)+'</span></div>').join("")+'</div>' : "")+
+    (lis? '<p class="nota">Era nella lista id '+esc(String(lis.lista_id))+
+      (lis.esito? ' - esito: '+esc(lis.esito):"")+'</p>' : "")+
+    (j.pronto === false? '<p class="nota">Il riepilogo della chiamata non e ancora arrivato: quello che vedi e cio che e stato scritto durante la telefonata.</p>' : "");
+}
+
 function cDisegnaArchivio(){
   const via = cListe.filter(x => x.stato !== 'aperta').sort((a,b) => b.id - a.id);
   const box = $('cArchivio'), t = $('cToggleArch');
@@ -2742,7 +2851,7 @@ document.addEventListener('dragleave', (e) => { const z = e.target.closest && e.
 document.addEventListener('drop', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
   if(z){ e.preventDefault(); z.classList.remove('sopra'); impLeggiFile(e.dataTransfer.files && e.dataTransfer.files[0]); } });
 function scheda(q){
-  ['tCont','tListe','tArch','tLinea','tArric','tRich','tChiuse'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
+  ['tCont','tListe','tArch','tLinea','tArric','tRich','tChiuse','tImpara'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
   $('vCont').classList.toggle('nascosto', q!=='tCont');
   $('vListe').classList.toggle('nascosto', q!=='tListe');
   $('vArch').classList.toggle('nascosto', q!=='tArch');
@@ -2755,6 +2864,8 @@ function scheda(q){
   $('vArric').classList.toggle('nascosto', q!=='tArric');
   $('vRich').classList.toggle('nascosto', q!=='tRich');
   $('vChiuse').classList.toggle('nascosto', q!=='tChiuse');
+  $('vImpara').classList.toggle('nascosto', q!=='tImpara');
+  if(q==='tImpara'){ caricaImparato(); }
 }
 $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema') === 'chiaro' ? 'scuro' : 'chiaro');
 $('bPieno').onclick = () => schermoPieno();
@@ -2765,6 +2876,7 @@ $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
 $('tChiuse').onclick = () => scheda('tChiuse');
+$('tImpara').onclick = () => scheda('tImpara');
 /* si puo entrare anche con il lasciapassare nell indirizzo: serve quando la
    pagina viene ricaricata forzando e la parola d ordine se ne va con la sessione */
 (function(){
