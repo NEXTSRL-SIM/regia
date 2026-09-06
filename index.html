@@ -536,6 +536,7 @@ tr.fatta td{opacity:.55}
 @media (max-width:900px){.impDue{grid-template-columns:1fr;gap:0}}
 #cPCorpo .duecol{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}
 @media (max-width:900px){#cPCorpo .duecol{grid-template-columns:1fr}}
+.st .pallino{display:inline-block;margin-left:7px;min-width:17px;height:17px;line-height:17px;padding:0 4px;border-radius:9px;background:var(--brick);color:#fff;font-family:var(--mono);font-size:10.5px;text-align:center;vertical-align:middle}
 .avvisoLez{border:1px solid var(--amber);background:var(--amber-wash);padding:11px 14px;margin-bottom:14px;font-size:13px;line-height:1.5}
 .avvisoLez b{color:var(--amber);font-family:var(--mono);font-size:15px;margin-right:4px}
 .lezBox{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
@@ -644,7 +645,7 @@ tr.fatta td{opacity:.55}
   <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
   <button class="st" id="tRich" aria-selected="false">Da richiamare <span id="nRich">0</span></button>
   <button class="st" id="tChiuse" aria-selected="false">Telefonate chiuse</button>
-  <button class="st" id="tImpara" aria-selected="false">Cosa impara</button>
+  <button class="st" id="tImpara" aria-selected="false">Apprendimento</button>
  </div>
  <div class="telaio" id="vLinea">
   <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div><div class="sotto" id="sotto"></div></div>
@@ -831,7 +832,7 @@ tr.fatta td{opacity:.55}
  </div></div>
 
 <div id="vImpara" class="nascosto"><div class="foglio">
-   <h1>Cosa impara</h1>
+   <h1>Apprendimento</h1>
    <p class="occhio">Telefonata per telefonata, quello che Valentino ha portato a casa: i preventivi della concorrenza, le obiezioni con la risposta che ha dato, i fatti sul cliente che non scadono. Da ogni riga si risale alla chiamata e si ascolta.</p>
    <div id="impCorpo"></div>
  </div></div>
@@ -1270,6 +1271,10 @@ function apri(){
   $('porta').classList.add('nascosto'); $('dentro').classList.remove('nascosto');
   $('chiSono').textContent = CHI ? 'ciao ' + CHI : '';
   if(!avviato){ avviato = true; tira(); setInterval(tira, 3000);
+    /* il pallino sulla linguetta: quante lezioni aspettano una risposta.
+       Si guarda ogni tanto, non ogni tre secondi: non e roba che cambia
+       mentre uno guarda lo schermo */
+    contaLezioni(); setInterval(contaLezioni, 90000);
     setInterval(function(){ fetch(API + '-pulisci?t=' + encodeURIComponent(PASS)).catch(function(){}); }, 5000); }
 }
 async function tira(){
@@ -1488,11 +1493,24 @@ async function accendiVoce(velo){
        nessuno. Adesso quando il collegamento si chiude, comunque si chiuda,
        quello che vi siete detti parte da solo. Le prove di pochi scambi no:
        riempirebbero l area di niente. */
-    if(voceBattute.length >= 4){
+    /* SI CONTA QUELLO CHE HA DETTO LEI, NON QUELLO CHE HA DETTO LUI.
+       Con il racconto che parte da solo, l allievo fa tre o quattro battute
+       da solo: contandole tutte, bastava aprire e chiudere senza dire una
+       parola perche partisse una lezione vuota (successo a Sante il 6
+       settembre). Una lezione nasce solo se qualcuno ha insegnato qualcosa.
+       E se glielo si dice a voce - "non memorizzare niente, volevo solo
+       sentire" - non parte comunque. */
+    const mie = voceBattute.filter(x => x.chi === 'io');
+    const quanto = mie.reduce((n,x) => n + String(x.testo||'').trim().length, 0);
+    const soloSentire = mie.some(x => /non memorizzar|non salvare|non tenere|non registrar|solo (per )?sentire|lascia perdere/i.test(String(x.testo||'')));
+    if(soloSentire){
+      fVoceStato(velo, 'chiuso - come mi ha detto lei, non ho messo via niente', false);
+      elencoFormazione(velo);
+    } else if(mie.length >= 2 || quanto >= 60){
       fVoceStato(velo, 'chiuso - sto mandando a Claude quello che ci siamo detti...', false);
       mandaFormazione(velo, null);
     } else {
-      fVoceStato(velo, voceBattute.length ? 'chiuso - troppo corta, non l ho mandata' : 'collegamento chiuso', false);
+      fVoceStato(velo, mie.length ? 'chiuso - lei ha detto troppo poco, non l ho mandata' : 'chiuso - lei non ha detto niente, non c e nessuna lezione da mandare', false);
       elencoFormazione(velo);
     }
   };
@@ -2281,6 +2299,20 @@ function cDisegnaCoda(){
    tre aree separate, e il riferimento alla chiamata per andarsela a sentire.
    ============================================================================ */
 const RAPI = () => API.replace(/regia$/, 'regia-riepilogo');
+
+/* IL PALLINO. Sulla linguetta, in rosso, quante lezioni sono depositate e
+   aspettano: cosi si vede che c e qualcosa da fare senza aprire la scheda. */
+async function contaLezioni(){
+  const b = $('tImpara'); if(!b) return;
+  let n = 0;
+  try{
+    const r = await fetch(RAPI()+'?lezioni=1&t='+encodeURIComponent(PASS));
+    const j = await r.json(); n = j.in_attesa || 0;
+  }catch(e){ return; }
+  let s = b.querySelector('.pallino');
+  if(!s){ s = document.createElement('span'); s.className = 'pallino'; b.appendChild(s); }
+  s.textContent = n; s.hidden = !n;
+}
 
 async function caricaImparato(){
   const box = $('impCorpo'); if(!box) return;
