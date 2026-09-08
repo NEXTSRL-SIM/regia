@@ -475,65 +475,7 @@ tr.fatta td{opacity:.55}
 .minif{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line-2);padding:4px 8px;background:var(--surface)}
 .minif.ross{color:var(--brick);border-color:var(--brick)}
 .azioniF{display:flex;gap:6px;margin-top:9px;position:relative;z-index:2}
-.fogliniA4{display:grid;grid-template-columns:repeat(auto-fill,minmax(214px,1fr));gap:14px;padding:16px 0 20px}
-/* LE DUE LINGUETTE DELLA SCHEDA LISTE. Le archiviate non stanno piu in una
-   scheda per conto loro in cima alla pagina: stanno qui, di fianco alle
-   attive, perche sono la stessa cosa in due momenti diversi. Chiesto da
-   Sante l 08/09. */
-/* RUBRICA: righe tutte della stessa altezza. Le targhette e le note in piu
-   facevano crescere una riga si e una no, e scorrendo l elenco l occhio si
-   perdeva. Adesso l altezza e fissa e quello che non ci sta viene troncato,
-   col testo intero nel suggerimento. Chiesto da Sante l 08/09. */
-/* IL BANCO DELLA SCHEDA IN LINEA: quattro tasti della stessa misura, scritte
-   fisse in maiuscolo, e chiudi la linea staccato in fondo a destra perche e
-   l unico che non si torna indietro. */
-.banco .tasto{min-width:212px;justify-content:center;text-transform:uppercase;letter-spacing:.055em;
-  font-size:11.5px;font-weight:600;padding:12px 14px}
-.banco .tasto.chiudi{margin-left:auto}
-.banco .tasto .led{flex:0 0 auto}
-/* IL TASTO FORMAZIONE. Stava in una testata che gli passava sopra al
-   riquadro di fianco: adesso ha una riga sua, tutta a destra, con lo spazio
-   che gli serve sotto. Chiesto da Sante l 08/09. */
-.formaRiga{display:flex;justify-content:flex-end;align-items:center;margin:10px 0 20px;position:relative;z-index:2;clear:both}
-.formaRiga .tasto.forma{text-transform:uppercase;letter-spacing:.055em;font-size:11.5px;font-weight:600;padding:11px 18px;white-space:nowrap}
-.bancoNota{padding:0 20px 12px;font-size:12px;color:var(--ink-3);min-height:16px;background:var(--surface)}
-.bancoNota:empty{padding:0;min-height:0}
-#rCorpo tr{height:62px}
-/* I DUE COMANDI DELLA RUBRICA, in un riquadro loro e in maiuscolo: sono le
-   due cose che si fanno da qui, e devono staccarsi dal resto della riga.
-   Chiesto da Sante l 08/09. */
-#rCorpo td:last-child{white-space:nowrap;text-align:right}
-#rCorpo td:last-child{padding:6px 10px}
-#rCorpo .comandi{display:inline-flex;gap:6px;padding:4px;border:1px solid var(--line-2);border-radius:3px;background:var(--surface-2)}
-#rCorpo .comandi .perche{margin:0;text-transform:uppercase;letter-spacing:.06em;font-size:11px;font-weight:600;padding:7px 11px}
-#rCorpo td{vertical-align:middle;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:280px}
-#rCorpo td br{display:none}
-#rCorpo td .tag{display:inline-block;margin-left:7px;vertical-align:baseline}
-#rCorpo td small{display:inline-block;margin-left:8px;color:var(--ink-3)}
-#rCorpo td.nomeC b{display:inline-block}
-.linguette{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:0 0 16px}
-.ling{appearance:none;background:none;border:none;border-bottom:2px solid transparent;color:var(--ink-3);
-  font:600 13.5px/1 var(--sans);padding:12px 16px;cursor:pointer;letter-spacing:.01em}
-.ling:hover{color:var(--ink-2)}
-.ling[aria-selected="true"]{color:var(--amber);border-bottom-color:var(--amber)}
-.ling small{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:6px}
-/* LE MINIATURE DELLE LISTE ARCHIVIATE. Erano francobolli da 134 pixel con tre
-   righe minuscole: non si leggeva niente e non si capiva quale fosse quale.
-   Adesso sono schede vere, con il nome grande, i numeri in chiaro e i due
-   comandi che compaiono quando ci passi sopra. */
-.foglino{display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--line-2);
-  border-radius:3px;overflow:hidden;position:relative;transition:border-color .12s,transform .12s}
-.foglino:hover{border-color:var(--amber-dim);transform:translateY(-1px)}
-.foglino .apriFno{appearance:none;background:none;border:none;text-align:left;color:inherit;cursor:pointer;
-  padding:14px 15px 12px;display:flex;flex-direction:column;gap:7px;width:100%}
-.foglino .nf{font:600 14.5px/1.3 var(--sans);color:var(--ink);display:block}
-.foglino .qf{font-size:12.5px;color:var(--ink-2);display:block}
-.foglino .df{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);display:block}
-.foglino .minif{margin:0 !important;border:none;border-top:1px solid var(--line);background:var(--surface-2);
-  color:var(--ink-2);font-size:12px;padding:9px 15px;text-align:left;cursor:pointer;width:100%}
-.foglino .minif:hover{background:var(--amber-wash);color:var(--amber)}
-.foglino .cestino{position:absolute;top:9px;right:9px;opacity:0;transition:opacity .12s}
-.foglino:hover .cestino{opacity:1}
+.fogliniA4{display:grid;grid-template-columns:repeat(auto-fill,minmax(134px,1fr));gap:10px;padding:12px 16px 18px}
 .foglino{position:relative;border:1px solid var(--line-2);background:var(--surface);min-height:94px}
 .foglino .apriFno{display:block;width:100%;text-align:left;padding:9px 22px 9px 10px;background:none;border:none}
 .foglino .nf{display:block;font-size:12px;font-weight:500;line-height:1.25;max-height:3.7em;overflow:hidden}
@@ -725,7 +667,7 @@ tr.fatta td{opacity:.55}
  <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
  <div class="schede">
   <button class="st" id="tCont">Contatti</button>
-  <button class="st" id="tListe">Liste</button>
+  <button class="st" id="tListe">Lista di oggi</button>
   <button class="st" id="tArch">Archivio liste</button>
   <button class="st" id="tRub">Rubrica</button>
   <button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button>
@@ -876,10 +818,6 @@ tr.fatta td{opacity:.55}
 </div></div>
 
 <div id="vListe" class="nascosto"><div class="foglio">
-   <div class="linguette" id="cLinguette">
-     <button class="ling" data-ling="attive" aria-selected="true">Liste attive</button>
-     <button class="ling" data-ling="archivio" aria-selected="false">Archiviate <small id="cQArch"></small></button>
-   </div>
    <div class="barraliste" id="cBarraListe"></div>
    <label class="fetichetta" for="cNomeLista" style="display:block;margin:12px 0 4px">Nome della lista <span class="mono" id="cIdLista" style="color:var(--amber);text-transform:none;letter-spacing:0"></span></label>
    <input class="nomelista" id="cNomeLista" placeholder="Lista di oggi">
@@ -2685,22 +2623,10 @@ function cDisegnaArchivio(){
 function cDisegnaLista(){
   const aperte = cListe.filter(l => l.stato === 'aperta');
   const l = cListe.find(x => x.id === cListaId) || null;
-  /* LE LISTE NON SONO PIU PULSANTI. Un pulsante per lista regge finche le
-     liste sono quattro; a venti la barra diventa un muro. Detto da Sante
-     l 08/09: le liste si riprendono dall archivio, e qui in alto ci sta solo
-     quella su cui si sta lavorando, con una tendina per saltare alle altre
-     aperte. */
   $('cBarraListe').innerHTML =
-    (aperte.length
-      ? '<span class="fetichetta">Lista aperta</span>' +
-        '<select class="chiplista" id="cScegliLista" style="min-width:240px">' +
-          aperte.map(x => '<option value="'+x.id+'"'+(x.id===cListaId ? ' selected' : '')+'>'+
-            esc(x.nome)+' · '+(x.in_lista||0)+' in lista'+
-            ((x.fatte||0) ? ', '+x.fatte+' fatte' : '')+'</option>').join('') +
-        '</select>'
-      : '<span class="occhio" style="margin:0">Nessuna lista aperta: creane una nuova, oppure riprendine una dall archivio.</span>') +
+    aperte.map(x => '<button class="chiplista" data-lista="'+x.id+'" aria-pressed="'+(x.id===cListaId)+'">'+
+      esc(x.nome)+' <small>'+(x.in_lista||0)+'</small></button>').join('') +
     '<button class="chiplista" id="cNuovaLista">+ nuova lista</button>' +
-    '<button class="chiplista" id="cVaiArchivio">riprendi dall archivio</button>' +
     (l && (l.in_lista||0) > 0 ? '<button class="chiplista" id="cMettiVia" style="margin-left:auto">archivia</button>' : '');
   $('cNomeLista').value = l ? l.nome : '';
   $('cNomeLista').disabled = !l;
@@ -3254,59 +3180,6 @@ $('bPieno').onclick = () => schermoPieno();
 $('tCont').onclick = () => scheda('tCont');
 $('tListe').onclick = () => scheda('tListe');
 $('tArch').onclick = () => scheda('tArch');
-/* LE DUE LINGUETTE DELLA SCHEDA LISTE. Attive e archiviate sono la stessa cosa
-   in due momenti diversi, e stavano in due schede lontane. Adesso stanno una di
-   fianco all altra: si apre sulle attive, e le archiviate sono a un clic.
-   Le miniature non vengono ridisegnate qui: si SPOSTA il riquadro che le
-   contiene, cosi tutti i comandi che aveva - guarda, rimetti in lavorazione,
-   cancella - continuano a funzionare senza copiare una riga di codice. */
-(function(){
-  const barra = document.getElementById('cLinguette');
-  if(!barra || !barra.parentElement) return;
-  const foglio = barra.parentElement;
-  const attive = document.createElement('div');
-  attive.id = 'cPanAttive';
-  while(barra.nextSibling) attive.appendChild(barra.nextSibling);
-  foglio.appendChild(attive);
-  const arch = document.createElement('div');
-  arch.id = 'cPanArchivio';
-  arch.hidden = true;
-  foglio.appendChild(arch);
-  const box = document.getElementById('cArchivio');
-  if(box){ box.hidden = false; arch.appendChild(box); }
-  const vecchia = document.getElementById('tArch');
-  if(vecchia) vecchia.hidden = true;
-  /* la tendina che sceglie la lista aperta, al posto della fila di pulsanti */
-  document.addEventListener('change', (e) => {
-    const s = e.target;
-    if(!s || s.id !== 'cScegliLista') return;
-    const n = Number(s.value);
-    if(n && typeof cCaricaLista === 'function') cCaricaLista(n);
-  });
-  /* "riprendi dall archivio" non porta piu in un altra scheda: apre la
-     linguetta qui di fianco */
-  document.addEventListener('click', (e) => {
-    const b = e.target && e.target.closest ? e.target.closest('#cVaiArchivio') : null;
-    if(!b) return;
-    const l = barra.querySelector('[data-ling="archivio"]');
-    if(l) l.click();
-  });
-  barra.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-ling]');
-    if(!b) return;
-    const quale = b.dataset.ling;
-    barra.querySelectorAll('[data-ling]').forEach(x => x.setAttribute('aria-selected', String(x === b)));
-    attive.hidden = quale !== 'attive';
-    arch.hidden = quale !== 'archivio';
-    if(quale === 'archivio'){
-      try{ if(typeof cCaricaListe === 'function') cCaricaListe(); }catch(err){}
-      /* chi disegna le miniature le nasconde e le mostra a modo suo: qui si
-         insiste, perche dentro questa linguetta devono restare visibili */
-      setTimeout(() => { const bx = document.getElementById('cArchivio'); if(bx) bx.hidden = false; }, 500);
-      setTimeout(() => { const bx = document.getElementById('cArchivio'); if(bx) bx.hidden = false; }, 1500);
-    }
-  });
-})();
 $('tRub').onclick = () => scheda('tRub');
 $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
