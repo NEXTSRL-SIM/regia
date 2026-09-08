@@ -2960,11 +2960,24 @@ document.addEventListener('click', async (e) => {
   if(t.id === 'cPulisci'){ cScelti.clear(); cDisegna(); return; }
   if(t.id === 'cTetto'){ cApriTetto(); return; }
   if(d.rub){
+    /* come per chiama e rimuovi: si chiede due volte. Qui le righe sono
+       strette e vicine, e il tasto sta accanto al numero. */
+    if(t.dataset.conferma !== '1'){
+      t.dataset.conferma = '1';
+      t.textContent = 'in rubrica? premi ancora';
+      t.setAttribute('aria-pressed', 'true');
+      setTimeout(() => {
+        if(t.dataset.conferma === '1'){ t.dataset.conferma = ''; t.textContent = '+ in rubrica'; t.removeAttribute('aria-pressed'); }
+      }, 6000);
+      return;
+    }
+    t.dataset.conferma = '';
     t.disabled = true;
     const j = await rChiedi({ azione:'aggiungi', telefono:d.rub, nome:d.rubnome||'', comune:d.rubcom||'' });
     t.disabled = false;
     if(j && j.ok){ t.textContent = 'in rubrica'; t.setAttribute('aria-pressed','true'); }
-    else avvisa((j && j.errore) ? j.errore : 'non riesco a metterlo in rubrica');
+    else { t.textContent = '+ in rubrica'; t.removeAttribute('aria-pressed');
+      avvisa((j && j.errore) ? j.errore : 'non riesco a metterlo in rubrica'); }
     return; }
   if(d.pt){ cApriPunteggio(Number(d.pt)); return; }
   if(d.vinc){ cApriVincoli(Number(d.vinc)); return; }
