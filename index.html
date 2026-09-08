@@ -2735,7 +2735,7 @@ function cDisegnaLista(){
   $('cBarraListe').innerHTML =
     '<button class="chiplista" id="cMettiVia" style="margin-left:auto"'+
       (l && (l.in_lista||0) > 0 ? '' : ' disabled title="prima scegli dei contatti dalla pagina Contatti"')+
-      '>METTI VIA IN ARCHIVIO</button>';
+      '>METTI IN ARCHIVIO</button>';
   $('cNomeLista').value = l ? l.nome : '';
   $('cNomeLista').disabled = !l;
   $('cIdLista').textContent = l ? '(id lista '+l.id+')' : '';
