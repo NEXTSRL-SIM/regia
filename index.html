@@ -504,7 +504,9 @@ tr.fatta td{opacity:.55}
 .pling:hover{color:var(--ink)}
 .pling[aria-pressed="true"]{background:var(--amber-wash);border-color:var(--amber-dim);color:var(--amber)}
 .foglioA4{position:relative}
-.comandiF{position:absolute;top:8px;right:8px;display:flex;gap:6px;align-items:center;z-index:2}
+.comandiF{display:flex;gap:7px;margin-top:auto;padding-top:10px}
+.comandiF .minif{flex:1 1 auto;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;padding:7px 8px;text-align:center}
+.comandiF .minif.rosso:hover{color:var(--brick);border-color:var(--brick)}
 /* IL TASTO FORMAZIONE: una riga sua, tutta a destra, senza passare sopra a
    quello che ha di fianco. */
 .formaRiga{display:flex;justify-content:flex-end;align-items:center;margin:10px 0 20px;position:relative;z-index:2;clear:both}
@@ -855,6 +857,7 @@ tr.fatta td{opacity:.55}
      <b id="cSelN">0 selezionati</b>
      <div class="presa"><span>prendi i primi</span><input id="cPrimiN" value="20"><button class="bott" id="cPrimi">dell ordinamento</button></div>
      <button class="bott forte" id="cAggiungi">Aggiungi alla lista</button>
+     <button class="bott" id="cNuovaLista" title="apre una lista nuova e ci mette i contatti che hai scelto">Crea nuova lista</button>
      <button class="bott" id="cArricchisci">Manda ad arricchire</button>
      <button class="bott" id="cTetto">Guarda il tetto</button>
      <button class="bott calmo" id="cPulisci">Deseleziona</button>
@@ -2791,7 +2794,7 @@ function cDisegnaLista(){
        vista vecchia non porta il rigo ricco si ripiega sui soli nomi. */
     const nomi = String(x.chi_c_era_ric || x.chi_c_era || '').split(' | ').filter(Boolean);
     return '<div class="foglioA4 '+(x.stato==='aperta'?'aperta':'chiusa')+'">'+
-      '<span class="bollino">'+(x.stato==='aperta'?'in lavorazione':'messa via')+'</span>'+
+      '<span class="bollino">'+(x.stato==='aperta'?'in lavorazione':'storico')+'</span>'+
       '<span class="dataF">id lista '+x.id+' &middot; '+esc(String(x.creata_il||'').slice(0,16).replace('T',' '))+'</span>'+
       '<h4>'+esc(x.nome)+'</h4>'+
       '<div class="righeF">'+(nomi.slice(0,9).map(nm => {
@@ -2803,6 +2806,16 @@ function cDisegnaLista(){
           '</div>';
         }).join('') || '<div>vuota</div>')+
         (nomi.length>9 ? '<div>... e altri '+(nomi.length-9)+'</div>' : '')+'</div>'+
+      /* I COMANDI DEL FOGLIO, in fondo. In lavorazione: archivia, che la manda
+         nello storico, e cancella. Nello storico: ripristina, che la riporta
+         in lavorazione se serve riprenderla, e cancella. Disegno di Sante,
+         08/09. */
+      '<div class="comandiF">'+
+        (x.stato==='aperta'
+          ? '<button class="minif" data-archivia="'+x.id+'" title="la chiude e la manda nello storico">ARCHIVIA</button>'
+          : '<button class="minif" data-rilavora="'+x.id+'" title="la riporta fra quelle in lavorazione">RIPRISTINA</button>')+
+        '<button class="minif rosso" data-cancella="'+x.id+'" title="cancella la lista">CANCELLA</button>'+
+      '</div>'+
       '<div class="fondoF"><span><b>'+(x.in_lista||0)+'</b>in lista</span>'+
         '<span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
         '<span class="re"><b>'+(x.nel_registro||0)+'</b>nel registro</span></div>'+
@@ -3163,7 +3176,18 @@ document.addEventListener('click', async (e) => {
   if(t.id === 'cRicalcola'){ t.disabled = true; await cComando({ ricalcola: true }); t.disabled = false; cVoci = null; cCarica(); return; }
 
   if(t.id === 'cApriLista'){ scheda('tListe'); return; }
-  if(t.id === 'cNuovaLista'){ await cCreaLista(); await cCaricaListe(); return; }
+  /* CREA NUOVA LISTA da Contatti: apre una lista nuova e ci mette dentro i
+     contatti scelti, poi si va a vederla. Se non e stato scelto nessuno,
+     apre solo la lista vuota. */
+  if(t.id === 'cNuovaLista'){
+    cListaId = null;
+    await cCreaLista();
+    if(!cListaId){ avvisa('non sono riuscito ad aprire una lista'); return; }
+    if(cScelti.size){
+      const r = await cComando({ lista: cListaId, aggiungi: [...cScelti] });
+      if(r.ok){ const q = cScelti.size; cScelti.clear(); avvisa(q+' messi nella lista nuova'); }
+    }
+    await cCaricaListe(); cDisegna(); scheda('tListe'); return; }
   if(d.lista){ await cCaricaLista(Number(d.lista)); return; }
   /* METTI VIA NON VUOL DIRE CHIUDERE. La lista esce dal banco - che torna
      libero per la prossima - ma resta viva, e in Archivio liste si trova fra
@@ -3171,6 +3195,7 @@ document.addEventListener('click', async (e) => {
      ci va quando e conclusa. Detto da Sante l 08/09: aveva messo via una
      lista con le chiamate ancora da fare e se l era trovata fra le
      archiviate, che non e dove doveva essere. */
+  if(d.archivia){ await cComando({ lista: Number(d.archivia), archivia: true }); await cCaricaListe(); return; }
   if(t.id === 'cMettiVia'){ cListaId = null; await cCaricaListe(); cVistaArch = 'lavoro'; scheda('tArch'); return; }
   if(t.id === 'cToggleArch'){ const b = $('cArchivio'); if(b){ b.hidden = !b.hidden; cDisegnaArchivio(); } return; }
   if(d.viafoglio){
