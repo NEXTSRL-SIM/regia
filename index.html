@@ -3144,7 +3144,9 @@ document.addEventListener('click', async (e) => {
     t.disabled = true;
     const j = await rChiedi({ azione:'aggiungi', telefono:d.rub, nome:d.rubnome||'', comune:d.rubcom||'' });
     t.disabled = false;
-    if(j && j.ok){ t.textContent = 'in rubrica'; t.setAttribute('aria-pressed','true'); }
+    if(j && j.ok){ t.textContent = 'in rubrica'; t.setAttribute('aria-pressed','true');
+      /* messo in rubrica: si va a vederlo dov e finito */
+      setTimeout(() => scheda('tRub'), 400); }
     else { t.textContent = '+ in rubrica'; t.removeAttribute('aria-pressed');
       avvisa((j && j.errore) ? j.errore : 'non riesco a metterlo in rubrica'); }
     return; }
@@ -3216,7 +3218,11 @@ document.addEventListener('click', async (e) => {
     if(!r.ok){ avvisa('non sono riuscito ad aggiungerli: '+String(r.dice||r.errore||'').slice(0,120)); return; }
     const quanti = cScelti.size; cScelti.clear();
     await cCaricaListe(); cDisegna();
-    avvisa(quanti+' aggiunti alla lista'); return; }
+    avvisa(quanti+' aggiunti alla lista');
+    /* LA PAGINA SEGUE IL LAVORO. Aggiunti i contatti, il lavoro continua
+       nella lista: la si apre subito invece di lasciare l utente a chiedersi
+       dove sono finiti. Chiesto da Sante l 08/09. */
+    scheda('tListe'); return; }
   if(d.fuori){ await cComando({ lista: cListaId, togli: Number(d.fuori) }); await cCaricaLista(cListaId); return; }
   if(d.su){ await cComando({ lista: cListaId, sposta: { id: Number(d.su), verso: 'su' } }); await cCaricaLista(cListaId); return; }
   if(d.giu){ await cComando({ lista: cListaId, sposta: { id: Number(d.giu), verso: 'giu' } }); await cCaricaLista(cListaId); return; }
@@ -3240,7 +3246,9 @@ document.addEventListener('click', async (e) => {
     const prossimo = cListaRighe.find(x => x.stato === 'attesa');
     if(!prossimo){ avvisa('non c e nessuno in attesa in questa lista'); return; }
     if(cListaRighe.some(x => x.stato === 'linea')){ avvisa('c e gia una telefonata in linea: chiudila prima di far partire la prossima'); return; }
-    await cFaiPartire(prossimo.contatto_id, t); return; }
+    await cFaiPartire(prossimo.contatto_id, t);
+    /* le chiamate sono partite: si guardano da In linea, non da qui */
+    scheda('tLinea'); return; }
 });
 document.addEventListener('input', (e) => {
   if(!e.target.closest) return;
