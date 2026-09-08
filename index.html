@@ -656,6 +656,7 @@ tr.fatta td{opacity:.55}
   <button class="st" id="tCont">Contatti</button>
   <button class="st" id="tListe">Lista di oggi</button>
   <button class="st" id="tArch">Archivio liste</button>
+  <button class="st" id="tRub">Rubrica</button>
   <button class="st" id="tLinea" aria-selected="true">In linea <span id="nLive">0</span></button>
   <button class="st" id="tArric" aria-selected="false">Arricchimento</button>
   <button class="st" id="tRich" aria-selected="false">Da richiamare <span id="nRich">0</span></button>
@@ -836,6 +837,21 @@ tr.fatta td{opacity:.55}
        <th>Registro</th><th>Stato</th><th>Esito</th><th></th></tr></thead>
      <tbody id="cCorpoLista"></tbody></table></div>
    <p class="nota">La lista e il documento della giornata: resta li anche se chiudi la pagina, e ogni riga porta con se perche e entrata.</p>
+ </div></div>
+
+<div id="vRub" class="nascosto"><div class="foglio">
+   <h1>Rubrica</h1>
+   <p class="occhio">Due cose in un elenco solo: chi abbiamo gia chiamato, e i numeri che uno si mette da parte. Il filtro le separa.</p>
+   <div class="testafiltri">
+     <button class="minif" id="rFTutti" aria-pressed="true">tutti</button>
+     <button class="minif" id="rFChiam" aria-pressed="false">gia chiamati <span id="rNChiam">0</span></button>
+     <button class="minif" id="rFMiei" aria-pressed="false">i miei <span id="rNMiei">0</span></button>
+     <input class="cerca" id="rCerca" placeholder="cerca nome, comune o numero" style="margin-left:auto;max-width:280px">
+     <span class="mono" id="rQuante"></span>
+   </div>
+   <div class="avvolgi"><table class="tabella">
+     <thead><tr><th>Chi</th><th>Dove</th><th>Ultima volta</th><th>Volte</th><th>Com e finita</th><th></th></tr></thead>
+     <tbody id="rCorpo"><tr><td colspan="6" class="attesa">Un momento.</td></tr></tbody></table></div>
  </div></div>
 
 <div id="vArch" class="nascosto"><div class="foglio">
@@ -1304,7 +1320,7 @@ async function tira(){
        al giro dopo, e intanto la regia va avanti lo stesso. */
     if(CHI) fetch(API.replace(/regia$/, 'regia-presenza'), { method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ t: PASS, chi: CHI }) }).catch(() => {});
+      body: JSON.stringify({ t: PASS, chi: CHI, telefono: statoTel }) }).catch(() => {});
     /* un errore dentro disegna() non deve fermare l aggiornamento */
     const r = await fetch(API + '?dati=1&periodo=' + periodo + '&t=' + encodeURIComponent(PASS));
     if(r.status === 401){ sessionStorage.clear(); location.reload(); return; }
@@ -1844,7 +1860,7 @@ function disegna(){
     '<div class="detto" id="detto"></div>'+
     '<div class="banco">'+
       '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>'+(muto?'Audio acceso':'Senti la voce')+'</button>'+
-      '<button class="tasto entra" id="bEnt" disabled title="serve il ponte telefonico: non e ancora possibile"><span class="led"></span>Entra in voce <em>presto</em></button>'+
+      '<button class="tasto entra" id="bEnt" data-conv="'+esc(v.conversazione||'')+'" title="entri nella stanza insieme a Valentino e al cliente"><span class="led"></span>Entro io</button>'+
       '<button class="tasto forma" id="bForm" title="insegna a Valentino come andava gestita">Formazione</button>'+
       '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">Prendo io la chiamata</button>'+
       '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
@@ -2307,7 +2323,8 @@ function cDisegna(){
   $('cCorpo').innerHTML = cRighe.length ? cRighe.map(r =>
     '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
     '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
-    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small></td>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small>'+
+      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+'</td>'+
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span>'+
       '<button class="perche" data-pt="'+r.id+'">perche</button></td>'+
     '<td>'+cFaro(r)+'</td>'+
@@ -2587,7 +2604,8 @@ function cDisegnaLista(){
   $('cCorpoLista').innerHTML = cListaRighe.length ? cListaRighe.map((r,i) =>
     '<tr class="'+(r.stato==='linea'?'inlinea':r.stato==='fatta'?'fatta':'')+'">'+
     '<td class="grip"><b class="mono">'+(i+1)+'</b> <button data-su="'+r.contatto_id+'">&#8593;</button><button data-giu="'+r.contatto_id+'">&#8595;</button></td>'+
-    '<td class="nomeC"><b>'+esc(r.nome||'')+'</b><small>'+esc(r.tel||'')+'</small></td>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'')+'</b><small>'+esc(r.tel||'')+'</small>'+
+      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+'</td>'+
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span></td>'+
     '<td>'+cFaro(r)+'</td>'+
     '<td>'+esc(r.comune||'-')+(r.prov?' <span class="mono">('+esc(r.prov)+')</span>':'')+'</td>'+
@@ -2941,6 +2959,13 @@ document.addEventListener('click', async (e) => {
   if(t.id === 'cPrimi'){ cRighe.slice(0, Number($('cPrimiN').value)||0).forEach(r => cScelti.add(r.id)); cDisegna(); return; }
   if(t.id === 'cPulisci'){ cScelti.clear(); cDisegna(); return; }
   if(t.id === 'cTetto'){ cApriTetto(); return; }
+  if(d.rub){
+    t.disabled = true;
+    const j = await rChiedi({ azione:'aggiungi', telefono:d.rub, nome:d.rubnome||'', comune:d.rubcom||'' });
+    t.disabled = false;
+    if(j && j.ok){ t.textContent = 'in rubrica'; t.setAttribute('aria-pressed','true'); }
+    else avvisa((j && j.errore) ? j.errore : 'non riesco a metterlo in rubrica');
+    return; }
   if(d.pt){ cApriPunteggio(Number(d.pt)); return; }
   if(d.vinc){ cApriVincoli(Number(d.vinc)); return; }
   if(d.sap){ cApriSegnali(Number(d.sap)); return; }
@@ -3070,11 +3095,13 @@ document.addEventListener('dragleave', (e) => { const z = e.target.closest && e.
 document.addEventListener('drop', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
   if(z){ e.preventDefault(); z.classList.remove('sopra'); impLeggiFile(e.dataTransfer.files && e.dataTransfer.files[0]); } });
 function scheda(q){
-  ['tCont','tListe','tArch','tLinea','tArric','tRich','tChiuse','tImpara'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
+  ['tCont','tListe','tArch','tRub','tLinea','tArric','tRich','tChiuse','tImpara'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
   $('vCont').classList.toggle('nascosto', q!=='tCont');
   $('vListe').classList.toggle('nascosto', q!=='tListe');
   $('vArch').classList.toggle('nascosto', q!=='tArch');
   if(q==='tArch'){ cCaricaListe(); }
+  $('vRub').classList.toggle('nascosto', q!=='tRub');
+  if(q==='tRub'){ rCarica(); }
   /* si caricano solo quando servono: aprire la regia non deve pagare il conto
      di una scheda che magari oggi non si guarda nemmeno */
   if(q==='tCont'){ if(!cVisto){ cVisto = true; cCarica(); cCaricaListe(); } else cCarica(); }
@@ -3091,6 +3118,7 @@ $('bPieno').onclick = () => schermoPieno();
 $('tCont').onclick = () => scheda('tCont');
 $('tListe').onclick = () => scheda('tListe');
 $('tArch').onclick = () => scheda('tArch');
+$('tRub').onclick = () => scheda('tRub');
 $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
@@ -3110,6 +3138,98 @@ $('tImpara').onclick = () => scheda('tImpara');
     }
   }catch(e){}
 })();
+/* ============================================================================
+   LA RUBRICA e LA STANZA (sessione 083)
+   La rubrica mette in un elenco solo chi abbiamo gia chiamato e i numeri che
+   uno si e messo da parte. La stanza e la conferenza di Twilio: da qui la
+   regia puo far partire una telefonata (chiamo io) o entrare in una che e
+   gia in corso (entro io). Le chiavi grosse non stanno qui: si passa da
+   regia-porta, che riconosce la parola d ordine della regia e fa il resto.
+   ============================================================================ */
+const RAPI  = () => API.replace(/regia$/, 'rubrica');
+const PORTA = () => API.replace(/regia$/, 'regia-porta');
+let rFiltro = 'tutti', rTesto = '', rRighe = [], rTimer = null;
+
+async function rChiedi(c){
+  try{
+    const r = await fetch(RAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(Object.assign({ t: PASS, chi: CHI || 'regia' }, c)) });
+    return await r.json();
+  }catch(e){ return { ok:false, errore:'la rubrica non risponde' }; }
+}
+async function chiedoLaStanza(c){
+  try{
+    const r = await fetch(PORTA(), { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(Object.assign({ t: PASS }, c)) });
+    return await r.json();
+  }catch(e){ return { ok:false, errore:'la stanza non risponde' }; }
+}
+function rQuando(t){
+  if(!t) return 'mai';
+  const g = Math.floor((Date.now() - new Date(t).getTime()) / 86400000);
+  if(g <= 0) return 'oggi';
+  if(g === 1) return 'ieri';
+  if(g < 30) return g + ' giorni fa';
+  const d = new Date(t);
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+}
+function rDisegna(){
+  ['rFTutti','rFChiam','rFMiei'].forEach((k,i) => {
+    const b = $(k); if(b) b.setAttribute('aria-pressed', ['tutti','chiamati','miei'][i] === rFiltro);
+  });
+  const q = $('rQuante'); if(q) q.textContent = rRighe.length + (rRighe.length === 1 ? ' numero' : ' numeri');
+  $('rCorpo').innerHTML = rRighe.length ? rRighe.map(r =>
+    '<tr>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.telefono||'')+'</small>'+
+      (r.dnd ? '<br><span class="tag att">nel registro &middot; occhio</span>' : '')+
+      (r.in_rubrica_mia ? '<br><span class="tag">rubrica di '+esc(r.aggiunto_da||'')+'</span>' : '')+'</td>'+
+    '<td>'+esc(r.comune||'-')+(r.provincia ? ' <span class="mono">('+esc(r.provincia)+')</span>' : '')+'</td>'+
+    '<td class="mono">'+rQuando(r.ultima_telefonata)+'</td>'+
+    '<td class="mono">'+(r.quante_volte||0)+'</td>'+
+    '<td>'+esc(r.come_e_finita||'-')+(r.nota ? '<br><small>'+esc(r.nota)+'</small>' : '')+'</td>'+
+    '<td><button class="perche" data-rchiama="'+esc(r.telefono||'')+'" data-rnome="'+esc(r.nome||'')+'">chiamo io</button>'+
+      (r.in_rubrica_mia && (r.aggiunto_da||'') === (CHI||'') ? '<button class="perche" data-rtogli="'+esc(r.telefono||'')+'">togli</button>' : '')+
+    '</td></tr>').join('') : '<tr><td colspan="6" class="attesa">Nessun numero con questo filtro.</td></tr>';
+}
+async function rCarica(){
+  const j = await rChiedi({ azione:'elenco', filtro:rFiltro, cerca:rTesto, quanti:300 });
+  if(!j || !j.ok){ $('rCorpo').innerHTML = '<tr><td colspan="6" class="attesa">Non riesco a leggere la rubrica.</td></tr>'; return; }
+  rRighe = j.righe || [];
+  const a = $('rNChiam'); if(a) a.textContent = j.chiamati || 0;
+  const b = $('rNMiei');  if(b) b.textContent = j.miei || 0;
+  rDisegna();
+}
+document.addEventListener('click', async (e) => {
+  const t = e.target && e.target.closest ? e.target.closest('button') : null;
+  if(!t) return;
+  const d = t.dataset || {};
+  if(t.id === 'rFTutti' || t.id === 'rFChiam' || t.id === 'rFMiei'){
+    rFiltro = t.id === 'rFChiam' ? 'chiamati' : (t.id === 'rFMiei' ? 'miei' : 'tutti');
+    rCarica(); return;
+  }
+  if(d.rtogli){ t.disabled = true; await rChiedi({ azione:'togli', telefono:d.rtogli }); rCarica(); return; }
+  if(d.rchiama){
+    t.disabled = true;
+    const j = await chiedoLaStanza({ azione:'telefonata', cliente:d.rchiama, cliente_nome:d.rnome||'', conduce: CHI || 'regia' });
+    t.disabled = false;
+    avvisa(j && j.ok ? 'sto chiamando te: rispondi, e appena rispondi parte il cliente' : ((j && j.errore) || 'non riesco a far partire la telefonata'));
+    return;
+  }
+  if(t.id === 'bEnt'){
+    const conv = d.conv || '';
+    if(!conv){ avvisa('di questa telefonata non ho il numero di conversazione'); return; }
+    t.disabled = true;
+    const j = await chiedoLaStanza({ azione:'entra', conversazione: conv, chi: CHI || 'regia' });
+    t.disabled = false;
+    avvisa(j && j.ok ? 'ti sto chiamando: rispondi ed entri nella stanza' : ((j && j.errore) || 'non riesco a farti entrare'));
+    return;
+  }
+});
+(function(){
+  const i = document.getElementById('rCerca');
+  if(i) i.oninput = () => { clearTimeout(rTimer); rTimer = setTimeout(() => { rTesto = i.value.trim(); rCarica(); }, 350); };
+})();
+
 if(PASS) apri();
 /* il telefono si accende da solo appena si entra, cosi e gia pronto
    quando serve: senza, il primo passaggio di chiamata perderebbe secondi */
