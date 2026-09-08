@@ -559,8 +559,15 @@ tr.fatta td{opacity:.55}
 #vCont .testaCont{margin-bottom:14px}
 #vCont .testaCont .bott{flex:0 0 auto}
 #vCont .testaCont #cRicalcola{margin-left:auto}
-#vCont .col{background:var(--ground);min-width:0}
-#vCont .col.dx{position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto}
+/* LO SCORRIMENTO DELLA SCHEDA CONTATTI. Il telaio, che nasce per la scheda
+   In linea, e alto quanto lo schermo e taglia quello che esce: li dentro ogni
+   colonna ha un suo riquadro che scorre, ma la tabella dei contatti no, e
+   restava bloccata. Qui il telaio si allunga quanto serve e a scorrere e la
+   pagina, come in tutte le altre schede; la colonna di destra resta appesa in
+   alto e scorre per conto suo se e piu lunga dello schermo. */
+#vCont .telaio{height:auto;min-height:calc(100vh - 78px);overflow:visible}
+#vCont .col{background:var(--ground);min-width:0;overflow:visible}
+#vCont .col.dx{position:sticky;top:0;align-self:start;max-height:calc(100vh - 78px);overflow-y:auto}
 /* CONTATTI, LARGHEZZA. La tabella dei contatti e piu larga della colonna che
    la contiene: si vedeva tagliata sulla destra e finiva sotto la colonna di
    fianco. Due rimedi, tutti e due chiesti da Sante l 08/09: la tabella adesso
@@ -3489,8 +3496,12 @@ document.addEventListener('click', async (e) => {
        non c entra: nasce solo dopo, se si preme entra in voce. */
     let j;
     try{
-      const rr = await fetch(API.replace(/regia$/, 'valentino-chiama'), { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ pass: PASS, telefono: d.rchiama }) });
+      /* si passa da regia-chiama, non da valentino-chiama: la regia ha la
+         parola d ordine di chi guarda, e valentino-chiama vuole la sua. Il
+         ponte sta in mezzo e traduce. Prima si chiamava quella sbagliata e la
+         telefonata non partiva: si confermava e non succedeva niente. */
+      const rr = await fetch(API + '-chiama', { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ t: PASS, telefono: d.rchiama }) });
       j = await rr.json();
     }catch(e){ j = { ok:false, errore:'non risponde' }; }
     t.disabled = false;
