@@ -931,10 +931,10 @@ tr.fatta td{opacity:.55}
 
 <div id="vArch" class="nascosto"><div class="foglio">
    <h1>Le liste</h1>
-   <p class="occhio">Tutte le liste, in fogli come quelli di carta: chi c e dentro, cosa e successo, quando. Premi un foglio per aprirlo.</p>
+   <p class="occhio">Tutte le liste, in fogli come quelli di carta: chi c e dentro, cosa e successo, quando. In lavorazione ci sono quelle ancora da finire, nello storico quelle chiuse. Premi un foglio per aprirlo.</p>
    <div class="dueListe">
      <button class="pling" data-arch="lavoro" aria-pressed="true">IN LAVORAZIONE</button>
-     <button class="pling" data-arch="via" aria-pressed="false">ARCHIVIATE</button>
+     <button class="pling" data-arch="via" aria-pressed="false">STORICO</button>
    </div>
    <div id="cArchivio" class="fogliniA4" hidden></div>
    <div class="fogli" id="cFogli"></div>
@@ -3165,7 +3165,13 @@ document.addEventListener('click', async (e) => {
   if(t.id === 'cApriLista'){ scheda('tListe'); return; }
   if(t.id === 'cNuovaLista'){ await cCreaLista(); await cCaricaListe(); return; }
   if(d.lista){ await cCaricaLista(Number(d.lista)); return; }
-  if(t.id === 'cMettiVia'){ await cComando({ lista: cListaId, archivia: true }); cListaId = null; await cCaricaListe(); scheda('tArch'); return; }
+  /* METTI VIA NON VUOL DIRE CHIUDERE. La lista esce dal banco - che torna
+     libero per la prossima - ma resta viva, e in Archivio liste si trova fra
+     quelle IN LAVORAZIONE finche le chiamate non sono finite. Nello storico
+     ci va quando e conclusa. Detto da Sante l 08/09: aveva messo via una
+     lista con le chiamate ancora da fare e se l era trovata fra le
+     archiviate, che non e dove doveva essere. */
+  if(t.id === 'cMettiVia'){ cListaId = null; await cCaricaListe(); cVistaArch = 'lavoro'; scheda('tArch'); return; }
   if(t.id === 'cToggleArch'){ const b = $('cArchivio'); if(b){ b.hidden = !b.hidden; cDisegnaArchivio(); } return; }
   if(d.viafoglio){
     const id = Number(d.viafoglio);
@@ -3210,6 +3216,19 @@ document.addEventListener('click', async (e) => {
       if(!confirm(doppi.length+' di questi sono gia in un altra lista:\n\n'+q+
         (doppi.length>8 ? '\n... e altri '+(doppi.length-8) : '')+'\n\nLi metto lo stesso?')) return;
     }
+    /* IN QUALE LISTA? Non si aggiunge alla cieca a quella che capita: se ci
+       sono liste aperte si chiede dove metterli, e c e sempre la strada per
+       farne una nuova. Chiesto da Sante l 08/09. */
+    const aperte2 = cListe.filter(z => z.stato === 'aperta');
+    if(aperte2.length){
+      const elenco = aperte2.map((z,i) => (i+1)+') '+z.nome+' (' + (z.in_lista||0) + ' dentro)').join('\n');
+      const scelta = prompt('In quale lista li metto?\n\n'+elenco+'\n\n'+
+        (aperte2.length+1)+') fai una lista nuova\n\nScrivi il numero:', '1');
+      if(scelta === null){ return; }
+      const n = Number(String(scelta).trim());
+      if(n >= 1 && n <= aperte2.length){ cListaId = aperte2[n-1].id; }
+      else { cListaId = null; }
+    } else { cListaId = null; }
     t.disabled = true;
     if(!cListaId) await cCreaLista();
     if(!cListaId){ t.disabled = false; avvisa('non sono riuscito ad aprire una lista'); return; }
