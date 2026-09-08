@@ -3305,9 +3305,21 @@ async function apriEntroIo(conv){
         }
       }
       esito.textContent = come === 'cuffie' ? 'ti collego qui...' : 'ti sto chiamando...';
-      const j = await chiedoLaStanza({ azione:'entra', conversazione: conv, chi: CHI || 'regia', come: come });
+      /* una porta sola per tutti e due i casi: se la telefonata e gia in una
+         stanza ci si aggiunge, se no la stanza si crea al momento e il
+         cliente ci viene portato dentro mentre Valentino lo avvisa. */
+      let j;
+      try{
+        const rr = await fetch(API.replace(/regia$/, 'entro-io'), { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ t: PASS, conversazione: conv, chi: CHI || 'regia', come: come }) });
+        j = await rr.json();
+      }catch(e){ j = { ok:false, errore:'la stanza non risponde' }; }
       if(j && j.ok){
-        esito.textContent = come === 'cuffie' ? 'sei dentro: parla pure.' : 'ti sto chiamando: rispondi e premi 1 per entrare.';
+        esito.textContent = j.sto_passando
+          ? (come === 'cuffie'
+              ? 'Valentino lo sta avvisando, poi te lo passo qui: due secondi.'
+              : 'Valentino lo sta avvisando, poi ti squilla il cellulare.')
+          : (come === 'cuffie' ? 'sei dentro: parla pure.' : 'ti sto chiamando: rispondi.');
         setTimeout(via, 3000);
       } else {
         esito.textContent = (j && j.errore) || 'non riesco a farti entrare';
