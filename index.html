@@ -538,14 +538,18 @@ tr.fatta td{opacity:.55}
 #vCont .col{min-width:0;overflow-x:hidden}
 #vCont .col.dx{overflow-x:visible}
 #vCont table{width:100%;table-layout:fixed}
-#vCont table th,#vCont table td{padding:8px 9px;font-size:12.5px;
-  white-space:normal;overflow-wrap:anywhere;word-break:normal;vertical-align:top}
-#vCont table td:last-child,#vCont table th:last-child{width:24%}
+/* Righe basse come prima: una riga sola per cella, e quello che non ci sta
+   finisce coi puntini invece di andare a capo e alzare la riga. Il testo
+   intero resta nel suggerimento. */
+#vCont table th,#vCont table td{padding:7px 9px;font-size:12px;line-height:1.35;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
+#vCont table td:last-child,#vCont table th:last-child{width:23%}
+#vCont table td br{display:none}
 /* la testata: titolo e comandi su una riga sola finche ci stanno, poi vanno a
    capo. Prima si accavallavano sulla barra dei filtri. */
-.testaCont{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin-bottom:14px}
-.testaCont>div{flex:1 1 340px;min-width:0}
-.testaCont .bott{flex:0 0 auto;white-space:nowrap}
+.testaCont{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;margin-bottom:14px;max-width:100%;min-width:0}
+.testaCont>div{flex:1 1 100%;min-width:0}
+.testaCont .bott{flex:0 0 auto;white-space:nowrap;font-size:12px;padding:9px 13px}
 #vCont .telaio.larga{grid-template-columns:minmax(0,1fr)}
 #vCont .telaio.larga .col.dx{display:none}
 #cLarga[aria-pressed="true"]{border-color:var(--amber);color:var(--amber)}
