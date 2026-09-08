@@ -936,7 +936,7 @@ tr.fatta td{opacity:.55}
   </div>
 </div></div>
 
-<script src="https://sdk.twilio.com/js/voice/releases/2.11.0/twilio.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2/dist/twilio.min.js"></script>
 <script>
 /* se qualcosa si rompe, lo si vede: meglio un avviso brutto che una pagina
    che smette di funzionare senza dire perche */
@@ -1028,7 +1028,12 @@ function segnaTel(s, testo){
 }
 
 async function accendiTelefono(){
-  if(apparecchio || !window.Twilio || !Twilio.Device) return;
+  if(apparecchio) return;
+  /* se la libreria del telefono non e arrivata non si esce in silenzio: si
+     dice. Per giorni il telefono e rimasto spento senza che nessuno sapesse
+     perche, e la ragione era questa: l indirizzo da cui la prendevamo
+     rispondeva 403 e window.Twilio non esisteva. */
+  if(!window.Twilio || !Twilio.Device){ segnaTel('guasto', 'Telefono non disponibile'); return; }
   let j;
   try{
     const r = await fetch(API + '-telefono?t=' + encodeURIComponent(PASS) + '&chi=' + encodeURIComponent((CHI||'regia').toLowerCase().replace(/[^a-z0-9]/g,'')||'regia'));
