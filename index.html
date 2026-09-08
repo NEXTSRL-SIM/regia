@@ -865,6 +865,7 @@ tr.fatta td{opacity:.55}
 <div id="vImpara" class="nascosto"><div class="foglio">
    <h1>Apprendimento</h1>
    <p class="occhio">Telefonata per telefonata, quello che Valentino ha portato a casa: i preventivi della concorrenza, le obiezioni con la risposta che ha dato, i fatti sul cliente che non scadono. Da ogni riga si risale alla chiamata e si ascolta.</p>
+   <div class="archTesta" style="justify-content:flex-end"><button class="tasto forma" id="bForm" title="insegna a Valentino una regola, anche senza partire da una telefonata">Formazione</button></div>
    <div id="impCorpo"></div>
  </div></div>
 
@@ -1816,7 +1817,7 @@ function disegna(){
       '<div class="banco">'+
         '<button class="tasto" disabled><span class="led"></span>Ascolta in silenzio</button>'+
         '<button class="tasto entra" disabled><span class="led"></span>Entra in voce</button>'+
-        '<button class="tasto forma" id="bForm0" title="insegna a Valentino come andava gestita">Formazione</button>'+
+
         '<button class="tasto chiudi" disabled>Chiudi la linea</button></div>';
     $('dx').innerHTML =
       '<div class="titolo"><h2>La sua pratica</h2><span class="conta">a riposo</span></div>'+
@@ -1861,7 +1862,7 @@ function disegna(){
     '<div class="banco">'+
       '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>'+(muto?'Audio acceso':'Senti la voce')+'</button>'+
       '<button class="tasto entra" id="bEnt" data-conv="'+esc(v.conversazione||'')+'" title="entri nella stanza insieme a Valentino e al cliente"><span class="led"></span>Entro io</button>'+
-      '<button class="tasto forma" id="bForm" title="insegna a Valentino come andava gestita">Formazione</button>'+
+
       '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">Prendo io la chiamata</button>'+
       '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
     '</div>';
@@ -3262,16 +3263,60 @@ document.addEventListener('click', async (e) => {
     avvisa(j && j.ok ? 'sto chiamando te: rispondi, e appena rispondi parte il cliente' : ((j && j.errore) || 'non riesco a far partire la telefonata'));
     return;
   }
-  if(t.id === 'bEnt'){
-    const conv = d.conv || '';
-    if(!conv){ avvisa('di questa telefonata non ho il numero di conversazione'); return; }
-    t.disabled = true;
-    const j = await chiedoLaStanza({ azione:'entra', conversazione: conv, chi: CHI || 'regia' });
-    t.disabled = false;
-    avvisa(j && j.ok ? 'ti sto chiamando: rispondi ed entri nella stanza' : ((j && j.errore) || 'non riesco a farti entrare'));
-    return;
-  }
+  if(t.id === 'bEnt'){ apriEntroIo(d.conv || ''); return; }
 });
+/* ENTRO IO: la scelta di dove parlare. Chi preme il tasto e in regia, quindi
+   le cuffie sono la strada naturale; ma se e in giro col telefono in mano
+   deve poter dire "chiamami". Lo decide lui, non il codice. */
+async function apriEntroIo(conv){
+  if(document.querySelector('.velo .entroio')) return;
+  const velo = document.createElement('div');
+  velo.className = 'velo';
+  velo.innerHTML =
+    '<div class="pannello entroio">'+
+      '<div class="testa"><div><h2>Entro io</h2>'+
+        '<p>Valentino resta in linea e dice al cliente che si unisce il responsabile. Da dove parli?</p></div>'+
+        '<button class="via">chiudi</button></div>'+
+      '<div class="banco">'+
+        '<button class="tasto entra" data-come="cuffie"><span class="led"></span>Con le cuffie del computer</button>'+
+        '<button class="tasto" data-come="cellulare">Mi squilli il cellulare</button>'+
+      '</div>'+
+      '<p class="fattesa" id="entroEsito">Con le cuffie parli da qui. Col cellulare ti chiamo, e premi 1 per entrare.</p>'+
+    '</div>';
+  document.body.appendChild(velo);
+  const via = () => velo.remove();
+  velo.querySelector('.via').onclick = via;
+  velo.onclick = (e) => { if(e.target === velo) via(); };
+  const esito = velo.querySelector('#entroEsito');
+  velo.querySelectorAll('[data-come]').forEach(b => {
+    b.onclick = async () => {
+      const come = b.dataset.come;
+      velo.querySelectorAll('[data-come]').forEach(x => { x.disabled = true; });
+      if(come === 'cuffie'){
+        esito.textContent = 'accendo il microfono qui...';
+        try{ await accendiTelefono(); }catch(e){}
+        for(let i = 0; i < 40 && statoTel !== 'pronto' && statoTel !== 'in-linea'; i++){
+          await new Promise(r => setTimeout(r, 250));
+        }
+        if(statoTel !== 'pronto' && statoTel !== 'in-linea'){
+          esito.textContent = 'il telefono di questa pagina non si accende: dai al browser il permesso del microfono. Intanto puoi entrare col cellulare.';
+          const c = velo.querySelector('[data-come="cellulare"]'); if(c) c.disabled = false;
+          return;
+        }
+      }
+      esito.textContent = come === 'cuffie' ? 'ti collego qui...' : 'ti sto chiamando...';
+      const j = await chiedoLaStanza({ azione:'entra', conversazione: conv, chi: CHI || 'regia', come: come });
+      if(j && j.ok){
+        esito.textContent = come === 'cuffie' ? 'sei dentro: parla pure.' : 'ti sto chiamando: rispondi e premi 1 per entrare.';
+        setTimeout(via, 3000);
+      } else {
+        esito.textContent = (j && j.errore) || 'non riesco a farti entrare';
+        velo.querySelectorAll('[data-come]').forEach(x => { x.disabled = false; });
+      }
+    };
+  });
+}
+
 (function(){
   const i = document.getElementById('rCerca');
   if(i) i.oninput = () => { clearTimeout(rTimer); rTimer = setTimeout(() => { rTesto = i.value.trim(); rCarica(); }, 350); };
