@@ -1017,9 +1017,15 @@ function dipingiParlato(){
    Quando si preme "prendo io", Twilio dirotta la telefonata viva qui:
    squillano le cuffie, il cliente resta in linea, Valentino esce. */
 let apparecchio = null, inLinea = null, statoTel = 'spento';
+/* il motivo dell ultimo guasto, in chiaro: per giorni il telefono non si e
+   acceso e l unica cosa che si vedeva era "non parte", che non dice niente a
+   nessuno. Adesso il motivo si conserva e si mostra dove serve. */
+let motivoTel = '';
 
 function segnaTel(s, testo){
   statoTel = s;
+  if(s === 'guasto') motivoTel = testo || '';
+  if(s === 'pronto' || s === 'in-linea') motivoTel = '';
   const b = document.getElementById('bPrendi');
   if(b){
     b.setAttribute('data-stato', s);
@@ -1061,15 +1067,22 @@ async function accendiTelefono(){
       /* si risponde da soli: chi ha premuto il tasto sta gia aspettando */
       try{ c.accept(); segnaTel('in-linea', 'Chiudi e riattacca'); }catch(e){}
     });
+    segnaTel('attesa', 'Accendo il telefono&hellip;');
     await apparecchio.register();
-  }catch(e){ segnaTel('guasto'); }
+    /* register() torna anche prima che l evento registered sia arrivato: se
+       dopo cinque secondi siamo ancora in attesa, il telefono non e agganciato
+       e va detto, invece di restare li a girare. */
+    setTimeout(() => {
+      if(statoTel === 'attesa') segnaTel('guasto', 'Twilio non aggancia il telefono');
+    }, 5000);
+  }catch(e){ segnaTel('guasto', 'Telefono: ' + ((e && e.message) || 'non si accende')); }
 }
 
 async function prendiChiamata(c){
   if(inLinea){ try{ inLinea.disconnect(); }catch(e){} inLinea = null; segnaTel('pronto','Prendo io la chiamata'); return; }
   await accendiTelefono();
   if(statoTel === 'spento' || statoTel === 'guasto'){
-    avvisa('il telefono nella pagina non parte');
+    avvisa('Il telefono della pagina non parte' + (motivoTel ? ': ' + motivoTel.toLowerCase() : '. Ricarica la pagina e riprova.'));
     return;
   }
   segnaTel('attesa', 'Sto passando&hellip;');
@@ -3320,7 +3333,7 @@ async function apriEntroIo(conv){
           await new Promise(r => setTimeout(r, 250));
         }
         if(statoTel !== 'pronto' && statoTel !== 'in-linea'){
-          esito.textContent = 'il telefono di questa pagina non si accende: dai al browser il permesso del microfono. Intanto puoi entrare col cellulare.';
+          esito.textContent = (motivoTel ? 'Il telefono di questa pagina non si accende: ' + motivoTel.toLowerCase() + '. ' : 'Il telefono di questa pagina non si accende. ') + 'Intanto puoi entrare col cellulare.';
           const c = velo.querySelector('[data-come="cellulare"]'); if(c) c.disabled = false;
           return;
         }
