@@ -3233,27 +3233,16 @@ document.addEventListener('click', async (e) => {
     cListaId = id; await cCaricaListe(); scheda('tListe'); return; }
   if(t.id === 'cAggiungi'){
     if(!cScelti.size){ avvisa('prima scegli qualcuno: la spunta a sinistra della riga'); return; }
-    /* se qualcuno di questi e gia in una lista lo si dice PRIMA: chiamare due
-       volte la stessa persona nello stesso giro e la figura peggiore */
+    /* LA FINESTRA DELLA SCELTA. Prima c era un avviso di sistema e una
+       domanda col numero da scrivere: brutta e facile da sbagliare. Adesso si
+       apre una finestra che dice chi di questi e gia in una lista - col nome
+       della lista in grassetto, cosi si vede subito - e fa scegliere da una
+       tendina in quale delle liste IN LAVORAZIONE metterli, o se farne una
+       nuova. Chiesto da Sante l 08/09. */
     const doppi = cRighe.filter(r => cScelti.has(r.id) && Array.isArray(r.in_liste) && r.in_liste.length);
-    if(doppi.length){
-      const q = doppi.slice(0,8).map(r => (r.nome||r.tel)+' (gia in: '+r.in_liste.map(x => 'lista id '+x.id).join(', ')+')').join('\n');
-      if(!confirm(doppi.length+' di questi sono gia in un altra lista:\n\n'+q+
-        (doppi.length>8 ? '\n... e altri '+(doppi.length-8) : '')+'\n\nLi metto lo stesso?')) return;
-    }
-    /* IN QUALE LISTA? Non si aggiunge alla cieca a quella che capita: se ci
-       sono liste aperte si chiede dove metterli, e c e sempre la strada per
-       farne una nuova. Chiesto da Sante l 08/09. */
-    const aperte2 = cListe.filter(z => z.stato === 'aperta');
-    if(aperte2.length){
-      const elenco = aperte2.map((z,i) => (i+1)+') '+z.nome+' (' + (z.in_lista||0) + ' dentro)').join('\n');
-      const scelta = prompt('In quale lista li metto?\n\n'+elenco+'\n\n'+
-        (aperte2.length+1)+') fai una lista nuova\n\nScrivi il numero:', '1');
-      if(scelta === null){ return; }
-      const n = Number(String(scelta).trim());
-      if(n >= 1 && n <= aperte2.length){ cListaId = aperte2[n-1].id; }
-      else { cListaId = null; }
-    } else { cListaId = null; }
+    const dove = await apriSceltaLista(doppi);
+    if(dove === null) return;
+    cListaId = (dove === 'nuova') ? null : Number(dove);
     t.disabled = true;
     if(!cListaId) await cCreaLista();
     if(!cListaId){ t.disabled = false; avvisa('non sono riuscito ad aprire una lista'); return; }
@@ -3522,6 +3511,49 @@ document.addEventListener('click', async (e) => {
 /* ENTRO IO: la scelta di dove parlare. Chi preme il tasto e in regia, quindi
    le cuffie sono la strada naturale; ma se e in giro col telefono in mano
    deve poter dire "chiamami". Lo decide lui, non il codice. */
+/* LA FINESTRA "IN QUALE LISTA". Restituisce l id della lista scelta, la
+   parola nuova, oppure null se si e chiuso senza decidere. Le liste storiche
+   non compaiono: li dentro non si aggiunge piu niente. */
+function apriSceltaLista(doppi){
+  return new Promise((risolvi) => {
+    const aperte = cListe.filter(z => z.stato === 'aperta').sort((a,b) => b.id - a.id);
+    const velo = document.createElement('div');
+    velo.className = 'velo';
+    const avviso = (doppi && doppi.length)
+      ? '<div class="banda" style="margin:0 0 14px"><b>'+doppi.length+' di questi sono gia in una lista</b>'+
+        '<span>'+doppi.slice(0,6).map(r => esc(Nome(r.nome)||r.tel||'')+' &rarr; '+
+          r.in_liste.map(x => '<b>'+esc(x.nome || ('lista ' + x.id))+'</b>').join(', ')).join('<br>')+
+          (doppi.length>6 ? '<br>... e altri '+(doppi.length-6) : '')+
+        '</span></div>'
+      : '';
+    velo.innerHTML =
+      '<div class="pannello entroio">'+
+        '<div class="testa"><div><h2>In quale lista li metto?</h2>'+
+          '<p>'+cScelti.size+' '+(cScelti.size===1?'contatto scelto':'contatti scelti')+'.</p></div>'+
+          '<button class="via">chiudi</button></div>'+
+        '<div style="padding:16px 20px">'+avviso+
+          (aperte.length
+            ? '<label class="fetichetta" for="quale">Lista in lavorazione</label>'+
+              '<select id="quale" style="width:100%;margin:6px 0 16px;padding:11px 12px">'+
+                aperte.map(z => '<option value="'+z.id+'">'+esc(z.nome)+' &middot; '+(z.in_lista||0)+' dentro</option>').join('')+
+              '</select>'
+            : '<p class="occhio" style="margin:0 0 16px">Non c e nessuna lista in lavorazione: si parte con una nuova.</p>')+
+          '<div class="banco" style="padding:0;border:0;background:none">'+
+            (aperte.length ? '<button class="tasto entra" id="sceltaOk">METTI IN QUESTA LISTA</button>' : '')+
+            '<button class="tasto" id="sceltaNuova">IN UNA LISTA NUOVA</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    document.body.appendChild(velo);
+    const chiudi = (v) => { velo.remove(); risolvi(v); };
+    velo.querySelector('.via').onclick = () => chiudi(null);
+    velo.onclick = (e) => { if(e.target === velo) chiudi(null); };
+    const ok = velo.querySelector('#sceltaOk');
+    if(ok) ok.onclick = () => chiudi(velo.querySelector('#quale').value);
+    velo.querySelector('#sceltaNuova').onclick = () => chiudi('nuova');
+  });
+}
+
 async function apriEntroIo(conv){
   if(document.querySelector('.velo .entroio')) return;
   const velo = document.createElement('div');
