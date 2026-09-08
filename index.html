@@ -487,6 +487,14 @@ tr.fatta td{opacity:.55}
   font-size:11.5px;font-weight:600;padding:12px 14px}
 .banco .tasto.chiudi{margin-left:auto}
 .banco .tasto .led{flex:0 0 auto}
+/* IL RIGO DEL FOGLIO. Nome, provincia ed esito su una riga sola: il nome
+   prende lo spazio che avanza e si tronca coi puntini, gli altri due restano
+   sempre leggibili in fondo. Mai due righe per un nome. */
+.rigoF{display:flex;align-items:baseline;gap:7px;min-width:0}
+.rigoF .chiF{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rigoF .provF{flex:0 0 auto;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-3)}
+.rigoF .esiF{flex:0 0 auto;font-size:10px;color:var(--ink-3);max-width:96px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
 .dueListe{display:flex;gap:8px;margin:14px 0 18px}
 .pling{appearance:none;background:var(--surface-2);border:1px solid var(--line-2);color:var(--ink-2);
   font:600 11.5px/1 var(--sans);letter-spacing:.055em;padding:11px 18px;cursor:pointer;border-radius:3px}
@@ -2759,12 +2767,22 @@ function cDisegnaLista(){
   const tutte = cListe.filter(x => cVistaArch === 'via' ? x.stato !== 'aperta' : x.stato === 'aperta').sort((a,b) => b.id - a.id);
   document.querySelectorAll('[data-arch]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.arch === cVistaArch)));
   $('cFogli').innerHTML = tutte.length ? tutte.map(x => {
-    const nomi = String(x.chi_c_era||'').split(' | ').filter(Boolean);
+    /* IL RIGO DEL FOGLIO: nome con le iniziali grandi, e di fianco la
+       provincia e com e finita, in piccolo, tutto su una riga sola. Se la
+       vista vecchia non porta il rigo ricco si ripiega sui soli nomi. */
+    const nomi = String(x.chi_c_era_ric || x.chi_c_era || '').split(' | ').filter(Boolean);
     return '<div class="foglioA4 '+(x.stato==='aperta'?'aperta':'chiusa')+'">'+
       '<span class="bollino">'+(x.stato==='aperta'?'in lavorazione':'messa via')+'</span>'+
       '<span class="dataF">id lista '+x.id+' &middot; '+esc(String(x.creata_il||'').slice(0,16).replace('T',' '))+'</span>'+
       '<h4>'+esc(x.nome)+'</h4>'+
-      '<div class="righeF">'+(nomi.slice(0,9).map(nm => '<div>'+esc(nm)+'</div>').join('') || '<div>vuota</div>')+
+      '<div class="righeF">'+(nomi.slice(0,9).map(nm => {
+          const p = String(nm).split('~');
+          return '<div class="rigoF" title="'+esc(String(nm).replace(/~/g, ' - '))+'">'+
+            '<span class="chiF">'+esc(Nome(p[0]||''))+'</span>'+
+            (p[1] ? '<span class="provF">'+esc(p[1])+'</span>' : '')+
+            (p[2] ? '<span class="esiF">'+esc(p[2])+'</span>' : '')+
+          '</div>';
+        }).join('') || '<div>vuota</div>')+
         (nomi.length>9 ? '<div>... e altri '+(nomi.length-9)+'</div>' : '')+'</div>'+
       '<div class="fondoF"><span><b>'+(x.in_lista||0)+'</b>in lista</span>'+
         '<span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
