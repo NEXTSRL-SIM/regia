@@ -484,6 +484,15 @@ tr.fatta td{opacity:.55}
    facevano crescere una riga si e una no, e scorrendo l elenco l occhio si
    perdeva. Adesso l altezza e fissa e quello che non ci sta viene troncato,
    col testo intero nel suggerimento. Chiesto da Sante l 08/09. */
+/* IL BANCO DELLA SCHEDA IN LINEA: quattro tasti della stessa misura, scritte
+   fisse in maiuscolo, e chiudi la linea staccato in fondo a destra perche e
+   l unico che non si torna indietro. */
+.banco .tasto{min-width:212px;justify-content:center;text-transform:uppercase;letter-spacing:.055em;
+  font-size:11.5px;font-weight:600;padding:12px 14px}
+.banco .tasto.chiudi{margin-left:auto}
+.banco .tasto .led{flex:0 0 auto}
+.bancoNota{padding:0 20px 12px;font-size:12px;color:var(--ink-3);min-height:16px;background:var(--surface)}
+.bancoNota:empty{padding:0;min-height:0}
 #rCorpo tr{height:62px}
 /* I DUE COMANDI DELLA RUBRICA, in un riquadro loro e in maiuscolo: sono le
    due cose che si fanno da qui, e devono staccarsi dal resto della riga.
@@ -1089,10 +1098,11 @@ function segnaTel(s, testo){
   if(s === 'guasto') motivoTel = testo || '';
   if(s === 'pronto' || s === 'in-linea') motivoTel = '';
   const b = document.getElementById('bPrendi');
-  if(b){
-    b.setAttribute('data-stato', s);
-    if(testo) b.innerHTML = testo;
-  }
+  if(b) b.setAttribute('data-stato', s);
+  /* la scritta del tasto NON cambia mai: cambia il colore, e quello che c e
+     da dire finisce nella riga sotto il banco */
+  const n = document.getElementById('telNota');
+  if(n) n.textContent = (s === 'guasto' || s === 'attesa') ? (testo || '') : '';
 }
 
 async function accendiTelefono(){
@@ -1949,12 +1959,18 @@ function disegna(){
     '</div>'+
     '<div class="detto" id="detto"></div>'+
     '<div class="banco">'+
-      '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>'+(muto?'Audio acceso':'Senti la voce')+'</button>'+
-      '<button class="tasto entra" id="bEnt" data-conv="'+esc(v.conversazione||'')+'" title="entri nella stanza insieme a Valentino e al cliente"><span class="led"></span>Entro io</button>'+
-
-      '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">Prendo io la chiamata</button>'+
-      '<button class="tasto chiudi" id="bChi">Chiudi la linea</button>'+
-    '</div>';
+      /* I QUATTRO TASTI DEL BANCO. Scritte fisse e in maiuscolo, e tutti
+         della stessa misura: prima cambiavano larghezza a ogni cambio di
+         stato - "Sto passando", "Rispondi", "Manca il permesso del
+         microfono" - e il banco ballava sotto le dita. Lo stato adesso si
+         legge dal colore del tasto e dalla riga qui sotto, non dalla
+         scritta. Chiesto da Sante l 08/09. */
+      '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>ASCOLTA IN SILENZIO</button>'+
+      '<button class="tasto entra" id="bEnt" data-conv="'+esc(v.conversazione||'')+'" title="entri in conferenza: parlate in tre, tu, il cliente e Valentino"><span class="led"></span>ENTRA IN CONFERENZA</button>'+
+      '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">PRENDI LA LINEA</button>'+
+      '<button class="tasto chiudi" id="bChi">CHIUDI LA LINEA</button>'+
+    '</div>'+
+    '<div class="bancoNota" id="telNota">'+esc(motivoTel||'')+'</div>';
   /* il collegamento con la telefonata si apre da solo: serve per le parole,
      non per l audio, e senza di lui la conversazione non si scriverebbe */
   if(!v.chiusa_il && audioConv !== v.conversazione) accendiAscolto(v.conversazione);
