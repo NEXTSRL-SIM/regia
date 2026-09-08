@@ -1964,10 +1964,10 @@ function disegna(){
          microfono" - e il banco ballava sotto le dita. Lo stato adesso si
          legge dal colore del tasto e dalla riga qui sotto, non dalla
          scritta. Chiesto da Sante l 08/09. */
-      '<button class="tasto" id="bAsc" aria-pressed="'+muto+'"><span class="led"></span>ASCOLTA IN SILENZIO</button>'+
+      '<button class="tasto" id="bAsc" aria-pressed="'+muto+'" title="senti quello che si dicono senza farti sentire: nessuno dei due sa che ci sei"><span class="led"></span>ASCOLTA IN SILENZIO</button>'+
       '<button class="tasto entra" id="bEnt" data-conv="'+esc(v.conversazione||'')+'" title="entri in conferenza: parlate in tre, tu, il cliente e Valentino"><span class="led"></span>ENTRA IN CONFERENZA</button>'+
-      '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'">PRENDI LA LINEA</button>'+
-      '<button class="tasto chiudi" id="bChi">CHIUDI LA LINEA</button>'+
+      '<button class="tasto prendi" id="bPrendi" data-stato="'+statoTel+'" title="prendi tu la telefonata al posto di Valentino: lui annuncia che ti passa e poi esce, resti tu col cliente">PRENDI LA LINEA</button>'+
+      '<button class="tasto chiudi" id="bChi" title="mette giu la telefonata">CHIUDI LA LINEA</button>'+
     '</div>'+
     '<div class="bancoNota" id="telNota">'+esc(motivoTel||'')+'</div>';
   /* il collegamento con la telefonata si apre da solo: serve per le parole,
