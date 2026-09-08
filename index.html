@@ -3207,7 +3207,24 @@ document.addEventListener('click', async (e) => {
     rFiltro = t.id === 'rFChiam' ? 'chiamati' : (t.id === 'rFMiei' ? 'miei' : 'tutti');
     rCarica(); return;
   }
-  if(d.rtogli){ t.disabled = true; await rChiedi({ azione:'togli', telefono:d.rtogli }); rCarica(); return; }
+  if(d.rtogli){
+    /* anche togliere si chiede due volte: sono numeri che uno si e messo da
+       parte apposta, e un tocco sbagliato in mezzo a un elenco lungo capita. */
+    if(t.dataset.conferma !== '1'){
+      t.dataset.conferma = '1';
+      t.textContent = 'rimuovo? premi ancora';
+      t.setAttribute('aria-pressed', 'true');
+      setTimeout(() => {
+        if(t.dataset.conferma === '1'){ t.dataset.conferma = ''; t.textContent = 'rimuovi'; t.removeAttribute('aria-pressed'); }
+      }, 6000);
+      return;
+    }
+    t.dataset.conferma = '';
+    t.disabled = true;
+    await rChiedi({ azione:'togli', telefono:d.rtogli });
+    rCarica();
+    return;
+  }
   if(d.rchiama){
     /* QUI PARTE UNA TELEFONATA VERA: si chiede conferma una seconda volta.
        La domanda la fa il tasto stesso, e se entro sei secondi non arriva la
