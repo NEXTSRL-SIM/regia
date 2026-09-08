@@ -3188,7 +3188,7 @@ function rDisegna(){
     '<td class="mono">'+(r.quante_volte||0)+'</td>'+
     '<td>'+esc(r.come_e_finita||'-')+(r.nota ? '<br><small>'+esc(r.nota)+'</small>' : '')+'</td>'+
     '<td><button class="perche" data-rchiama="'+esc(r.telefono||'')+'" data-rnome="'+esc(r.nome||'')+'">chiama</button>'+
-      (r.in_rubrica_mia && (r.aggiunto_da||'') === (CHI||'') ? '<button class="perche" data-rtogli="'+esc(r.telefono||'')+'">togli</button>' : '')+
+      (r.in_rubrica_mia && (r.aggiunto_da||'') === (CHI||'') ? '<button class="perche" data-rtogli="'+esc(r.telefono||'')+'" title="lo toglie dalla tua rubrica personale: il contatto e le telefonate fatte restano dove sono">rimuovi</button>' : '')+
     '</td></tr>').join('') : '<tr><td colspan="6" class="attesa">Nessun numero con questo filtro.</td></tr>';
 }
 async function rCarica(){
