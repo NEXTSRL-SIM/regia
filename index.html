@@ -1916,10 +1916,14 @@ function disegna(){
         '<rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg></button>'+
         '<button disabled>Manda</button></div>'+
       '<div class="banco">'+
-        '<button class="tasto" disabled><span class="led"></span>Ascolta in silenzio</button>'+
-        '<button class="tasto entra" disabled><span class="led"></span>Entra in voce</button>'+
-
-        '<button class="tasto chiudi" disabled>Chiudi la linea</button></div>';
+        /* IL BANCO A RIPOSO. Sono gli stessi quattro tasti di quando c e una
+           telefonata, solo spenti: se qui ce ne fossero tre o con altri nomi,
+           uno imparerebbe un banco e ne userebbe un altro. Trovato da Sante
+           l 08/09: qui erano rimasti tre tasti con le scritte vecchie. */
+        '<button class="tasto" disabled><span class="led"></span>ASCOLTA IN SILENZIO</button>'+
+        '<button class="tasto entra" disabled><span class="led"></span>ENTRA IN CONFERENZA</button>'+
+        '<button class="tasto prendi" disabled>PRENDI LA LINEA</button>'+
+        '<button class="tasto chiudi" disabled>CHIUDI LA LINEA</button></div>';
     $('dx').innerHTML =
       '<div class="titolo"><h2>La sua pratica</h2><span class="conta">a riposo</span></div>'+
       '<div class="vincoli"><span class="bollo"></span><span><b>Vincoli sul tetto</b>In attesa di una telefonata</span></div>'+
