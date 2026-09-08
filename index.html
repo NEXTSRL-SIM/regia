@@ -1034,16 +1034,25 @@ async function accendiTelefono(){
      perche, e la ragione era questa: l indirizzo da cui la prendevamo
      rispondeva 403 e window.Twilio non esisteva. */
   if(!window.Twilio || !Twilio.Device){ segnaTel('guasto', 'Telefono non disponibile'); return; }
+  /* IL MICROFONO SI CHIEDE ADESSO, non quando squilla: se il permesso arriva
+     mentre la chiamata sta entrando, la chiamata muore prima. E se l utente
+     dice di no, lo si scrive invece di restare spenti in silenzio. */
+  try{
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+      const flusso = await navigator.mediaDevices.getUserMedia({ audio: true });
+      flusso.getTracks().forEach(t => t.stop());
+    }
+  }catch(e){ segnaTel('guasto', 'Manca il permesso del microfono'); return; }
   let j;
   try{
     const r = await fetch(API + '-telefono?t=' + encodeURIComponent(PASS) + '&chi=' + encodeURIComponent((CHI||'regia').toLowerCase().replace(/[^a-z0-9]/g,'')||'regia'));
     j = await r.json();
-  }catch(e){ return; }
-  if(!j || !j.ok) return;
+  }catch(e){ segnaTel('guasto', 'Telefono: non risponde'); return; }
+  if(!j || !j.ok){ segnaTel('guasto', 'Telefono: lasciapassare rifiutato'); return; }
   try{
     apparecchio = new Twilio.Device(j.token, {codecPreferences:['opus','pcmu'], logLevel:'error'});
-    apparecchio.on('registered', () => segnaTel('pronto'));
-    apparecchio.on('error', () => segnaTel('guasto'));
+    apparecchio.on('registered', () => segnaTel('pronto', 'Prendo io la chiamata'));
+    apparecchio.on('error', (e) => segnaTel('guasto', 'Telefono: ' + ((e && e.message) || 'guasto')));
     apparecchio.on('incoming', (c) => {
       inLinea = c;
       segnaTel('squilla', 'Rispondi');
