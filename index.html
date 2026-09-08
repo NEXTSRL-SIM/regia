@@ -495,6 +495,9 @@ tr.fatta td{opacity:.55}
 .rigoF .provF{flex:0 0 auto;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-3)}
 .rigoF .esiF{flex:0 0 auto;font-size:10px;color:var(--ink-3);max-width:96px;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
+/* una riga sola: le due viste a sinistra, formazione a destra */
+.rigaAppr{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:14px 0 18px}
+.rigaAppr .tasto.forma{text-transform:uppercase;letter-spacing:.055em;font-size:11.5px;font-weight:600;padding:11px 18px;white-space:nowrap;margin-left:auto}
 .dueListe{display:flex;gap:8px;margin:14px 0 18px}
 .pling{appearance:none;background:var(--surface-2);border:1px solid var(--line-2);color:var(--ink-2);
   font:600 11.5px/1 var(--sans);letter-spacing:.055em;padding:11px 18px;cursor:pointer;border-radius:3px}
@@ -955,11 +958,13 @@ tr.fatta td{opacity:.55}
 <div id="vImpara" class="nascosto"><div class="foglio">
    <h1>Apprendimento</h1>
    <p class="occhio">Telefonata per telefonata, quello che Valentino ha portato a casa: i preventivi della concorrenza, le obiezioni con la risposta che ha dato, i fatti sul cliente che non scadono. Da ogni riga si risale alla chiamata e si ascolta.</p>
-   <div class="dueListe" id="impDueViste">
-     <button class="pling" data-imp="corso" aria-pressed="true">DA LAVORARE E APPRESE</button>
-     <button class="pling" data-imp="scartate" aria-pressed="false">SCARTATE</button>
+   <div class="rigaAppr">
+     <div class="dueListe" id="impDueViste" style="margin:0">
+       <button class="pling" data-imp="corso" aria-pressed="true">DA LAVORARE E APPRESE</button>
+       <button class="pling" data-imp="scartate" aria-pressed="false">SCARTATE</button>
+     </div>
+     <button class="tasto forma" id="bForm" title="insegna a Valentino una regola, anche senza partire da una telefonata">FORMAZIONE</button>
    </div>
-   <div class="formaRiga"><button class="tasto forma" id="bForm" title="insegna a Valentino una regola, anche senza partire da una telefonata">FORMAZIONE</button></div>
    <div id="impCorpo"></div>
  </div></div>
 
@@ -2210,7 +2215,7 @@ async function apriCliente(tel){
       (tel_.length? tel_.map(x =>
         '<div class="tel-riga"><div class="tel-capo">'+
           '<span class="spia '+esc(x.livello||"verde")+'"></span>'+
-          '<time>'+esc((x.quando||"").slice(0,16).replace("T"," "))+'</time>'+
+          '<time>'+esc(dataIt(x.quando))+'</time>'+
           '<span>'+esc(x.flash||"")+'</span>'+
           '<span class="dur">'+mmss(x.secondi||0)+'</span></div>'+
         ((x.momenti&&x.momenti.length)? '<ul class="tel-mom">'+x.momenti.map(m=>'<li><time>'+esc(m.ora)+'</time>'+esc(m.cosa)+'</li>').join('')+'</ul>':'')+
@@ -2497,6 +2502,10 @@ function cDisegnaCoda(){
    tre aree separate, e il riferimento alla chiamata per andarsela a sentire.
    ============================================================================ */
 const RAPI = () => API.replace(/regia$/, 'regia-riepilogo');
+/* le date si scrivono come si scrivono in Italia: giorno, mese, anno. */
+const dataIt = (t) => { try{ const d = new Date(t); if(isNaN(d)) return String(t||"").slice(0,16).replace("T"," ");
+  return d.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"numeric"}) + " " +
+         d.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"}); }catch(e){ return String(t||""); } };
 /* quale delle due viste dell apprendimento si sta guardando */
 let impVista = 'corso';
 
@@ -2553,7 +2562,13 @@ async function caricaImparato(){
      sola invece resta com era: la voce si barra e la scheda non si muove.
      Disegno di Sante, 08/09. */
   const vive = (x) => ((x.mercato||[]).length + (x.obiezioni||[]).length + (x.tratti||[]).length);
-  const buttata = (x) => vive(x) === 0 && (x.scartate||[]).length > 0;
+  /* una scheda e buttata quando non le e rimasto piu niente di buono: ne le
+     voci imparate, ne una lezione depositata che non sia stata scartata.
+     Serve contare anche le lezioni, se no premendo "scarta la lezione" la
+     scheda restava dov era - come ha visto Sante l 08/09. */
+  const lezViva = (x) => lezioniDi(x.conversazione).some(z => z.stato !== 'scartata');
+  const lezButtata = (x) => lezioniDi(x.conversazione).some(z => z.stato === 'scartata');
+  const buttata = (x) => vive(x) === 0 && !lezViva(x) && ((x.scartate||[]).length > 0 || lezButtata(x));
   const quanteVia = righe.filter(buttata).length;
   const bScart = document.querySelector('[data-imp="scartate"]');
   if(bScart) bScart.textContent = 'SCARTATE' + (quanteVia ? ' (' + quanteVia + ')' : '');
@@ -2573,7 +2588,7 @@ async function caricaImparato(){
       '<div class="impTesta">'+
         '<h4>'+esc(Nome(x.chi)||x.telefono||'senza nome')+'</h4>'+
         (fatta? '<span class="appresa">lezione appresa</span>' : '')+
-        '<span class="mono">'+esc(String(x.quando||"").slice(0,16).replace("T"," "))+
+        '<span class="mono">'+esc(dataIt(x.quando))+
           (x.durata_sec? " · "+mmss(x.durata_sec) : "")+'</span>'+
         '<button class="azione" data-racconta="'+esc(x.conversazione)+'" data-chi="'+esc(Nome(x.chi)||x.telefono||'')+'">ascolta il racconto</button>'+
         '<button class="azione" data-riep="'+esc(x.conversazione)+'">apri la telefonata</button>'+
@@ -2663,7 +2678,7 @@ async function apriRiepilogo(conv){
   const ric = R.richiamo, lis = R.in_lista;
   $('cPTit').textContent = (Nome(t.chi) || s.nome || t.telefono || 'Telefonata');
   $('cPCorpo').innerHTML =
-    '<p class="occhio">'+esc(String(t.quando||"").slice(0,16).replace("T"," "))+
+    '<p class="occhio">'+esc(dataIt(t.quando))+
       (t.durata_sec? ' &middot; '+mmss(t.durata_sec) : "")+
       (t.agente? ' &middot; '+esc(t.agente) : "")+
       (an.livello? ' &middot; <b class="liv-'+esc(an.livello)+'">'+esc(an.titolo||an.livello)+'</b>' : "")+'</p>'+
