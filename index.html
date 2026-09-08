@@ -476,6 +476,38 @@ tr.fatta td{opacity:.55}
 .minif.ross{color:var(--brick);border-color:var(--brick)}
 .azioniF{display:flex;gap:6px;margin-top:9px;position:relative;z-index:2}
 .fogliniA4{display:grid;grid-template-columns:repeat(auto-fill,minmax(134px,1fr));gap:10px;padding:12px 16px 18px}
+/* LE DUE VISTE DELLE LISTE. Non miniature contro fogli: sempre fogli, e due
+   pulsanti che dicono quali. Quelle in lavorazione sono la vista di partenza;
+   le archiviate stanno dietro il secondo pulsante, ma si vedono con lo stesso
+   foglio grande. Disegno di Sante, 08/09. */
+/* IL BANCO DELLA SCHEDA IN LINEA: quattro tasti della stessa misura, scritte
+   fisse in maiuscolo, e chiudi la linea staccato in fondo a destra perche e
+   l unico che non si torna indietro. */
+.banco .tasto{min-width:212px;justify-content:center;text-transform:uppercase;letter-spacing:.055em;
+  font-size:11.5px;font-weight:600;padding:12px 14px}
+.banco .tasto.chiudi{margin-left:auto}
+.banco .tasto .led{flex:0 0 auto}
+.dueListe{display:flex;gap:8px;margin:14px 0 18px}
+.pling{appearance:none;background:var(--surface-2);border:1px solid var(--line-2);color:var(--ink-2);
+  font:600 11.5px/1 var(--sans);letter-spacing:.055em;padding:11px 18px;cursor:pointer;border-radius:3px}
+.pling:hover{color:var(--ink)}
+.pling[aria-pressed="true"]{background:var(--amber-wash);border-color:var(--amber-dim);color:var(--amber)}
+.foglioA4{position:relative}
+.comandiF{position:absolute;top:8px;right:8px;display:flex;gap:6px;align-items:center;z-index:2}
+/* IL TASTO FORMAZIONE: una riga sua, tutta a destra, senza passare sopra a
+   quello che ha di fianco. */
+.formaRiga{display:flex;justify-content:flex-end;align-items:center;margin:10px 0 20px;position:relative;z-index:2;clear:both}
+.formaRiga .tasto.forma{text-transform:uppercase;letter-spacing:.055em;font-size:11.5px;font-weight:600;padding:11px 18px;white-space:nowrap}
+/* RUBRICA: righe tutte della stessa altezza, e i due comandi in un riquadro
+   loro, in maiuscolo. */
+#rCorpo tr{height:62px}
+#rCorpo td{vertical-align:middle;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:280px}
+#rCorpo td br{display:none}
+#rCorpo td .tag{display:inline-block;margin-left:7px;vertical-align:baseline}
+#rCorpo td small{display:inline-block;margin-left:8px;color:var(--ink-3)}
+#rCorpo td:last-child{white-space:nowrap;text-align:right;padding:6px 10px}
+#rCorpo .comandi{display:inline-flex;gap:6px;padding:4px;border:1px solid var(--line-2);border-radius:3px;background:var(--surface-2)}
+#rCorpo .comandi .perche{margin:0;text-transform:uppercase;letter-spacing:.06em;font-size:11px;font-weight:600;padding:7px 11px}
 .foglino{position:relative;border:1px solid var(--line-2);background:var(--surface);min-height:94px}
 .foglino .apriFno{display:block;width:100%;text-align:left;padding:9px 22px 9px 10px;background:none;border:none}
 .foglino .nf{display:block;font-size:12px;font-weight:500;line-height:1.25;max-height:3.7em;overflow:hidden}
@@ -493,10 +525,23 @@ tr.fatta td{opacity:.55}
    scorre DENTRO il suo riquadro e non esce piu di li, e c e il tasto "tutte le
    colonne" che mette via la colonna di destra quando si vuole vedere la
    tabella intera senza spostarsi. */
-#vCont .col{min-width:0;overflow-x:auto}
+/* CONTATTI: SI SCORRE SOLO IN GIU, MAI DI LATO. La tabella aveva colonne a
+   larghezza libera e usciva dal suo riquadro: l ultima, "cosa sappiamo di
+   lui", finiva sotto la colonna di destra, e per leggerla bisognava trascinare
+   la pagina di fianco. Adesso le colonne stanno dentro la larghezza che c e,
+   il testo lungo va a capo invece di allargare, e di lato non si scorre piu.
+   Chiesto da Sante l 08/09. */
+#vCont .col{min-width:0;overflow-x:hidden}
 #vCont .col.dx{overflow-x:visible}
-#vCont table{width:100%;table-layout:auto}
-#vCont table th,#vCont table td{padding:8px 9px;font-size:12.5px}
+#vCont table{width:100%;table-layout:fixed}
+#vCont table th,#vCont table td{padding:8px 9px;font-size:12.5px;
+  white-space:normal;overflow-wrap:anywhere;word-break:normal;vertical-align:top}
+#vCont table td:last-child,#vCont table th:last-child{width:24%}
+/* la testata: titolo e comandi su una riga sola finche ci stanno, poi vanno a
+   capo. Prima si accavallavano sulla barra dei filtri. */
+.testaCont{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin-bottom:14px}
+.testaCont>div{flex:1 1 340px;min-width:0}
+.testaCont .bott{flex:0 0 auto;white-space:nowrap}
 #vCont .telaio.larga{grid-template-columns:minmax(0,1fr)}
 #vCont .telaio.larga .col.dx{display:none}
 #cLarga[aria-pressed="true"]{border-color:var(--amber);color:var(--amber)}
@@ -870,8 +915,11 @@ tr.fatta td{opacity:.55}
 
 <div id="vArch" class="nascosto"><div class="foglio">
    <h1>Le liste</h1>
-   <p class="occhio">Le liste in lavorazione stanno qui in grande: chi c e dentro, cosa e successo, quando. Quelle archiviate non spariscono: si spostano dietro il pulsante qui sotto. Premi un foglio per aprirlo.</p>
-   <div class="archTesta"><button class="minif" id="cToggleArch">archiviate</button></div>
+   <p class="occhio">Tutte le liste, in fogli come quelli di carta: chi c e dentro, cosa e successo, quando. Premi un foglio per aprirlo.</p>
+   <div class="dueListe">
+     <button class="pling" data-arch="lavoro" aria-pressed="true">IN LAVORAZIONE</button>
+     <button class="pling" data-arch="via" aria-pressed="false">ARCHIVIATE</button>
+   </div>
    <div id="cArchivio" class="fogliniA4" hidden></div>
    <div class="fogli" id="cFogli"></div>
  </div></div>
@@ -2155,7 +2203,7 @@ document.querySelectorAll('.per').forEach(b => b.onclick = () => {
    domani sono migliaia e la pagina si apre in dieci secondi.
    ============================================================================ */
 const CAPI = () => API.replace(/regia$/, 'contatti');
-let cVoci = null, cRighe = [], cListe = [], cListaId = null, cListaRighe = [];
+let cVoci = null, cRighe = [], cListe = [], cListaId = null, cListaRighe = [], cVistaArch = 'lavoro';
 /* cVisto: la scheda si carica la prima volta che la si apre, non all avvio */
 let cVisto = false;
 const cScelti = new Set();
@@ -2673,8 +2721,10 @@ function cDisegnaLista(){
     : '<tr><td colspan="9" class="attesa">La lista e vuota. Scegli dei contatti e premi Aggiungi alla lista.</td></tr>';
   /* i fogli grandi sono solo le liste in lavorazione: le altre stanno
      nell archivio qui sotto, piccole */
-  const tutte = cListe.filter(x => x.stato === 'aperta').sort((a,b) => b.id - a.id);
-  cDisegnaArchivio();
+  /* le due viste: in lavorazione (di partenza) e archiviate, tutte e due
+     con lo stesso foglio grande. Le miniature non si usano piu. */
+  const tutte = cListe.filter(x => cVistaArch === 'via' ? x.stato !== 'aperta' : x.stato === 'aperta').sort((a,b) => b.id - a.id);
+  document.querySelectorAll('[data-arch]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.arch === cVistaArch)));
   $('cFogli').innerHTML = tutte.length ? tutte.map(x => {
     const nomi = String(x.chi_c_era||'').split(' | ').filter(Boolean);
     return '<div class="foglioA4 '+(x.stato==='aperta'?'aperta':'chiusa')+'">'+
@@ -3180,6 +3230,13 @@ $('bPieno').onclick = () => schermoPieno();
 $('tCont').onclick = () => scheda('tCont');
 $('tListe').onclick = () => scheda('tListe');
 $('tArch').onclick = () => scheda('tArch');
+/* i due pulsanti dell archivio: in lavorazione e archiviate */
+document.addEventListener('click', (e) => {
+  const b = e.target && e.target.closest ? e.target.closest('[data-arch]') : null;
+  if(!b) return;
+  cVistaArch = b.dataset.arch;
+  if(typeof cDisegnaLista === 'function') cDisegnaLista();
+});
 $('tRub').onclick = () => scheda('tRub');
 $('tLinea').onclick = () => scheda('tLinea');
 $('tArric').onclick = () => scheda('tArric');
