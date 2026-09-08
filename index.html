@@ -3257,10 +3257,17 @@ document.addEventListener('click', async (e) => {
     t.removeAttribute('aria-pressed');
     t.disabled = true;
     t.textContent = 'sto chiamando';
-    const j = await chiedoLaStanza({ azione:'telefonata', cliente:d.rchiama, cliente_nome:d.rnome||'', conduce: CHI || 'regia' });
+    /* la telefonata NORMALE di Valentino, la stessa delle liste: la stanza
+       non c entra: nasce solo dopo, se si preme entra in voce. */
+    let j;
+    try{
+      const rr = await fetch(API.replace(/regia$/, 'valentino-chiama'), { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ pass: PASS, telefono: d.rchiama }) });
+      j = await rr.json();
+    }catch(e){ j = { ok:false, errore:'non risponde' }; }
     t.disabled = false;
     t.textContent = 'chiama';
-    avvisa(j && j.ok ? 'sto chiamando te: rispondi, e appena rispondi parte il cliente' : ((j && j.errore) || 'non riesco a far partire la telefonata'));
+    avvisa(j && j.ok ? ('sta squillando: ' + (j.nome || d.rnome || d.rchiama)) : ((j && j.errore) || 'non riesco a far partire la telefonata'));
     return;
   }
   if(t.id === 'bEnt'){ apriEntroIo(d.conv || ''); return; }
