@@ -3187,7 +3187,7 @@ function rDisegna(){
     '<td class="mono">'+rQuando(r.ultima_telefonata)+'</td>'+
     '<td class="mono">'+(r.quante_volte||0)+'</td>'+
     '<td>'+esc(r.come_e_finita||'-')+(r.nota ? '<br><small>'+esc(r.nota)+'</small>' : '')+'</td>'+
-    '<td><button class="perche" data-rchiama="'+esc(r.telefono||'')+'" data-rnome="'+esc(r.nome||'')+'">chiamo io</button>'+
+    '<td><button class="perche" data-rchiama="'+esc(r.telefono||'')+'" data-rnome="'+esc(r.nome||'')+'">chiama</button>'+
       (r.in_rubrica_mia && (r.aggiunto_da||'') === (CHI||'') ? '<button class="perche" data-rtogli="'+esc(r.telefono||'')+'">togli</button>' : '')+
     '</td></tr>').join('') : '<tr><td colspan="6" class="attesa">Nessun numero con questo filtro.</td></tr>';
 }
@@ -3209,9 +3209,26 @@ document.addEventListener('click', async (e) => {
   }
   if(d.rtogli){ t.disabled = true; await rChiedi({ azione:'togli', telefono:d.rtogli }); rCarica(); return; }
   if(d.rchiama){
+    /* QUI PARTE UNA TELEFONATA VERA: si chiede conferma una seconda volta.
+       La domanda la fa il tasto stesso, e se entro sei secondi non arriva la
+       risposta torna com era. Niente finestre di sistema: bloccano la pagina
+       e la regia deve restare viva mentre si decide. */
+    if(t.dataset.conferma !== '1'){
+      t.dataset.conferma = '1';
+      t.textContent = 'chiamo ' + (d.rnome || d.rchiama) + '? premi ancora';
+      t.setAttribute('aria-pressed', 'true');
+      setTimeout(() => {
+        if(t.dataset.conferma === '1'){ t.dataset.conferma = ''; t.textContent = 'chiama'; t.removeAttribute('aria-pressed'); }
+      }, 6000);
+      return;
+    }
+    t.dataset.conferma = '';
+    t.removeAttribute('aria-pressed');
     t.disabled = true;
+    t.textContent = 'sto chiamando';
     const j = await chiedoLaStanza({ azione:'telefonata', cliente:d.rchiama, cliente_nome:d.rnome||'', conduce: CHI || 'regia' });
     t.disabled = false;
+    t.textContent = 'chiama';
     avvisa(j && j.ok ? 'sto chiamando te: rispondi, e appena rispondi parte il cliente' : ((j && j.errore) || 'non riesco a far partire la telefonata'));
     return;
   }
