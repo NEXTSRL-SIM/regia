@@ -3146,13 +3146,13 @@ $('tImpara').onclick = () => scheda('tImpara');
    gia in corso (entro io). Le chiavi grosse non stanno qui: si passa da
    regia-porta, che riconosce la parola d ordine della regia e fa il resto.
    ============================================================================ */
-const RAPI  = () => API.replace(/regia$/, 'rubrica');
+const RUBAPI = () => API.replace(/regia$/, 'rubrica');
 const PORTA = () => API.replace(/regia$/, 'regia-porta');
 let rFiltro = 'tutti', rTesto = '', rRighe = [], rTimer = null;
 
 async function rChiedi(c){
   try{
-    const r = await fetch(RAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
+    const r = await fetch(RUBAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(Object.assign({ t: PASS, chi: CHI || 'regia' }, c)) });
     return await r.json();
   }catch(e){ return { ok:false, errore:'la rubrica non risponde' }; }
