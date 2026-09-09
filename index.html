@@ -7,7 +7,11 @@
 :root[data-tema="chiaro"]{--ground:#F7F4EF;--surface:#FFFFFF;--surface-2:#F1ECE4;--surface-3:#E7E1D6;--ink:#1C1815;--ink-2:#574E47;--ink-3:#8A8078;--line:#E2DBD1;--line-2:#CDC3B6;--amber:#8A5C12;--amber-dim:#F2E3C8;--amber-wash:#FBF4E6;--sage:#2F6B41;--sage-dim:#E3F0E5;--brick:#A8401C;--brick-dim:#FAE2D8}
 :root[data-tema="chiaro"] .porta button{color:#3A2A0C}
 /* la spia del telefono nell intestazione */
-#spiaTel[data-stato="pronto"],#spiaTel[data-stato="in-linea"]{border-color:var(--sage);color:var(--sage)}
+#spiaTel{font-weight:600;letter-spacing:.06em}
+#spiaTel[data-stato="pronto"],#spiaTel[data-stato="in-linea"]{border-color:var(--sage);color:#0E2A16;background:var(--sage)}
+:root[data-tema="chiaro"] #spiaTel[data-stato="pronto"],:root[data-tema="chiaro"] #spiaTel[data-stato="in-linea"]{color:#F4FBF5;background:var(--sage)}
+#spiaTel[data-stato="guasto"]{background:var(--brick);color:#2A0E06;border-color:var(--brick)}
+:root[data-tema="chiaro"] #spiaTel[data-stato="guasto"]{color:#FFF3EE}
 #spiaTel[data-stato="guasto"]{border-color:var(--brick);color:var(--brick)}
 #spiaTel[data-stato="squilla"]{border-color:var(--amber);color:var(--amber)}
 :root[data-tema="chiaro"] .nastro{color:#4A3208}
