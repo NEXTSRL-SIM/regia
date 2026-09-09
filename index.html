@@ -773,6 +773,13 @@ tr.fatta td{opacity:.55}
    stanza. Adesso sta nel nastro, sempre presente, e si mostra solo quando
    squilla. */
 .nastro .cornetta{display:none;gap:6px;margin-left:8px}
+/* IL CONTO ALLA ROVESCIA del passaggio: quanto manca all ingresso del cliente
+   in stanza. Il numero arriva da entro-io-voce, che decide l attesa e la
+   dichiara: cosi quello che vedi e lo stesso istante che sblocca la musica. */
+.conto{display:none;font-variant-numeric:tabular-nums;font-weight:600;padding:2px 10px;border-radius:99px;
+  background:var(--amber);color:#1b1710;margin-left:8px}
+.conto.acceso{display:inline-block}
+.conto.dentro{background:var(--sage);color:#0f1a12}
 .nastro .cornetta.squillo{display:inline-flex;align-items:center}
 .nastro .cornetta .tondo{width:30px;height:30px;font-size:15px}
 </style>
@@ -785,7 +792,7 @@ tr.fatta td{opacity:.55}
  </form>
 </div>
 <div id="dentro" class="nascosto">
- <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><span class="cornetta" id="cornetta"><button id="bRispondi" class="tondo verde" title="rispondi">&#9742;</button><button id="bRifiuta" class="tondo rosso" title="rifiuta">&#9742;</button></span><button class="tema" id="spiaTel" title="il telefono della pagina: premi per riaccenderlo">telefono spento</button><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
+ <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><span id="conto" class="conto"></span><span class="cornetta" id="cornetta"><button id="bRispondi" class="tondo verde" title="rispondi">&#9742;</button><button id="bRifiuta" class="tondo rosso" title="rifiuta">&#9742;</button></span><button class="tema" id="spiaTel" title="il telefono della pagina: premi per riaccenderlo">telefono spento</button><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
  <div class="schede">
   <button class="st" id="tCont">Contatti</button>
   <button class="st" id="tListe">Lista di oggi</button>
@@ -1414,6 +1421,27 @@ const MU = (function(){
    nessuno se ne accorgeva e dopo otto secondi rispondeva da sola. Qui lo
    squillo se lo fa la pagina: due note alternate, nessun file da caricare.
    Il permesso audio c'e gia perche il telefono lo accendi tu con la cornetta. */
+/* IL CONTO ALLA ROVESCIA DEL PASSAGGIO. entro-io-voce sceglie l attesa - fra
+   venti e ventotto secondi, diversa ogni volta perche non sembri un
+   automatismo - e la dichiara nella risposta: qui si mostra quanto manca
+   all ingresso del cliente, cosi chi e in regia sa quando puo parlare. */
+let contoTimer = null;
+function contoAllaRovescia(secondi){
+  const e = document.getElementById('conto'); if(!e) return;
+  if(contoTimer){ clearInterval(contoTimer); contoTimer = null; }
+  let restano = Math.max(0, Math.round(Number(secondi) || 0));
+  e.className = 'conto acceso';
+  const scrivi = () => {
+    if(restano > 0){ e.textContent = 'il cliente entra fra ' + restano + 's'; restano--; return; }
+    e.className = 'conto acceso dentro';
+    e.textContent = 'il cliente e in stanza';
+    clearInterval(contoTimer); contoTimer = null;
+    setTimeout(() => { e.className = 'conto'; e.textContent = ''; }, 12000);
+  };
+  scrivi();
+  contoTimer = setInterval(scrivi, 1000);
+}
+
 let squilloTimer = null;
 function squilloVia(){ if(squilloTimer){ clearInterval(squilloTimer); squilloTimer = null; } }
 function squilloQui(){
@@ -3800,6 +3828,7 @@ async function apriEntroIo(conv){
         j = await rr.json();
       }catch(e){ j = { ok:false, errore:'la stanza non risponde' }; }
       if(j && j.ok){
+        if(j.attesa_secondi) contoAllaRovescia(j.attesa_secondi);
         esito.textContent = j.sto_passando
           ? (come === 'cuffie'
               ? 'Valentino lo sta avvisando, poi te lo passo qui: due secondi.'
