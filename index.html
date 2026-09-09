@@ -695,7 +695,13 @@ tr.fatta td{opacity:.55}
 .avviso.buono b{color:var(--sage)}
 .piedeF{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:14px;margin-top:16px}
 .piedeF .spinge{margin-left:auto}
-@media (max-width:1100px){#vCont .telaio{grid-template-columns:minmax(0,1fr)}#vCont .col.dx{position:static;max-height:none}}
+/* LA BARRA DELLA SELEZIONE SI FERMA DOVE FINISCE LA COLONNA CENTRALE.
+   Era fixed da bordo a bordo (left:0;right:0) e quindi passava sopra la
+   colonna Lista di oggi: Sante il 09/09 - il corpo centrale e totalmente in
+   interferenza con la barra di destra. Sotto i 1100 la colonna di destra va a
+   capo e la barra torna piena. */
+#vCont .barrasel{right:283px}
+@media (max-width:1100px){#vCont .telaio{grid-template-columns:minmax(0,1fr)}#vCont .col.dx{position:static;max-height:none}#vCont .barrasel{right:0}}
 
 /* --- GLI STATI SI DEVONO VEDERE. Al buio le vecchie regole coloravano solo
    un filo di 2px, e la banda in alto usava sfondi cosi scuri da confondersi
