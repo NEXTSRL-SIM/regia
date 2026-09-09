@@ -1260,6 +1260,9 @@ async function accendiTelefono(){
 
 async function prendiChiamata(c){
   if(inLinea){ try{ inLinea.disconnect(); }catch(e){} inLinea = null; segnaTel('pronto','Prendo io la chiamata'); return; }
+  /* anche qui l ascolto in silenzio si spegne: se resta acceso, chi prende la
+     linea si sente rientrare la propria voce con un secondo di ritardo */
+  try{ muto = false; disegna(); }catch(e){}
   await accendiTelefono();
   if(statoTel === 'spento' || statoTel === 'guasto'){
     avvisa('Il telefono della pagina non parte' + (motivoTel ? ': ' + motivoTel.toLowerCase() : '. Ricarica la pagina e riprova.'));
@@ -3691,7 +3694,15 @@ async function apriEntroIo(conv){
          cliente ci viene portato dentro mentre Valentino lo avvisa. */
       let j;
       try{
-        const rr = await fetch(API.replace(/regia$/, 'entro-io'), { method:'POST', headers:{'Content-Type':'application/json'},
+        /* SPEGNE L ASCOLTO IN SILENZIO. Il 09/09 Sante, entrato in stanza,
+           sentiva la propria voce rientrare da un altro canale: era la pagina
+           che continuava a riprodurre il flusso della telefonata, dentro cui
+           adesso c era anche lui. Due modi di sentire la stessa telefonata non
+           possono stare insieme. */
+        try{ muto = false; disegna(); }catch(e){}
+        /* entro-io-voce: l annuncio lo suona Twilio con la voce di Valentino,
+           l agente non viene interpellato e non rallenta la telefonata */
+        const rr = await fetch(API.replace(/regia$/, 'entro-io-voce'), { method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ t: PASS, conversazione: conv, chi: CHI || 'regia', come: come }) });
         j = await rr.json();
       }catch(e){ j = { ok:false, errore:'la stanza non risponde' }; }
