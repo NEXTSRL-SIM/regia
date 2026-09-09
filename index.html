@@ -567,6 +567,14 @@ tr.fatta td{opacity:.55}
    alto e scorre per conto suo se e piu lunga dello schermo. */
 #vCont .telaio{height:auto;min-height:calc(100vh - 78px);overflow:visible}
 #vCont .col{background:var(--ground);min-width:0;overflow:visible}
+/* SAFARI NON TAGLIAVA. Su Chrome la tabella dei contatti (larga 1460) scorreva
+   dentro il suo riquadro; su Safari usciva dalla colonna e finiva SOTTO la
+   colonna Lista di oggi, che infatti si vedeva in trasparenza dove il pannello
+   non copriva. overflow-x:clip taglia l eccedenza SENZA creare un contenitore
+   di scorrimento: cosi la pagina continua a scorrere in verticale e la colonna
+   di destra resta appiccicata, che era il motivo per cui qui c era visible. */
+#vCont .col:not(.dx){overflow-x:clip;max-width:100%}
+#vCont .avvolgi{max-width:100%}
 #vCont .col.dx{position:sticky;top:0;align-self:start;max-height:calc(100vh - 78px);overflow-y:auto}
 /* CONTATTI, LARGHEZZA. La tabella dei contatti e piu larga della colonna che
    la contiene: si vedeva tagliata sulla destra e finiva sotto la colonna di
