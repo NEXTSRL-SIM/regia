@@ -1134,8 +1134,44 @@ function segnaTel(s, testo){
   if(n) n.textContent = (s === 'guasto' || s === 'attesa') ? (testo || '') : '';
 }
 
+let tokenScadeIl = 0;        /* quando scade il biglietto, in millisecondi */
+let rinnovoAvviato = false;
+
+/* chiede un biglietto nuovo alla edge, senza toccare l apparecchio */
+async function chiediBiglietto(){
+  const r = await fetch(API + '-telefono?t=' + encodeURIComponent(PASS) + '&chi=' + encodeURIComponent((CHI||'regia').toLowerCase().replace(/[^a-z0-9]/g,'')||'regia'));
+  const j = await r.json();
+  if(!j || !j.ok) throw new Error('lasciapassare rifiutato');
+  return j;
+}
+
+/* fresco = manca piu di dieci minuti alla scadenza */
+const bigliettoFresco = () => !!tokenScadeIl && (tokenScadeIl - Date.now() > 10*60*1000);
+
+/* IL BIGLIETTO DURA UN ORA E VA RINNOVATO DA SOLO.
+   Il 09/09 la regia e rimasta aperta tutta la mattina: alle 14 il biglietto
+   era morto da un pezzo, e i tasti "prendi la linea" e "entra in conferenza"
+   fallivano tutti e due senza dire niente, perche il telefono della pagina
+   risultava acceso ma non valeva piu.
+   updateToken cambia il biglietto SENZA staccare l apparecchio: se in quel
+   momento c e una telefonata in corso non se ne accorge nessuno. Distruggere
+   e ricreare il Device invece la farebbe cadere: non si fa. */
+async function rinnovaBiglietto(){
+  if(!apparecchio) return false;
+  try{
+    const j = await chiediBiglietto();
+    apparecchio.updateToken(j.token);
+    tokenScadeIl = (Number(j.scade) || 0) * 1000;
+    if(statoTel === 'guasto') segnaTel('pronto', 'Prendo io la chiamata');
+    return true;
+  }catch(e){
+    segnaTel('guasto', 'Telefono: lasciapassare scaduto, ricarica la pagina');
+    return false;
+  }
+}
+
 async function accendiTelefono(){
-  if(apparecchio) return;
+  if(apparecchio){ if(!bigliettoFresco()) await rinnovaBiglietto(); return; }
   /* se la libreria del telefono non e arrivata non si esce in silenzio: si
      dice. Per giorni il telefono e rimasto spento senza che nessuno sapesse
      perche, e la ragione era questa: l indirizzo da cui la prendevamo
@@ -1156,9 +1192,18 @@ async function accendiTelefono(){
     j = await r.json();
   }catch(e){ segnaTel('guasto', 'Telefono: non risponde'); return; }
   if(!j || !j.ok){ segnaTel('guasto', 'Telefono: lasciapassare rifiutato'); return; }
+  tokenScadeIl = (Number(j.scade) || 0) * 1000;
   try{
     apparecchio = new Twilio.Device(j.token, {codecPreferences:['opus','pcmu'], logLevel:'error'});
     apparecchio.on('registered', () => segnaTel('pronto', 'Prendo io la chiamata'));
+    /* il telefono avvisa da solo un paio di minuti prima della scadenza */
+    apparecchio.on('tokenWillExpire', () => { rinnovaBiglietto(); });
+    /* e comunque, ogni due minuti, si guarda l orologio: cosi il biglietto
+       viene cambiato intorno ai cinquanta minuti anche se l avviso non arriva */
+    if(!rinnovoAvviato){
+      rinnovoAvviato = true;
+      setInterval(() => { if(apparecchio && !bigliettoFresco()) rinnovaBiglietto(); }, 2*60*1000);
+    }
     apparecchio.on('error', (e) => segnaTel('guasto', 'Telefono: ' + ((e && e.message) || 'guasto')));
     apparecchio.on('incoming', (c) => {
       inLinea = c;
