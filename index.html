@@ -8,6 +8,20 @@
 :root[data-tema="chiaro"] .porta button{color:#3A2A0C}
 /* la spia del telefono nell intestazione */
 #spiaTel{font-weight:600;letter-spacing:.06em}
+/* LA CORNETTA: i due tasti del telefono, come su un apparecchio vero.
+   Stanno a destra della banda "nessuna telefonata in corso", spenti finche
+   non squilla; quando la regia viene chiamata in stanza lampeggiano e si
+   risponde col verde. Detto da Sante il 09/09: la spia da sola confondeva. */
+.cornetta{margin-left:auto;display:flex;gap:8px;align-items:center}
+.tondo{width:42px;height:42px;border-radius:50%;border:1px solid var(--line-2);background:var(--surface-2);
+  color:var(--ink-3);font-size:19px;line-height:1;cursor:not-allowed;opacity:.35;transition:opacity .2s}
+.tondo.verde{color:var(--sage)}
+.tondo.rosso{color:var(--brick);transform:rotate(135deg)}
+.tondo.viva{cursor:pointer;opacity:1}
+.tondo.verde.viva{background:var(--sage);color:#0E2A16;border-color:var(--sage);animation:squilla 1s infinite}
+.tondo.rosso.viva{background:var(--brick);color:#2A0E06;border-color:var(--brick)}
+@keyframes squilla{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.tondo.rosso.viva{animation:none}
 #spiaTel[data-stato="pronto"],#spiaTel[data-stato="in-linea"]{border-color:var(--sage);color:#0E2A16;background:var(--sage)}
 :root[data-tema="chiaro"] #spiaTel[data-stato="pronto"],:root[data-tema="chiaro"] #spiaTel[data-stato="in-linea"]{color:#F4FBF5;background:var(--sage)}
 #spiaTel[data-stato="guasto"]{background:var(--brick);color:#2A0E06;border-color:var(--brick)}
@@ -1242,10 +1256,30 @@ async function accendiTelefono(){
     apparecchio.on('incoming', (c) => {
       inLinea = c;
       segnaTel('squilla', 'Rispondi');
+      /* I DUE TASTI DEL TELEFONO. Prima si rispondeva da soli e non si capiva
+         cosa stesse succedendo: adesso la cornetta verde lampeggia, si preme e
+         solo allora si entra. Se non si tocca niente per otto secondi risponde
+         lei, per non lasciare il cliente appeso in attesa. */
+      const verde = document.getElementById('bRispondi');
+      const rosso = document.getElementById('bRifiuta');
+      let deciso = false;
+      const spegni = () => {
+        deciso = true;
+        if(verde){ verde.classList.remove('viva'); verde.onclick = null; }
+        if(rosso){ rosso.classList.remove('viva'); rosso.onclick = null; }
+      };
+      if(verde){
+        verde.classList.add('viva');
+        verde.onclick = () => { spegni(); try{ c.accept(); segnaTel('in-linea','Chiudi e riattacca'); }catch(e){} };
+      }
+      if(rosso){
+        rosso.classList.add('viva');
+        rosso.onclick = () => { spegni(); try{ c.reject(); }catch(e){} inLinea = null; segnaTel('pronto','Prendo io la chiamata'); };
+      }
+      setTimeout(() => { if(!deciso){ spegni(); try{ c.accept(); segnaTel('in-linea','Chiudi e riattacca'); }catch(e){} } }, 8000);
       c.on('disconnect', () => { inLinea = null; segnaTel('pronto', 'Prendo io la chiamata'); });
       c.on('cancel',     () => { inLinea = null; segnaTel('pronto', 'Prendo io la chiamata'); });
-      /* si risponde da soli: chi ha premuto il tasto sta gia aspettando */
-      try{ c.accept(); segnaTel('in-linea', 'Chiudi e riattacca'); }catch(e){}
+      /* la risposta la decide chi e in regia, con i due tasti qui sopra */
     });
     segnaTel('attesa', 'Accendo il telefono&hellip;');
     await apparecchio.register();
@@ -2014,7 +2048,9 @@ function disegna(){
        cosi si sa gia dove guardare quando squillera */
     $('centro').innerHTML =
       '<div class="banda spenta"><span class="bollo"></span><span><h3>Nessuna telefonata in corso</h3>'+
-        '<p>Quando Valentino chiama, qui compare chi ha al telefono e cosa sta succedendo.</p></span></div>'+
+        '<p>Quando Valentino chiama, qui compare chi ha al telefono e cosa sta succedendo.</p></span>'+
+        '<span class="cornetta"><button id="bRispondi" class="tondo verde" title="rispondi">&#9742;</button>'+
+        '<button id="bRifiuta" class="tondo rosso" title="rifiuta">&#9742;</button></span></div>'+
       '<div class="capo"><div><h1 class="spento">&mdash;</h1><div class="sotto"><span>comune</span><span>telefono</span><span>campagna</span></div></div>'+
         '<div class="grosso spento">00:00<small>in linea</small></div></div>'+
       '<div class="salienti"><p class="et">Punti salienti<span class="leg"><i class="verde"></i>cammina<i class="giallo"></i>serve un occhio<i class="rosso"></i>si sta mettendo male</span></p><p class="attesa">Qui compaiono i momenti che Valentino segnala mentre parla.</p></div>'+
