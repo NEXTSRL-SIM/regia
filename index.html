@@ -1272,9 +1272,11 @@ async function accendiTelefono(){
       const rosso = document.getElementById('bRifiuta');
       const cornetta = document.getElementById('cornetta');
       if(cornetta) cornetta.classList.add('squillo');
+      squilloQui();
       let deciso = false;
       const spegni = () => {
         deciso = true;
+        squilloVia();
         if(cornetta) cornetta.classList.remove('squillo');
         if(verde){ verde.classList.remove('viva'); verde.onclick = null; }
         if(rosso){ rosso.classList.remove('viva'); rosso.onclick = null; }
@@ -1406,6 +1408,33 @@ const MU = (function(){
   }
   return t;
 })();
+
+/* LO SQUILLO DELLA REGIA. Prima l'arrivo di una chiamata si vedeva soltanto:
+   il tasto verde lampeggiava e basta, quindi con la pagina in secondo piano
+   nessuno se ne accorgeva e dopo otto secondi rispondeva da sola. Qui lo
+   squillo se lo fa la pagina: due note alternate, nessun file da caricare.
+   Il permesso audio c'e gia perche il telefono lo accendi tu con la cornetta. */
+let squilloTimer = null;
+function squilloVia(){ if(squilloTimer){ clearInterval(squilloTimer); squilloTimer = null; } }
+function squilloQui(){
+  squilloVia();
+  const nota = (hz, quando, durata) => {
+    try{
+      if(!ctx) return;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = hz;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + quando);
+      g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + quando + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + quando + durata);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(ctx.currentTime + quando); o.stop(ctx.currentTime + quando + durata + 0.05);
+    }catch(e){}
+  };
+  const trillo = () => { nota(440, 0, 0.35); nota(560, 0.4, 0.35); };
+  try{ if(ctx && ctx.state === 'suspended') ctx.resume(); }catch(e){}
+  trillo();
+  squilloTimer = setInterval(trillo, 1600);
+}
 
 function suona(pezzi){
   if(!muto || !ctx || !pezzi) return;
