@@ -6,6 +6,10 @@
 :root{--ground:#100E0C;--surface:#1A1613;--surface-2:#231D19;--surface-3:#2C251F;--ink:#F2EBE3;--ink-2:#AFA49A;--ink-3:#7C716A;--line:#332B25;--line-2:#453A32;--amber:#E2A24C;--amber-dim:#7A5622;--amber-wash:#241A0E;--sage:#7FB08B;--sage-dim:#22321F;--brick:#CE6A45;--brick-dim:#3A1F16;--display:"Bricolage Grotesque",Arial,sans-serif;--sans:"IBM Plex Sans",Arial,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace}
 :root[data-tema="chiaro"]{--ground:#F7F4EF;--surface:#FFFFFF;--surface-2:#F1ECE4;--surface-3:#E7E1D6;--ink:#1C1815;--ink-2:#574E47;--ink-3:#8A8078;--line:#E2DBD1;--line-2:#CDC3B6;--amber:#8A5C12;--amber-dim:#F2E3C8;--amber-wash:#FBF4E6;--sage:#2F6B41;--sage-dim:#E3F0E5;--brick:#A8401C;--brick-dim:#FAE2D8}
 :root[data-tema="chiaro"] .porta button{color:#3A2A0C}
+/* la spia del telefono nell intestazione */
+#spiaTel[data-stato="pronto"],#spiaTel[data-stato="in-linea"]{border-color:var(--sage);color:var(--sage)}
+#spiaTel[data-stato="guasto"]{border-color:var(--brick);color:var(--brick)}
+#spiaTel[data-stato="squilla"]{border-color:var(--amber);color:var(--amber)}
 :root[data-tema="chiaro"] .nastro{color:#4A3208}
 :root[data-tema="chiaro"] .nastro b{color:#2E1F04}
 :root[data-tema="chiaro"] .tasto[aria-pressed=true]{color:#3A2A0C}
@@ -755,7 +759,7 @@ tr.fatta td{opacity:.55}
  </form>
 </div>
 <div id="dentro" class="nascosto">
- <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
+ <div class="nastro"><span><b>Regia</b> - dati dal vivo</span><span id="chiSono"></span><span id="orologio"></span><button class="tema" id="spiaTel" title="il telefono della pagina: premi per riaccenderlo">telefono spento</button><button class="tema" id="bTema">chiara</button><button class="tema" id="bPieno" title="tutto schermo">tutto schermo</button></div>
  <div class="schede">
   <button class="st" id="tCont">Contatti</button>
   <button class="st" id="tListe">Lista di oggi</button>
@@ -1146,6 +1150,18 @@ function segnaTel(s, testo){
      da dire finisce nella riga sotto il banco */
   const n = document.getElementById('telNota');
   if(n) n.textContent = (s === 'guasto' || s === 'attesa') ? (testo || '') : '';
+  /* LA SPIA IN ALTO, SEMPRE VISIBILE. Il 09/09 tre passaggi sono finiti in
+     "non risponde" perche il telefono della pagina non era acceso, e non
+     c era modo di accorgersene prima: lo stato si vedeva solo durante una
+     telefonata. Adesso sta nell intestazione, e premendola si riaccende. */
+  const sp = document.getElementById('spiaTel');
+  if(sp){
+    const dice = {pronto:'telefono acceso', 'in-linea':'telefono in linea', squilla:'sta squillando',
+                  attesa:'accendo il telefono...', guasto:'TELEFONO SPENTO', spento:'telefono spento'};
+    sp.textContent = dice[s] || s;
+    sp.setAttribute('data-stato', s);
+    sp.title = (s === 'guasto' && motivoTel) ? motivoTel : 'il telefono della pagina: premi per riaccenderlo';
+  }
 }
 
 let tokenScadeIl = 0;        /* quando scade il biglietto, in millisecondi */
@@ -3699,4 +3715,17 @@ if(PASS) apri();
 /* il telefono si accende da solo appena si entra, cosi e gia pronto
    quando serve: senza, il primo passaggio di chiamata perderebbe secondi */
 setTimeout(accendiTelefono, 1200);
+/* la spia in alto si puo premere: butta via l apparecchio vecchio e riprova
+   da zero. Serve quando il permesso del microfono viene dato DOPO che la
+   pagina ha gia provato, che e il caso in cui restava spenta per sempre. */
+(function(){
+  const sp = document.getElementById('spiaTel');
+  if(!sp) return;
+  sp.onclick = async () => {
+    try{ if(apparecchio){ apparecchio.destroy(); } }catch(e){}
+    apparecchio = null; tokenScadeIl = 0;
+    segnaTel('attesa', 'riaccendo il telefono...');
+    await accendiTelefono();
+  };
+})();
 </script></body></html>
