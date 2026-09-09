@@ -1092,7 +1092,7 @@ window.onerror = function(m, f, r, c){
 const API = 'https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/regia';
 let PASS = sessionStorage.getItem('regia_pass') || '';
 let CHI  = sessionStorage.getItem('regia_chi') || '';
-let sel = null, stato = {vive:[], chiuse:[], richiami:[]}, avviato = false, periodo = 'oggi';
+let sel = null, mostrata = null, stato = {vive:[], chiuse:[], richiami:[]}, avviato = false, periodo = 'oggi';
 let muto = false, tre = false; let ws = null, wsConv = null, battute = [];
 
 /* ---- ascolto in diretta: audio duplicato da Twilio, mu-law 8 kHz ---- */
@@ -1572,6 +1572,10 @@ async function tira(){
     stato = await r.json();
     if(!stato.richiami) stato.richiami = [];
     if(!sel || !stato.vive.some(v=>v.conversazione===sel)) sel = stato.vive.length ? stato.vive[0].conversazione : null;
+    /* TELEFONATA CAMBIATA: si svuota quello che apparteneva a quella di prima.
+       Senza questo, per i primi secondi della nuova si vedeva ancora la
+       maschera della precedente - parlato, ascolto, stanza a tre. */
+    if(sel !== mostrata){ mostrata = sel; parlatoDb = []; parlato = []; corso = {}; parlatoConv = sel; muto = false; tre = false; }
     try{ disegna(); }
     catch(e){ if(window.onerror) window.onerror('disegna: ' + (e && e.message ? e.message : e), '', 0, 0); }
   }catch(e){}
