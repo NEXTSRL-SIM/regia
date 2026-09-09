@@ -1357,12 +1357,26 @@ function detta(){
   };
   try{ ricon.start(); if(b) b.setAttribute('aria-pressed','true'); }catch(e){ ricon = null; }
 }
+let avvisoTimer = null;
+/* L'avviso si scrive dentro il tasto dell'ascolto e dopo quattro secondi il
+   tasto torna com'era. Prima si salvava "com'era" al momento dell'avviso: se
+   ne arrivavano due di fila, il secondo si portava via come originale il testo
+   dell'errore, e da li in poi sul tasto restava scritto l'errore per sempre.
+   Adesso l'etichetta vera si tiene da parte una volta sola. */
 function avvisa(t){
   try{
     const b = document.getElementById('bAsc'); if(!b) return;
-    const v = b.innerHTML;
+    if(!b.dataset.etichetta) b.dataset.etichetta = b.innerHTML;
+    if(avvisoTimer){ clearTimeout(avvisoTimer); avvisoTimer = null; }
     b.innerHTML = '<span class="led"></span>' + t;
-    setTimeout(function(){ b.innerHTML = v; }, 4000);
+    avvisoTimer = setTimeout(function(){ b.innerHTML = b.dataset.etichetta; avvisoTimer = null; }, 4000);
+  }catch(e){}
+}
+function ripulisciAvviso(){
+  try{
+    const b = document.getElementById('bAsc'); if(!b) return;
+    if(avvisoTimer){ clearTimeout(avvisoTimer); avvisoTimer = null; }
+    if(b.dataset.etichetta) b.innerHTML = b.dataset.etichetta;
   }catch(e){}
 }
 /* mu-law verso numeri: la tabella si costruisce una volta sola.
@@ -1575,7 +1589,7 @@ async function tira(){
     /* TELEFONATA CAMBIATA: si svuota quello che apparteneva a quella di prima.
        Senza questo, per i primi secondi della nuova si vedeva ancora la
        maschera della precedente - parlato, ascolto, stanza a tre. */
-    if(sel !== mostrata){ mostrata = sel; parlatoDb = []; parlato = []; corso = {}; parlatoConv = sel; muto = false; tre = false; }
+    if(sel !== mostrata){ mostrata = sel; parlatoDb = []; parlato = []; corso = {}; parlatoConv = sel; muto = false; tre = false; ripulisciAvviso(); }
     try{ disegna(); }
     catch(e){ if(window.onerror) window.onerror('disegna: ' + (e && e.message ? e.message : e), '', 0, 0); }
   }catch(e){}
