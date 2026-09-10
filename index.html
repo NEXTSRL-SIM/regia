@@ -1426,6 +1426,31 @@ const MU = (function(){
    automatismo - e la dichiara nella risposta: qui si mostra quanto manca
    all ingresso del cliente, cosi chi e in regia sa quando puo parlare. */
 let contoTimer = null;
+let contoVerso = null;
+/* IL CONTO ALLA ROVESCIA SUL DATO VERO. Contare i secondi dati dalla risposta
+   sfasava: quella arriva quando il passaggio comincia, mentre l attesa del
+   cliente parte qualche secondo dopo, quando Twilio lo mette davvero in
+   musica. Adesso la funzione del passaggio scrive l ORA ESATTA in cui il
+   cliente entra, la vista regia_ora la porta a ogni giro, e qui si conta fino
+   a quell istante. */
+function contoFinoA(quando){
+  const e = document.getElementById('conto'); if(!e || !quando) return;
+  if(contoVerso === quando) return;
+  contoVerso = quando;
+  if(contoTimer){ clearInterval(contoTimer); contoTimer = null; }
+  const fine = new Date(quando).getTime();
+  const scrivi = () => {
+    const restano = Math.max(0, Math.round((fine - Date.now())/1000));
+    if(restano > 0){ e.className = 'conto acceso'; e.textContent = 'il cliente entra fra ' + restano + 's'; return; }
+    e.className = 'conto acceso dentro';
+    e.textContent = 'il cliente e in stanza';
+    clearInterval(contoTimer); contoTimer = null;
+    setTimeout(() => { if(contoVerso === quando){ e.className = 'conto'; e.textContent = ''; contoVerso = null; } }, 15000);
+  };
+  scrivi();
+  contoTimer = setInterval(scrivi, 1000);
+}
+
 function contoAllaRovescia(secondi){
   const e = document.getElementById('conto'); if(!e) return;
   if(contoTimer){ clearInterval(contoTimer); contoTimer = null; }
@@ -1658,6 +1683,9 @@ async function tira(){
        Senza questo, per i primi secondi della nuova si vedeva ancora la
        maschera della precedente - parlato, ascolto, stanza a tre. */
     if(sel !== mostrata){ mostrata = sel; parlatoDb = []; parlato = []; corso = {}; parlatoConv = sel; muto = false; tre = false; ripulisciAvviso(); }
+    /* il conto alla rovescia lo comanda il dato che arriva dalla stanza */
+    { const vv = stato.vive.find(x => x.conversazione === sel);
+      if(vv && vv.cliente_entra_il) contoFinoA(vv.cliente_entra_il); }
     try{ disegna(); }
     catch(e){ if(window.onerror) window.onerror('disegna: ' + (e && e.message ? e.message : e), '', 0, 0); }
   }catch(e){}
