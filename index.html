@@ -818,6 +818,7 @@ h1,h2,h3{color:var(--titolo)!important}
   <button class="st" id="tRich" aria-selected="false">Da richiamare <span id="nRich">0</span></button>
   <button class="st" id="tChiuse" aria-selected="false">Telefonate chiuse</button>
   <button class="st" id="tImpara" aria-selected="false">Apprendimento</button>
+  <button class="st" id="tImpost" aria-selected="false">Impostazioni</button>
  </div>
  <div class="telaio" id="vLinea">
   <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div><div class="sotto" id="sotto"></div></div>
@@ -1026,6 +1027,13 @@ h1,h2,h3{color:var(--titolo)!important}
      <button class="tasto forma" id="bForm" title="insegna a Valentino una regola, anche senza partire da una telefonata">FORMAZIONE</button>
    </div>
    <div id="impCorpo"></div>
+ </div></div>
+
+<div id="vImpost" class="nascosto"><div class="foglio">
+   <h1>Impostazioni</h1>
+   <h2>Prova</h2>
+   <p class="occhio">Con la prova accesa il motore delle chiamate puo chiamare Sante (389 968 4862) anche se il suo numero risulta gia in Preventivi o fra i Clienti: serve a simulare una telefonata vera. Per tutti gli altri contatti non cambia niente. Finita la prova, si spegne qui.</p>
+   <div class="friga"><button class="chip" id="pProva" aria-pressed="false">Sante si puo chiamare come prova</button><span class="mono" id="pProvaStato" style="margin-left:12px"></span></div>
  </div></div>
 
 <div class="veloC" id="cVeloImp"><div class="finestra">
@@ -3561,7 +3569,7 @@ document.addEventListener('dragleave', (e) => { const z = e.target.closest && e.
 document.addEventListener('drop', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
   if(z){ e.preventDefault(); z.classList.remove('sopra'); impLeggiFile(e.dataTransfer.files && e.dataTransfer.files[0]); } });
 function scheda(q){
-  ['tCont','tListe','tArch','tRub','tLinea','tArric','tRich','tChiuse','tImpara'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
+  ['tCont','tListe','tArch','tRub','tLinea','tArric','tRich','tChiuse','tImpara','tImpost'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
   $('vCont').classList.toggle('nascosto', q!=='tCont');
   $('vListe').classList.toggle('nascosto', q!=='tListe');
   $('vArch').classList.toggle('nascosto', q!=='tArch');
@@ -3578,6 +3586,8 @@ function scheda(q){
   $('vChiuse').classList.toggle('nascosto', q!=='tChiuse');
   $('vImpara').classList.toggle('nascosto', q!=='tImpara');
   if(q==='tImpara'){ caricaImparato(); }
+  $('vImpost').classList.toggle('nascosto', q!=='tImpost');
+  if(q==='tImpost'){ pCarica(); }
 }
 $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema') === 'chiaro' ? 'scuro' : 'chiaro');
 $('bPieno').onclick = () => schermoPieno();
@@ -3604,6 +3614,23 @@ $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
 $('tChiuse').onclick = () => scheda('tChiuse');
 $('tImpara').onclick = () => scheda('tImpara');
+$('tImpost').onclick = () => scheda('tImpost');
+/* IMPOSTAZIONI - LA PROVA (PORTALE NEXT-108). Con la prova accesa il motore
+   delle chiamate puo chiamare Sante anche se il suo numero e gia in Preventivi:
+   serve per simulare. Lo stato vero sta nel database (motore.prova). */
+async function pCarica(){
+  const j = await cComando({ motore: 'stato' });
+  const s = (j && j.stato) || {};
+  const b = $('pProva'); if(b) b.setAttribute('aria-pressed', s.prova === true);
+  const t = $('pProvaStato'); if(t) t.textContent = s.prova ? 'prova accesa' : 'prova spenta';
+}
+$('pProva').onclick = async () => {
+  const acc = $('pProva').getAttribute('aria-pressed') === 'true';
+  const j = await cComando({ motore: acc ? 'prova_no' : 'prova_si' });
+  if(!j || !j.ok){ avvisa('non riesco a cambiare la prova'); return; }
+  avvisa(acc ? 'prova spenta' : 'prova accesa: Sante si puo chiamare');
+  pCarica();
+};
 /* si puo entrare anche con il lasciapassare nell indirizzo: serve quando la
    pagina viene ricaricata forzando e la parola d ordine se ne va con la sessione */
 (function(){
