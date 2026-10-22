@@ -3,8 +3,8 @@
 <title>Regia - Next</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-:root{--ground:#100E0C;--surface:#1A1613;--surface-2:#231D19;--surface-3:#2C251F;--ink:#F2EBE3;--ink-2:#AFA49A;--ink-3:#7C716A;--line:#332B25;--line-2:#453A32;--amber:#E2A24C;--amber-dim:#7A5622;--amber-wash:#241A0E;--sage:#7FB08B;--sage-dim:#22321F;--brick:#CE6A45;--brick-dim:#3A1F16;--display:"Bricolage Grotesque",Arial,sans-serif;--sans:"IBM Plex Sans",Arial,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace}
-:root[data-tema="chiaro"]{--ground:#F7F4EF;--surface:#FFFFFF;--surface-2:#F1ECE4;--surface-3:#E7E1D6;--ink:#1C1815;--ink-2:#574E47;--ink-3:#8A8078;--line:#E2DBD1;--line-2:#CDC3B6;--amber:#8A5C12;--amber-dim:#F2E3C8;--amber-wash:#FBF4E6;--sage:#2F6B41;--sage-dim:#E3F0E5;--brick:#A8401C;--brick-dim:#FAE2D8}
+:root{--ground:#0F1623;--surface:#162032;--surface-2:#1B2840;--surface-3:#22314D;--ink:#E8EEF5;--ink-2:#A3B3C6;--ink-3:#708199;--line:#24324A;--line-2:#31435F;--amber:#22B8D8;--amber-dim:#0891B2;--amber-wash:#0B2C3A;--sage:#22C55E;--sage-dim:#0F2E1C;--brick:#F87171;--brick-dim:#3B1618;--viola:#A78BFA;--viola-wash:#2A2147;--giallo:#E0A93B;--giallo-wash:#33270F;--su-guida:#FFFFFF;--txt-giallo:#F3DDBB;--titolo:#5CCFE6;--display:"Bricolage Grotesque",Arial,sans-serif;--sans:"IBM Plex Sans",Arial,sans-serif;--mono:"IBM Plex Mono",Menlo,monospace}
+:root[data-tema="chiaro"]{--ground:#F5F6F8;--surface:#FFFFFF;--surface-2:#FBFCFD;--surface-3:#EEF0F4;--ink:#1F2330;--ink-2:#475569;--ink-3:#64748B;--line:#E6E8EE;--line-2:#D7DBE3;--amber:#0891B2;--amber-dim:#0891B2;--amber-wash:#ECFEFF;--sage:#16A34A;--sage-dim:#F0FDF4;--brick:#B91C1C;--brick-dim:#FEF2F2;--viola:#6D28D9;--viola-wash:#FAF5FF;--giallo:#B5750A;--giallo-wash:#FEF3C7;--su-guida:#FFFFFF;--txt-giallo:#5A3D06;--titolo:#0E7490}
 :root[data-tema="chiaro"] .porta button{color:#3A2A0C}
 /* la spia del telefono nell intestazione */
 #spiaTel{font-weight:600;letter-spacing:.06em}
@@ -782,6 +782,23 @@ tr.fatta td{opacity:.55}
 .conto.dentro{background:var(--sage);color:#0f1a12}
 .nastro .cornetta.squillo{display:inline-flex;align-items:center}
 .nastro .cornetta .tondo{width:30px;height:30px;font-size:15px}
+
+/* colori allineati ai portali (azzurro), PORTALE NEXT-108, 22/10/2026: solo colori, la forma non cambia */
+h1,h2,h3{color:var(--titolo)!important}
+.porta button,.tasto[aria-pressed=true],.bott.forte,:root[data-tema="chiaro"] .porta button,:root[data-tema="chiaro"] .tasto[aria-pressed=true],:root[data-tema="chiaro"] .bott.forte{color:var(--su-guida)!important}
+.nastro,.nastro b,:root[data-tema="chiaro"] .nastro,:root[data-tema="chiaro"] .nastro b{color:#FFFFFF!important}
+:root[data-tema="chiaro"] .nastro{background:#0E7490!important}
+.imbuto .conta,.conto{color:#fff!important}
+.spia.giallo,.banda.giallo .bollo,.evento.giallo .pallo,.vincoli.att .bollo,.pt.medio .pallino,.faro.giallo,.leg i.giallo,:root[data-tema="chiaro"] .spia.giallo,:root[data-tema="chiaro"] .banda.giallo .bollo,:root[data-tema="chiaro"] .vincoli.att .bollo{background:var(--giallo)!important}
+.l-flash.giallo,.pt.medio b,.vinc.giallo .testo b,.tag.att,.seg .conf.media{color:var(--giallo)!important;border-color:var(--giallo)!important}
+.banda.giallo,.sal.giallo,:root[data-tema="chiaro"] .banda.giallo,:root[data-tema="chiaro"] .sal.giallo{background:var(--giallo-wash)!important;border-left-color:var(--giallo)!important;box-shadow:none!important}
+.sal.giallo span{color:var(--txt-giallo)!important}
+.vincoli.att,.esitov.att,:root[data-tema="chiaro"] .vincoli.att,:root[data-tema="chiaro"] .esitov.att{background:var(--giallo-wash)!important;color:var(--txt-giallo)!important}
+.sal.verde,.banda.verde{background:var(--sage-dim)!important;border-left-color:var(--sage)!important}
+.sal.rosso,.banda.rosso,.avviso{background:var(--brick-dim)!important}
+.velo,.veloC{background:rgba(5,10,20,.75)!important}
+#tImpara,.fregola,.fstato.proposta,.avvisoLez,.carta.impara .imp.merc b,.imparo .imp.merc b{color:var(--viola)!important;border-color:var(--viola)!important}
+.avvisoLez{background:var(--viola-wash)!important}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
