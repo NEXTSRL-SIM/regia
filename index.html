@@ -446,8 +446,6 @@ audio{width:230px;height:34px;vertical-align:middle}
 .grip{color:var(--ink-3);font-family:var(--mono);font-size:11px;white-space:nowrap}
 .grip button{color:var(--ink-3);padding:0 2px}
 .grip button:hover{color:var(--amber)}
-.rpo{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
-.rpo.att{color:var(--ink-3)}.rpo.ok{color:var(--sage)}.rpo.occhio{color:var(--amber)}
 tr.inlinea td{background:var(--sage-dim)!important}
 tr.fatta td{opacity:.55}
 .titoloArch{font-family:var(--display);font-weight:600;font-size:19px;margin:30px 0 4px}
@@ -855,10 +853,6 @@ h1,h2,h3{color:var(--titolo)!important}
 
    <div class="conta1" id="cConta"></div>
 
-   <div class="banda">
-     <b>Registro opposizioni</b>
-     <span>Qui il registro <b>informa, non blocca</b>: queste sono persone che hanno compilato un nostro modulo o che ci ha segnalato un cliente, il consenso l hanno dato a noi. La targhetta serve a sapere che quella persona il registro l ha fatto, e ad andarci piano.</span>
-   </div>
 
    <div class="testafiltri">
      <button class="imbuto" id="cImbuto" aria-expanded="false">
@@ -878,7 +872,6 @@ h1,h2,h3{color:var(--titolo)!important}
          <div class="tlista" id="cLstati"></div></div></div>
        <button class="chip si" data-int="tel" aria-pressed="true">solo con telefono</button>
        <button class="chip" data-int="wa" aria-pressed="false" disabled title="Il dato non c e: nel database non e registrato chi ha WhatsApp. Il filtro si accende quando decidiamo da dove ricavarlo.">solo con WhatsApp (dato non raccolto)</button>
-       <button class="chip" data-int="dnd" aria-pressed="false">solo quelli nel registro</button>
      </div>
      <div class="friga">
        <span class="fetichetta">Campagna</span>
@@ -969,8 +962,7 @@ h1,h2,h3{color:var(--titolo)!important}
    <p class="occhio">Scrivi qui dentro per rinominarla: il nome si salva appena esci dalla casella. L id no, quello resta per sempre ed e come la ritrovi in archivio.</p>
    <div class="passi">
      <div class="passo fatto"><span class="num">1</span><span><b>Scelti</b><small id="cP1">&mdash;</small></span></div>
-     <div class="passo ora" id="cPassoRpo"><span class="num">2</span><span><b>Registro opposizioni</b><small id="cP2">&mdash;</small></span></div>
-     <div class="passo" id="cPasso3"><span class="num">3</span><span><b>Chiamate</b><small id="cP3">&mdash;</small></span></div>
+     <div class="passo" id="cPasso3"><span class="num">2</span><span><b>Chiamate</b><small id="cP3">&mdash;</small></span></div>
    </div>
    <div class="filtri" style="margin:14px 0">
      <div class="friga">
@@ -985,7 +977,6 @@ h1,h2,h3{color:var(--titolo)!important}
        <span class="orario"><input type="time" id="cOra1" value="09:00"><span>&ndash;</span><input type="time" id="cOra2" value="13:00"><span>e</span><input type="time" id="cOra3" value="15:00"><span>&ndash;</span><input type="time" id="cOra4" value="19:00"><span>&middot; al massimo</span><input id="cTettoG" value="30" style="min-width:48px;width:48px"><span>chiamate al giorno</span></span>
      </div>
      <div class="friga">
-       <button class="bott" id="cRpo">Controlla il registro</button>
        <button class="bott forte" id="cAvvia" disabled>Avvia le chiamate</button>
        <button class="bott calmo" id="cSvuota">Svuota la lista</button>
        <span class="mono" id="cRiepilogo" style="margin-left:auto"></span>
@@ -993,7 +984,7 @@ h1,h2,h3{color:var(--titolo)!important}
    </div>
    <div class="avvolgi"><table class="tabella">
      <thead><tr><th style="width:84px">Ordine</th><th>Chi</th><th>Punteggio</th><th>Vincoli</th><th>Dove</th>
-       <th>Registro</th><th>Stato</th><th>Esito</th><th></th></tr></thead>
+       <th>Stato</th><th>Esito</th><th></th></tr></thead>
      <tbody id="cCorpoLista"></tbody></table></div>
    <p class="nota">La lista e il documento della giornata: resta li anche se chiudi la pagina, e ogni riga porta con se perche e entrata.</p>
  </div></div>
@@ -2499,7 +2490,7 @@ let cVisto = false;
 const cScelti = new Set();
 const cFiltro = { cerca:'', campagne:new Set(), regioni:new Set(), province:new Set(),
                   stati:new Set(), semafori:new Set(), presc:new Set(), min:0, giorni:null, dal:null, al:null,
-                  tel:true, geo:false, arr:false, daarr:false, dnd:false, nodnd:false };
+                  tel:true, geo:false, arr:false, daarr:false };
 /* gli ordinamenti si impilano: il primo comanda, gli altri sciolgono i pari merito */
 let cOrdini = [{ campo:'punteggio', giu:true }];
 const CORD = { punteggio:'punteggio', nome:'nome', semaforo:'vincoli', reg:'regione', prov:'provincia',
@@ -2509,7 +2500,7 @@ const SEMN = { verde:['verde','Libero','si monta complanare'], giallo:['giallo',
                rosso:['rosso','Vincolato','serve autorizzazione'], dati_assenti:['grigio','Dato non buono','coordinate di ripiego'],
                mai:['grigio','Mai guardato','manca la croce sulla mappa'] };
 const STATN = { nuovo:'mai chiamato', senza_recapito:'senza recapito', numero_non_valido:'numero non valido',
-                solo_email:'solo email', numero_fisso:'numero fisso', non_disturbare:'nel registro', numero_estero:'estero' };
+                solo_email:'solo email', numero_fisso:'numero fisso', non_disturbare:'non disturbare', numero_estero:'estero' };
 /* le famiglie di prescrizione: una riga puo starne in piu di una */
 const FAMIGLIE = [
   ['centro storico',            p => /centro storico|zona A\b/i.test(p)],
@@ -2540,7 +2531,7 @@ function cUrl(){
   if(cFiltro.giorni !== null) p.set('giorni', cFiltro.giorni);
   if(cFiltro.dal) p.set('dal', cFiltro.dal);
   if(cFiltro.al)  p.set('al',  cFiltro.al);
-  const solo = ['tel','geo','arr','daarr','dnd','nodnd'].filter(k => cFiltro[k]);
+  const solo = ['tel','geo','arr','daarr'].filter(k => cFiltro[k]);
   if(solo.length) p.set('solo', solo.join(','));
   return CAPI() + '?' + p.toString();
 }
@@ -2612,8 +2603,7 @@ function cConteggi(){
     box('geo','geolocalizzati', n.geo, '') +
     box('daarr','da arricchire', n.da_arricchire, 'male') +
     box('mai','mai chiamati', n.mai_chiamati, '') +
-    box('fatti','chiamati', n.chiamati, '') +
-    box('dnd','nel registro', n.nel_registro, '');
+    box('fatti','chiamati', n.chiamati, '');
 }
 function cCntAcceso(k){
   if(k === 'tutti') return cQuanti() === 0;
@@ -2624,7 +2614,7 @@ function cCntAcceso(k){
 function cQuanti(){
   let q = 0;
   ['campagne','regioni','province','stati','semafori','presc'].forEach(k => { if(cFiltro[k].size) q++; });
-  ['geo','arr','daarr','dnd','nodnd'].forEach(k => { if(cFiltro[k]) q++; });
+  ['geo','arr','daarr'].forEach(k => { if(cFiltro[k]) q++; });
   if(!cFiltro.tel) q++;
   if(cFiltro.min > 0) q++;
   if(cFiltro.cerca) q++;
@@ -2634,7 +2624,7 @@ function cQuanti(){
 function cAzzera(){
   cFiltro.cerca=''; cFiltro.min=0; cFiltro.giorni=null; cFiltro.dal=null; cFiltro.al=null;
   ['campagne','regioni','province','stati','semafori','presc'].forEach(k => cFiltro[k].clear());
-  cFiltro.tel=true; cFiltro.geo=false; cFiltro.arr=false; cFiltro.daarr=false; cFiltro.dnd=false; cFiltro.nodnd=false;
+  cFiltro.tel=true; cFiltro.geo=false; cFiltro.arr=false; cFiltro.daarr=false;
   const i = $('cCerca'); if(i) i.value='';
   const s = $('cSlid'); if(s){ s.value=0; $('cSlidV').textContent='0'; }
   document.querySelectorAll('#vCont [data-p]').forEach(b => b.setAttribute('aria-pressed', b.dataset.p==='tutto'));
@@ -2719,7 +2709,6 @@ function cDisegna(){
     '<td class="mono">'+esc(String(r.campagna||'').replace('(senza campagna)','-').replace(' - settembre 2025 - lead',''))+'</td>'+
     '<td class="mono">'+cQuando(r.giorni)+'</td>'+
     '<td><span class="stc">'+esc(STATN[r.stato]||r.stato||'')+'</span>'+
-      (r.dnd ? '<br><span class="tag att" title="questa persona ha iscritto il suo numero al Registro pubblico delle opposizioni: il consenso l ha dato a noi compilando un modulo, quindi si puo chiamare, ma con riguardo">iscritto alle opposizioni</span>' : '')+
       (Array.isArray(r.in_liste) && r.in_liste.length
         ? '<br><span class="tag att" title="'+esc(r.in_liste.map(x => 'id lista '+x.id+': '+x.nome).join(' - '))+'">gia in '+
           r.in_liste.length+' list'+(r.in_liste.length===1?'a':'e')+': '+r.in_liste.map(x => 'id '+x.id).join(' ')+'</span>' : '')+'</td>'+
@@ -3003,11 +2992,9 @@ function cDisegnaLista(){
   $('cNomeLista').value = l ? l.nome : '';
   $('cNomeLista').disabled = !l;
   $('cIdLista').textContent = l ? '(id lista '+l.id+')' : '';
-  $('cPassoRpo').className = 'passo ' + (l && l.rpo_il ? 'fatto' : 'ora');
   $('cP1').textContent = l ? (l.in_lista||0)+' contatti scelti' : 'nessuna lista aperta';
-  $('cP2').textContent = l && l.rpo_il ? 'controllato: '+(l.nel_registro||0)+' da trattare con riguardo' : 'da controllare prima di partire';
   $('cP3').textContent = l ? ((l.fatte||0)+' fatte, '+((l.in_lista||0)-(l.fatte||0)-(l.tolte||0))+' in attesa') : '-';
-  $('cAvvia').disabled = !l || !l.rpo_il || !(l.in_lista||0);
+  $('cAvvia').disabled = !l || !(l.in_lista||0);
   document.querySelectorAll('[data-m2]').forEach(b => b.setAttribute('aria-pressed', Boolean(l) && b.dataset.m2===l.modo));
   $('cQuanteLinee').hidden = !(l && l.modo === 'gruppo');
   $('cQuanteLinee2').hidden = !(l && l.modo === 'gruppo');
@@ -3030,8 +3017,6 @@ function cDisegnaLista(){
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span></td>'+
     '<td>'+cFaro(r)+'</td>'+
     '<td>'+esc(r.comune||'-')+(r.prov?' <span class="mono">('+esc(r.prov)+')</span>':'')+'</td>'+
-    '<td><span class="rpo '+(r.rpo==='iscritto'?'occhio':r.rpo||'att')+'">'+
-      (r.rpo==='ok'?'libero':r.rpo==='iscritto'?'iscritto &middot; occhio':'da controllare')+'</span></td>'+
     '<td><span class="stc">'+(r.stato==='linea'?'in linea':r.stato==='fatta'?'chiusa':r.stato==='saltata'?'tolta':'in attesa')+'</span></td>'+
     /* l esito non e piu una parola scritta a mano: viene dall elenco chiuso.
        E se e un "da richiamare", la data si clicca e porta ai richiami. */
@@ -3042,7 +3027,7 @@ function cDisegnaLista(){
             : esc(r.esito||'-')))+'</td>'+
     '<td>'+(r.stato==='attesa' ? '<button class="azione" data-chiama="'+r.contatto_id+'">chiama adesso</button> '+
       '<button class="azione calmo" data-fuori="'+r.contatto_id+'">togli</button>' : '')+'</td></tr>').join('')
-    : '<tr><td colspan="9" class="attesa">La lista e vuota. Scegli dei contatti e premi Aggiungi alla lista.</td></tr>';
+    : '<tr><td colspan="8" class="attesa">La lista e vuota. Scegli dei contatti e premi Aggiungi alla lista.</td></tr>';
   /* i fogli grandi sono solo le liste in lavorazione: le altre stanno
      nell archivio qui sotto, piccole */
   /* le due viste: in lavorazione (di partenza) e archiviate, tutte e due
@@ -3072,7 +3057,7 @@ function cDisegnaLista(){
         (nomi.length>9 ? '<div>... e altri '+(nomi.length-9)+'</div>' : '')+'</div>'+
       '<div class="fondoF"><span><b>'+(x.in_lista||0)+'</b>in lista</span>'+
         '<span class="ok"><b>'+(x.fatte||0)+'</b>chiamate</span>'+
-        '<span class="re"><b>'+(x.nel_registro||0)+'</b>nel registro</span></div>'+
+        '</div>'+
       '<button class="apriF" data-riapri="'+x.id+'"></button>'+
       /* I DUE COMANDI, grandi e in fondo, uno solo per foglio: in lavorazione
          si archivia, nello storico si ripristina. Cancella e rosso perche non
@@ -3272,9 +3257,9 @@ function impControlla(){
   const o = $('impOrigine').value;
   const box = $('impAvviso');
   if(!o) box.innerHTML = '';
-  else if(o === 'comprata') box.innerHTML = '<div class="avviso"><b>Attenzione</b><span>Una lista comprata non porta con se un consenso valido per noi: il consenso dato a un altro non vale per Next. Questi numeri entrano in archivio marcati <b>nel registro</b> e vanno trattati con riguardo - e comunque dopo un parere del tuo legale.</span></div>';
+  else if(o === 'comprata') box.innerHTML = '<div class="avviso"><b>Attenzione</b><span>Una lista comprata non porta con se un consenso valido per noi: il consenso dato a un altro non vale per Next. Prima di chiamarli serve un parere del tuo legale.</span></div>';
   else if(o === 'fiera') box.innerHTML = '<div class="avviso buono"><b>Bene</b><span>Consenso su carta: tieni i moduli firmati, sono la prova. Metti la data vera della fiera, non quella di oggi.</span></div>';
-  else box.innerHTML = '<div class="avviso buono"><b>Bene</b><span>Consenso riconducibile a noi. Le righe entrano chiamabili, e passeranno comunque dal registro delle opposizioni prima della lista.</span></div>';
+  else box.innerHTML = '<div class="avviso buono"><b>Bene</b><span>Consenso riconducibile a noi. Le righe entrano chiamabili.</span></div>';
   const quanti = (impVia === 'uno') ? ($('u_tel').value.trim() ? 1 : 0) : impConvertite().filter(x => x.valido && !x.doppio).length;
   $('impConferma').disabled = !(o && quanti > 0);
   $('impConferma').textContent = quanti ? ('Aggiungi '+quanti+' contatt'+(quanti===1?'o':'i')) : 'Aggiungi all archivio';
@@ -3302,7 +3287,7 @@ async function cFaiPartire(contattoId, bottone){
   if(!r){ avvisa('questa riga non e piu nella lista'); return; }
   if(!r.tel){ avvisa('questo contatto non ha un numero'); return; }
   if(!confirm('Faccio squillare adesso?\n\n'+(r.nome||'(senza nome)')+'\n'+r.tel+
-              (r.rpo === 'iscritto' ? '\n\nATTENZIONE: risulta iscritto al registro delle opposizioni.' : '')))
+              ''))
     return;
   if(bottone) bottone.disabled = true;
   const e = await cComando({ lista: cListaId, chiama: Number(contattoId) });
@@ -3530,8 +3515,6 @@ document.addEventListener('click', async (e) => {
     if(!confirm('Tolgo tutti i '+cListaRighe.length+' nomi da questa lista? La lista resta, si svuota.')) return;
     t.disabled = true; await cComando({ lista: cListaId, svuota: true }); t.disabled = false;
     await cCaricaListe(); avvisa('lista svuotata'); return; }
-  if(t.id === 'cRpo'){ const r = await cComando({ lista: cListaId, rpo: true });
-    avvisa(r.nota || 'registro controllato'); await cCaricaListe(); return; }
   /* LA TELEFONATA PARTE DAVVERO. Una alla volta, sempre con la conferma che
      porta scritto nome e numero: chi preme sa chi sta per squillare. */
   if(d.chiama){ await cFaiPartire(Number(d.chiama), t); return; }
@@ -3678,7 +3661,6 @@ function rDisegna(){
   $('rCorpo').innerHTML = rRighe.length ? rRighe.map(r =>
     '<tr>'+
     '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.telefono||'')+'</small>'+
-      (r.dnd ? '<br><span class="tag att" title="questa persona ha iscritto il suo numero al Registro pubblico delle opposizioni: il consenso l ha dato a noi compilando un modulo, quindi si puo chiamare, ma con riguardo">iscritto alle opposizioni</span>' : '')+
       (r.in_rubrica_mia ? '<br><span class="tag">rubrica di '+esc(r.aggiunto_da||'')+'</span>' : '')+'</td>'+
     '<td>'+esc(r.comune||'-')+(r.provincia ? ' <span class="mono">('+esc(r.provincia)+')</span>' : '')+'</td>'+
     '<td class="mono">'+rQuando(r.ultima_telefonata)+'</td>'+
