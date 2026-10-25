@@ -819,6 +819,7 @@ h1,h2,h3{color:var(--titolo)!important}
   <button class="st" id="tChiuse" aria-selected="false">Telefonate chiuse</button>
   <button class="st" id="tImpara" aria-selected="false">Apprendimento</button>
   <button class="st" id="tImpost" aria-selected="false">Impostazioni</button>
+  <button class="st" id="tPerc" aria-selected="false">Percorsi</button>
  </div>
  <div class="telaio" id="vLinea">
   <div class="col"><div class="titolo"><h2>In linea adesso</h2><span class="conta" id="conta">0</span></div><div class="linee" id="linee"></div><div class="sotto" id="sotto"></div></div>
@@ -1029,6 +1030,7 @@ h1,h2,h3{color:var(--titolo)!important}
    <div id="impCorpo"></div>
  </div></div>
 
+<div id="vPerc" class="nascosto"><iframe id="ifPerc" title="Percorsi" style="display:block;width:100%;height:calc(100vh - 96px);border:0"></iframe></div>
 <div id="vImpost" class="nascosto"><div class="foglio">
    <h1>Impostazioni</h1>
    <h2>Prova</h2>
@@ -3569,7 +3571,7 @@ document.addEventListener('dragleave', (e) => { const z = e.target.closest && e.
 document.addEventListener('drop', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
   if(z){ e.preventDefault(); z.classList.remove('sopra'); impLeggiFile(e.dataTransfer.files && e.dataTransfer.files[0]); } });
 function scheda(q){
-  ['tCont','tListe','tArch','tRub','tLinea','tArric','tRich','tChiuse','tImpara','tImpost'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
+  ['tCont','tListe','tArch','tRub','tLinea','tArric','tRich','tChiuse','tImpara','tImpost','tPerc'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
   $('vCont').classList.toggle('nascosto', q!=='tCont');
   $('vListe').classList.toggle('nascosto', q!=='tListe');
   $('vArch').classList.toggle('nascosto', q!=='tArch');
@@ -3588,6 +3590,9 @@ function scheda(q){
   if(q==='tImpara'){ caricaImparato(); }
   $('vImpost').classList.toggle('nascosto', q!=='tImpost');
   if(q==='tImpost'){ pCarica(); }
+  /* Percorsi (PORTALE NEXT-110): la pagina sta nel repo regia-percorsi e si carica solo quando si apre la scheda */
+  $('vPerc').classList.toggle('nascosto', q!=='tPerc');
+  if(q==='tPerc' && !$('ifPerc').getAttribute('src')){ $('ifPerc').src='https://nextsrl-sim.github.io/regia-percorsi/?v='+Date.now(); }
 }
 $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema') === 'chiaro' ? 'scuro' : 'chiaro');
 $('bPieno').onclick = () => schermoPieno();
@@ -3614,7 +3619,8 @@ $('tArric').onclick = () => scheda('tArric');
 $('tRich').onclick = () => scheda('tRich');
 $('tChiuse').onclick = () => scheda('tChiuse');
 $('tImpara').onclick = () => scheda('tImpara');
-$('tImpost').onclick = () => scheda('tImpost');
+$('tImpost').onclick = () => scheda('tImpost')
+$('tPerc').onclick = () => scheda('tPerc');
 /* IMPOSTAZIONI - LA PROVA (PORTALE NEXT-108). Con la prova accesa il motore
    delle chiamate puo chiamare Sante anche se il suo numero e gia in Preventivi:
    serve per simulare. Lo stato vero sta nel database (motore.prova). */
