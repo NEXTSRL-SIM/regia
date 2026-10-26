@@ -1111,7 +1111,7 @@ button,select,input,textarea{font-family:var(--sans)!important}
 .bott,.tasto,.per,select,input,textarea{border-radius:8px!important}
 .bott.forte{background:#0891B2!important;border-color:#0891B2!important;color:#fff!important}
 .chip,.imbuto,.piu{border-radius:999px!important}
-td button:has(svg),[data-ichat],[data-isch],button.tel,.dxriapri,.dxchiudi{border-radius:50%!important}
+td button:has(svg),[data-ichat],[data-isch],button.tel,.dxchiudi{border-radius:50%!important}
 .cesiti,div:has(> [data-cvista]){border-radius:10px!important;overflow:hidden}
 .cesiti button,div:has(> [data-cvista]) button{border-radius:0!important}
 th,.et{letter-spacing:.12em!important;font-weight:800!important}
@@ -1162,6 +1162,29 @@ th,.et{letter-spacing:.12em!important;font-weight:800!important}
 .banco .tasto{border-radius:10px!important;font-weight:700!important}
 #vArch button,#vRub button,#vListe .barraliste button{text-transform:lowercase!important}
 #vArch button::first-letter,#vRub button::first-letter,#vListe .barraliste button::first-letter{text-transform:uppercase}
+/* Apprendimento e schede a carta */
+.carta{border-radius:14px!important;border:1px solid var(--line)!important;background:var(--surface)!important;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.impara.fatta{border-left:4px solid #16A34A!important}
+.impTesta{align-items:center!important}
+.impTesta h4{font:800 15px var(--sans)!important;letter-spacing:-.01em}
+.impTesta .mono,.ora{font-family:var(--cifre)!important}
+.azione,.minif,.butta{border-radius:999px!important;font:600 12px var(--sans)!important;text-transform:none!important;letter-spacing:0!important}
+.appresa,.tag,.bollino{border-radius:999px!important;font-family:var(--sans)!important;letter-spacing:.04em!important;font-weight:700!important}
+.etich{font-family:var(--sans)!important;font-weight:800!important;letter-spacing:.12em!important}
+.avvisoLez,.sintesiBox,.lezBox,.pannello,.blocco,.foglino{border-radius:12px!important}
+.pling{border-radius:999px!important;text-transform:lowercase!important;letter-spacing:0!important;font-weight:600!important}
+.pling::first-letter,#bForm::first-letter{text-transform:uppercase}
+#bForm{text-transform:lowercase!important;letter-spacing:0!important;border-radius:10px!important}
+.azione{border:1px solid var(--line-2)!important;background:var(--surface)!important;padding:6px 12px!important;text-decoration:none!important;color:var(--amber)!important}
+.impTesta .azione{margin-left:0!important}.impTesta .mono{margin-right:auto}
+.azione.calmo{color:var(--ink-2)!important}
+.dxriapri{font-size:0!important;height:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:12px 0!important;margin:0!important;gap:10px!important;align-items:center}
+.dxriapri span{display:none!important}
+.dxriapri::before,.dxriapri::after{content:"";width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background-color:var(--surface);box-shadow:0 1px 2px rgba(16,24,40,.06);display:block;transition:border-color .15s,background .15s}
+.dxriapri::before{background-image:none;-webkit-mask:none;position:relative}
+.dxriapri::before{background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E") center/16px no-repeat}
+.dxriapri::after{background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'/%3E%3C/svg%3E") center/16px no-repeat}
+.dxriapri:hover::before,.dxriapri:hover::after{border-color:var(--amber)}
 
 /* ===== MENU GENERALE NEXT ===== */
 #menuNext{display:none}
