@@ -1027,6 +1027,12 @@ td.azc .ico3{margin-top:0}
 
 .ch-r .tl{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
 .ch-r .tl .etc,.ch-r .tl .lst{font-size:10px;font-weight:600;padding:0 5px;margin:0;line-height:1.6}
+
+/* liste in due colonne, larghezza fissa, il nome intero passando sopra (Sante 13:14) */
+.ch-dx .pic.due{display:grid;grid-template-columns:1fr 1fr;gap:3px 6px}
+.ch-dx .pic.due .lstx{display:flex;align-items:center;min-width:0;margin:0}
+.ch-dx .pic.due .lst{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0}
+.ch-dx .pic.due .vuoto{grid-column:1/-1}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -4270,7 +4276,7 @@ function chDisegnaDx(c){
     h += '<div><h3>Tag</h3><div class="pic">'+((x.tag||[]).map(t => '<span class="lstx">'+cTagHtml(t)+'<button data-chtagx="'+t.id+'" aria-label="togli '+esc(t.nome)+'">&times;</button></span>').join('') || '<span class="vuoto">nessuno</span>')+'</div>'+
       '<select id="chTagAgg" aria-label="Metti un tag"><option value="">+ metti un tag</option>'+cTag.filter(t => !giaTag.includes(t.id)).map(t => '<option value="'+t.id+'">'+esc(t.nome)+'</option>').join('')+'</select></div>';
     const giaL = (x.liste || []).map(l => l.id);
-    h += '<div><h3>Liste</h3><div class="pic">'+((x.liste||[]).map(l => '<span class="lstx">'+cListaHtml(l)+'<button data-chlx="'+l.id+'" aria-label="togli dalla lista">&times;</button></span>').join('') || '<span class="vuoto">in nessuna lista</span>')+'</div>'+
+    h += '<div><h3>Liste</h3><div class="pic due">'+((x.liste||[]).map(l => '<span class="lstx" title="'+esc(l.nome)+'">'+cListaHtml(l)+'<button data-chlx="'+l.id+'" aria-label="togli dalla lista">&times;</button></span>').join('') || '<span class="vuoto">in nessuna lista</span>')+'</div>'+
       '<select id="chListaAgg" aria-label="Metti in una lista"><option value="">+ metti in una lista</option>'+(chListe||[]).filter(l => l.stato !== 'archiviata' && !giaL.includes(l.id)).map(l => '<option value="'+l.id+'">'+esc(l.nome)+'</option>').join('')+'</select></div>';
   }
   $('chDx').innerHTML = h;
