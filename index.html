@@ -1099,6 +1099,7 @@ td.azc .ico3{margin-top:0}
 .ch-call .giu:hover{background:#B91C1C}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<meta name="robots" content="noindex,nofollow">
 <style id="ardesia">
 /* ===== VESTE ARDESIA (PORTALE NEXT-110, 26/10) — solo grafica: nessun elemento spostato di funzione ===== */
 :root{--display:"Manrope",system-ui,sans-serif;--sans:"Manrope",system-ui,sans-serif;--mono:"Manrope",system-ui,sans-serif;--cifre:"JetBrains Mono",ui-monospace,monospace}
@@ -5285,6 +5286,24 @@ setTimeout(accendiTelefono, 1200);
       ['Percorso, a che punto','Il tetto','Quello che ci ha detto','Tag','Liste','Cosa gli abbiamo mandato'].forEach(function(n){ if(pezzi[n]) dx.appendChild(pezzi[n]); });
     }catch(e){} };
   }
+})();
+/* PORTALE NEXT-110 (20:40): la stessa pagina vive anche come Portale Next (portale.next-srl.net).
+   Li si apre sulla Panoramica, o sull ultima pagina usata; il tema passa a Percorsi con un messaggio
+   perche Percorsi resta su nextsrl-sim.github.io (li sono salvati i percorsi in prova). */
+(function(){
+  var PORTALE=/^portale\./.test(location.hostname)||/\/portale\/?/.test(location.pathname);
+  var nav=document.getElementById('menuNext');
+  function temaAPercorsi(){ var f=document.getElementById('ifPerc'); if(f&&f.contentWindow){ try{ f.contentWindow.postMessage({tipo:'tema',tema:document.documentElement.getAttribute('data-tema')||'scuro'},'*'); }catch(e){} } }
+  var f=document.getElementById('ifPerc'); if(f) f.addEventListener('load',function(){ temaAPercorsi(); setTimeout(temaAPercorsi,800); });
+  new MutationObserver(temaAPercorsi).observe(document.documentElement,{attributes:true,attributeFilter:['data-tema']});
+  if(!PORTALE||!nav) return;
+  document.title='Portale Next';
+  try{ if(!localStorage.getItem('portale_primo')){ localStorage.setItem('portale_primo','1'); if(typeof tema==='function') tema('chiaro'); } }catch(e){}
+  nav.addEventListener('click',function(e){ if(e.target.closest('.st')){ try{localStorage.setItem('mn_pag','regia')}catch(x){} } });
+  var p=null; try{ p=localStorage.getItem('mn_pag'); }catch(e){}
+  if(p==='regia') return;
+  var a=nav.querySelector('.mn-v[data-pag="'+(p||'dashboard')+'"]')||nav.querySelector('.mn-v[data-pag="dashboard"]');
+  if(a) a.click();
 })();
 </script>
 </body></html>
