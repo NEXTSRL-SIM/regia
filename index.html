@@ -5227,6 +5227,8 @@ setTimeout(accendiTelefono, 1200);
   });
 })();
 </script><script id="menu-next">
+/* pagine gia rifatte fuori da n8n (PORTALE NEXT-110): la voce del menu apre queste al posto del webhook */
+window.PAGINE_NUOVE={'contratti-firmati':'https://nextsrl-sim.github.io/contratti-firmati/'};
 /* MENU GENERALE NEXT dentro la regia (PORTALE NEXT-110, 26/10). Solo navigazione:
    le schede della regia vengono SPOSTATE nel sottomenu Regia, con i loro gestori;
    le altre voci aprono le pagine del portale in un riquadro accanto. */
@@ -5246,7 +5248,7 @@ setTimeout(accendiTelefono, 1200);
     VISTE.forEach(function(v){var e=document.getElementById(v); if(e) e.classList.add('nascosto');});
     sub.querySelectorAll('.st').forEach(function(b){b.setAttribute('aria-selected','false');});
     nav.querySelectorAll('.mn-v').forEach(function(a){a.classList.toggle('on',a===el);});
-    var f=document.getElementById('ifPortale'); if(f.getAttribute('data-p')!==p){ f.src=B+p; f.setAttribute('data-p',p); }
+    var f=document.getElementById('ifPortale'); if(f.getAttribute('data-p')!==p){ f.src=(window.PAGINE_NUOVE&&PAGINE_NUOVE[p])||(B+p); f.setAttribute('data-p',p); }
     vp.classList.remove('nascosto');
     try{localStorage.setItem('mn_pag',p)}catch(e){}
     if(!fisso()) nav.classList.remove('largo');
@@ -5316,6 +5318,20 @@ setTimeout(accendiTelefono, 1200);
     var a=e.target.closest&&e.target.closest('a[href*="/functions/v1/lead-scheda"]');
     if(a){ var m=a.getAttribute('href').match(/[?&]id=(\d+)/); if(m){ e.preventDefault(); e.stopImmediatePropagation(); window.open(url(m[1]),'_blank','noopener'); } }
   },true);
+})();
+
+/* PORTALE NEXT-110: alle pagine nuove del portale si passano tema e password con un messaggio (solo agli indirizzi di Next) */
+(function(){
+  var FIDATI=/^https:\/\/(nextsrl-sim\.github\.io|portale\.next-srl\.net)$/;
+  function tema(){ return document.documentElement.getAttribute('data-tema')||'scuro'; }
+  window.addEventListener('message',function(e){
+    var d=e.data||{}; if(d.tipo!=='chiedi_pass'||!FIDATI.test(e.origin)||!e.source) return;
+    var k=''; try{ k=PASS; }catch(x){} if(!k) return;
+    try{ e.source.postMessage({tipo:'pass',pass:k},e.origin); e.source.postMessage({tipo:'tema',tema:tema()},e.origin); }catch(x){}
+  });
+  function aPortale(){ var f=document.getElementById('ifPortale'); if(f&&f.contentWindow){ try{ f.contentWindow.postMessage({tipo:'tema',tema:tema()},'*'); }catch(x){} } }
+  var f=document.getElementById('ifPortale'); if(f) f.addEventListener('load',function(){ aPortale(); setTimeout(aPortale,600); });
+  new MutationObserver(aPortale).observe(document.documentElement,{attributes:true,attributeFilter:['data-tema']});
 })();
 </script>
 </body></html>
