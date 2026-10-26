@@ -1045,6 +1045,13 @@ td.azc .ico3{margin-top:0}
 .ch-dx .pop .sws{display:flex;gap:5px;flex-wrap:wrap}
 .ch-dx .pop .sw{width:18px;height:18px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer}
 .ch-dx .pop .sw[aria-pressed=true]{border-color:var(--ink)}
+
+.ch-fm{display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.ch-fm .fm{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);cursor:pointer}
+.ch-fm .fm small{font-family:var(--mono);font-size:10px;opacity:.75;margin-left:3px}
+.ch-fm .fm.on{background:var(--amber-wash);border-color:var(--amber);color:var(--titolo)}
+.ch-fm .fm.multi{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border-style:dashed}
+.ch-fm .fm.multi.on{border-style:solid}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -1289,7 +1296,7 @@ td.azc .ico3{margin-top:0}
    <div class="ch-filtri" role="group" aria-label="Quali chat"><button class="chip" data-chf="tutte" aria-pressed="true">tutte</button><button class="chip" data-chf="da" aria-pressed="false">ha scritto lui</button><button class="chip" data-chf="lead" aria-pressed="false">lead</button><button class="chip" data-chf="preventivo" aria-pressed="false">preventivi</button><button class="chip" data-chf="cliente" aria-pressed="false">clienti</button><button class="chip" data-chf="commerciale" aria-pressed="false">dei commerciali</button><button class="chip" data-chf="rete" aria-pressed="false">installatori e fornitori</button><button class="chip" data-chf="personale" aria-pressed="false">personali</button><button class="chip" data-chf="mano" aria-pressed="false">in mano a noi</button></div></div>
   <div id="chLista" class="ch-lista"><div class="ch-vuoto">carico le chat...</div></div>
  </section>
- <section class="ch-conv" aria-label="Conversazione"><div id="chTesta" class="ch-testa"></div><div id="chMsg" class="ch-msg"><div class="ch-vuoto">Scegli una conversazione a sinistra.<br>In alto c e sempre chi ha scritto per ultimo.</div></div><div id="chScrivi" class="ch-scrivi" hidden></div></section>
+ <section class="ch-conv" aria-label="Conversazione"><div id="chTesta" class="ch-testa"></div><div id="chFm" class="ch-fm" role="group" aria-label="Filtra i messaggi per chi li ha scritti" hidden></div><div id="chMsg" class="ch-msg"><div class="ch-vuoto">Scegli una conversazione a sinistra.<br>In alto c e sempre chi ha scritto per ultimo.</div></div><div id="chScrivi" class="ch-scrivi" hidden></div></section>
  <aside class="ch-dx" id="chDx" aria-label="Scheda del contatto"></aside>
  <div class="ch-maniglia" id="chManL" role="separator" aria-orientation="vertical" aria-label="Allarga o stringi l elenco delle chat" title="trascina per allargare"></div>
  <div class="ch-maniglia" id="chManR" role="separator" aria-orientation="vertical" aria-label="Allarga o stringi la scheda del contatto" title="trascina per allargare"></div>
@@ -4096,7 +4103,7 @@ let chCorr = null, chListe = null, chAperto = null;
 async function chApri(arg){
   const c = chElenco.find(x => chKey(x) === arg) || chElenco.find(x => x.tel === arg) || (chSpunto && chSpunto.tel === arg ? chSpunto : { tel: arg, nome: '+'+arg });
   const tel = c.tel;
-  chSel = chKey(c); chCorr = c;
+  chSel = chKey(c); chCorr = c; chFm = new Set();
   if(c.nuovi > 0){ c.nuovi = 0; chPost(RCH(), { t: PASS, chi: CHI, letto: c.tel }); const nb = $('nChat'), nn = chElenco.filter(y => y.nuovi > 0).length; nb.textContent = nn; nb.hidden = !nn; }
   chDisegnaElenco();
   $('chMsg').innerHTML = '<div class="ch-vuoto">apro la conversazione...</div>'; $('chScrivi').hidden = true; $('chTesta').innerHTML = ''; $('chDx').innerHTML = '';
@@ -4161,9 +4168,41 @@ function chCorpo(m){
   }
   return '<span>'+esc(t)+'</span>';
 }
+
+/* FILTRO DEI MESSAGGI PER CHI LI HA SCRITTI (Sante 26/10 13:21): i tasti nascono da quello che c e nella conversazione */
+let chFm = new Set(), chFmMulti = false;
+function chChiDi(m){
+  if(m.ev) return 'Pagine';
+  if(m.tipo === 'chiamata') return 'Chiamate';
+  if(m.da === 'cliente') return 'Cliente';
+  const c = String(m.chi || 'Next S.r.l.');
+  return /^riccardo/i.test(c) ? 'Riccardo · assistenza' : c;
+}
+function chDisegnaFm(tutti){
+  const box = $('chFm'); if(!box) return;
+  const conta = {}; tutti.forEach(m => { const k = chChiDi(m); conta[k] = (conta[k] || 0) + 1; });
+  const chiavi = Object.keys(conta).sort((a, b) => conta[b] - conta[a]);
+  if(chiavi.length < 2){ box.hidden = true; chFm.clear(); return; }
+  [...chFm].forEach(k => { if(!conta[k]) chFm.delete(k); });
+  box.hidden = false;
+  box.innerHTML = '<button class="fm'+(chFm.size ? '' : ' on')+'" data-chfm="*">Tutti <small>'+tutti.length+'</small></button>'+
+    chiavi.map(k => '<button class="fm'+(chFm.has(k) ? ' on' : '')+'" data-chfm="'+esc(k)+'" aria-pressed="'+chFm.has(k)+'">'+esc(k)+' <small>'+conta[k]+'</small></button>').join('')+
+    '<button class="fm multi'+(chFmMulti ? ' on' : '')+'" data-chfmmulti="1" aria-pressed="'+chFmMulti+'" title="Multi: accendi piu tasti insieme">multi</button>';
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest && e.target.closest('#chFm button'); if(!b) return;
+  if(b.dataset.chfmmulti){ chFmMulti = !chFmMulti; if(!chFmMulti && chFm.size > 1){ const p = [...chFm][0]; chFm = new Set([p]); } chDisegnaConv(false); return; }
+  const k = b.dataset.chfm;
+  if(k === '*') chFm.clear();
+  else if(chFmMulti){ chFm.has(k) ? chFm.delete(k) : chFm.add(k); }
+  else chFm = chFm.has(k) && chFm.size === 1 ? new Set() : new Set([k]);
+  chDisegnaConv(true);
+});
 function chDisegnaConv(inFondo){
   const box = $('chMsg'), giu = inFondo || (box.scrollHeight - box.scrollTop - box.clientHeight < 80);
-  const tutti = chMsgs.map(m => Object.assign({ tt: m.t }, m)).concat(chEventi().filter(e => !e.futuro).map(e => Object.assign({ tt: e.t }, e))).sort((a,b) => a.tt < b.tt ? -1 : 1);
+  const tuttiM = chMsgs.map(m => Object.assign({ tt: m.t }, m)).concat(chEventi().filter(e => !e.futuro).map(e => Object.assign({ tt: e.t }, e))).sort((a,b) => a.tt < b.tt ? -1 : 1);
+  chDisegnaFm(tuttiM);
+  const tutti = chFm.size ? tuttiM.filter(m => chFm.has(chChiDi(m))) : tuttiM;
   let g = '', h = '';
   tutti.forEach(m => {
     const d = new Date(m.tt).toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long' });
