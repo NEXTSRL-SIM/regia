@@ -988,7 +988,7 @@ td.azc .ico3{margin-top:0}
 .bo .foto img{display:block;max-width:240px;max-height:240px;border-radius:4px}
 
 /* colonna destra della Chat, piu compatta (Sante 26/10 13:04) */
-.ch-dx .pw-box{max-height:260px;overflow-y:auto;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);padding:4px 2px}
+.ch-dx .pw-box{max-height:360px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);padding:4px 2px}
 :root[data-tema="chiaro"] .ch-dx .pw.f,:root[data-tema="chiaro"] .ch-dx .pw.f i{color:#166534}
 :root[data-tema="chiaro"] .ch-dx .pw.q,:root[data-tema="chiaro"] .ch-dx .pw.q i{color:#0E7490}
 :root[data-tema="chiaro"] .ch-dx .pw{color:#475569}
@@ -1014,6 +1014,19 @@ td.azc .ico3{margin-top:0}
 .ch-dx .inv a{align-items:center !important}
 :root[data-tema="chiaro"] .bo .file{background:rgba(255,255,255,.75);border-color:rgba(0,0,0,.08)}
 :root[data-tema="chiaro"] .bo .sigla{background:#0E7490;color:#fff;border-color:#0E7490}
+
+/* colonne della Chat allargabili col mouse (Sante 26/10 13:10) */
+#vChat .chatt{grid-template-columns:var(--chL,340px) minmax(0,1fr) var(--chR,300px);position:relative}
+.ch-maniglia{position:absolute;top:0;bottom:0;width:9px;margin-left:-4px;cursor:col-resize;z-index:5;background:transparent}
+.ch-maniglia::after{content:"";position:absolute;top:0;bottom:0;left:4px;width:1px;background:transparent;transition:background .12s}
+.ch-maniglia:hover::after,.ch-maniglia.tira::after{background:var(--amber);width:2px}
+/* il numeretto dei messaggi non letti, come su WhatsApp */
+.ch-r .nn{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#25D366;color:#06210f;font:700 11px/1 var(--sans);margin-left:6px}
+.ch-r .o.nv{color:#25D366;font-weight:600}
+.ch-r .u2{display:flex;justify-content:space-between;align-items:center;gap:6px}
+
+.ch-r .tl{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
+.ch-r .tl .etc,.ch-r .tl .lst{font-size:10px;font-weight:600;padding:0 5px;margin:0;line-height:1.6}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -1260,6 +1273,8 @@ td.azc .ico3{margin-top:0}
  </section>
  <section class="ch-conv" aria-label="Conversazione"><div id="chTesta" class="ch-testa"></div><div id="chMsg" class="ch-msg"><div class="ch-vuoto">Scegli una conversazione a sinistra.<br>In alto c e sempre chi ha scritto per ultimo.</div></div><div id="chScrivi" class="ch-scrivi" hidden></div></section>
  <aside class="ch-dx" id="chDx" aria-label="Scheda del contatto"></aside>
+ <div class="ch-maniglia" id="chManL" role="separator" aria-orientation="vertical" aria-label="Allarga o stringi l elenco delle chat" title="trascina per allargare"></div>
+ <div class="ch-maniglia" id="chManR" role="separator" aria-orientation="vertical" aria-label="Allarga o stringi la scheda del contatto" title="trascina per allargare"></div>
 </div></div>
 <div id="vPerc" class="nascosto"><iframe id="ifPerc" title="Percorsi" style="display:block;width:100%;height:calc(100vh - 96px);border:0"></iframe></div>
 <div id="vImpost" class="nascosto"><div class="foglio">
@@ -4014,8 +4029,12 @@ function chIni(n){ const p = String(n||'?').replace(/^\+/, '').split(/\s+/).filt
 function chQuando(t){ if(!t) return ''; const d = new Date(t), o = new Date(); const g = Math.floor((new Date(o.toDateString()) - new Date(d.toDateString())) / 864e5);
   return g === 0 ? d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' }) : g === 1 ? 'ieri' : d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit' }); }
 async function chCaricaElenco(){
-  try{ const j = await (await fetch(RCH()+'?elenco=1&t='+encodeURIComponent(PASS))).json(); chElenco = (j && j.chat) || []; }catch(e){ $('chLista').innerHTML = '<div class="ch-vuoto">Non riesco a leggere le chat.</div>'; return; }
-  const n = chElenco.filter(c => c.da_rispondere).length; const b = $('nChat'); b.textContent = n; b.hidden = !n;
+  try{ const j = await (await fetch(RCH()+'?elenco=1&chi='+encodeURIComponent(CHI || '')+'&t='+encodeURIComponent(PASS))).json(); chElenco = (j && j.chat) || []; }catch(e){ $('chLista').innerHTML = '<div class="ch-vuoto">Non riesco a leggere le chat.</div>'; return; }
+  // la chat aperta e letta: il suo numeretto resta a zero
+  const ap = chElenco.find(c => chKey(c) === chSel);
+  if(ap && ap.nuovi > 0 && !$('vChat').classList.contains('nascosto')){ ap.nuovi = 0; chPost(RCH(), { t: PASS, chi: CHI, letto: ap.tel }); }
+  const n = chElenco.filter(c => c.nuovi > 0).length; const b = $('nChat'); b.textContent = n; b.hidden = !n;
+  try{ document.title = (n ? '('+n+') ' : '') + document.title.replace(/^\(\d+\)\s*/, ''); }catch(e){}
   chDisegnaElenco();
 }
 function chKey(c){ return c.token || ('n'+c.tel); }
@@ -4037,13 +4056,15 @@ function chDisegnaElenco(){
   document.querySelectorAll('#vChat [data-chf]').forEach(b => b.setAttribute('aria-pressed', b.dataset.chf === chFiltro));
   $('chLista').innerHTML = L.length ? L.map(c => '<button class="ch-r" data-chtel="'+esc(chKey(c))+'" aria-current="'+(chKey(c)===chSel)+'">'+
     '<span class="ch-av" aria-hidden="true">'+esc(chIni(c.nome))+'</span><span class="cc">'+
-    '<span class="n"><b>'+esc(c.nome)+'</b><span class="o '+(c.da_rispondere?'da':'')+'">'+chQuando(c.t)+'</span></span>'+
-    '<span class="u">'+(c.da_rispondere ? '<span class="pall" title="ha scritto lui: aspetta una risposta"></span>' : '')+esc(c.ultimo ? (((c.ultimo.da === 'next') ? 'Next: ' : '') + String(c.ultimo.testo || '').replace(/\s+/g, ' ').slice(0, 80)) : 'nessun messaggio')+'</span>'+
+    '<span class="n"><b>'+esc(c.nome)+'</b><span class="o '+(c.nuovi > 0 ? 'nv' : (c.da_rispondere ? 'da' : ''))+'">'+chQuando(c.t)+'</span></span>'+
+    '<span class="u2"><span class="u">'+(c.da_rispondere && !(c.nuovi > 0) ? '<span class="pall" title="ha scritto lui: aspetta una risposta"></span>' : '')+esc(c.ultimo ? (((c.ultimo.da === 'next') ? 'Next: ' : '') + String(c.ultimo.testo || '').replace(/\s+/g, ' ').slice(0, 80)) : 'nessun messaggio')+'</span>'+
+      (c.nuovi > 0 ? '<span class="nn" aria-label="'+c.nuovi+' messaggi non letti">'+c.nuovi+'</span>' : '')+'</span>'+
     '<span class="f">'+(c.fase ? '<span class="tag">'+esc(FASEN[c.fase]||c.fase)+'</span>' : '')+
       (c.gruppo && c.gruppo !== 'lead' && c.gruppo !== 'commerciale' ? '<span class="gr">'+esc(GRUPPON[c.gruppo]||c.gruppo)+'</span>' : '')+
       (c.commerciale ? '<span class="gr">'+esc(c.commerciale)+'</span>' : '')+
       (c.in_mano ? '<span class="mn">in mano a '+esc(String(c.in_mano.chi).split(' ')[0])+'</span>' : '')+
       '<span class="mono">+'+esc(c.tel)+'</span></span>'+
+      ((c.tag && c.tag.length) || (c.liste && c.liste.length) ? '<span class="tl">'+(c.tag||[]).map(cTagHtml).join('')+(c.liste||[]).map(cListaHtml).join('')+'</span>' : '')+
     '</span></button>').join('') : '<div class="ch-vuoto">Nessuna chat con questo filtro.</div>';
 }
 async function chPost(url, corpo){ try{ const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(corpo) }); return await r.json(); }catch(e){ return {}; } }
@@ -4057,7 +4078,9 @@ let chCorr = null, chListe = null;
 async function chApri(arg){
   const c = chElenco.find(x => chKey(x) === arg) || chElenco.find(x => x.tel === arg) || (chSpunto && chSpunto.tel === arg ? chSpunto : { tel: arg, nome: '+'+arg });
   const tel = c.tel;
-  chSel = chKey(c); chCorr = c; chDisegnaElenco();
+  chSel = chKey(c); chCorr = c;
+  if(c.nuovi > 0){ c.nuovi = 0; chPost(RCH(), { t: PASS, chi: CHI, letto: c.tel }); const nb = $('nChat'), nn = chElenco.filter(y => y.nuovi > 0).length; nb.textContent = nn; nb.hidden = !nn; }
+  chDisegnaElenco();
   $('chMsg').innerHTML = '<div class="ch-vuoto">apro la conversazione...</div>'; $('chScrivi').hidden = true; $('chTesta').innerHTML = ''; $('chDx').innerHTML = '';
   chTok = c.token || null;
   if(!chTok){ const j = await chPost(RCH(), { t: PASS, chi: CHI, apri: tel }); if(j && j.ok){ chTok = j.token; c.token = j.token; chSel = chKey(c); } else { $('chMsg').innerHTML = '<div class="ch-vuoto">'+esc((j && j.errore) || 'la chat non si apre')+'</div>'; return; } }
@@ -4713,5 +4736,29 @@ setTimeout(accendiTelefono, 1200);
     segnaTel('attesa', 'riaccendo il telefono...');
     await accendiTelefono();
   };
+})();
+
+/* trascinare le due linee della Chat: si allargano l elenco a sinistra e la scheda a destra; la misura resta sul browser */
+(function(){
+  const g = document.querySelector('#vChat .chatt'); if(!g) return;
+  const metti = () => { const L = g.style.getPropertyValue('--chL') || '340px', R = g.style.getPropertyValue('--chR') || '300px';
+    $('chManL').style.left = L; $('chManR').style.left = 'calc(100% - ' + R + ')'; };
+  try{ const m = JSON.parse(localStorage.getItem('regia_chat_colonne') || 'null'); if(m){ g.style.setProperty('--chL', m.L+'px'); g.style.setProperty('--chR', m.R+'px'); } }catch(e){}
+  metti();
+  let tira = null;
+  const giu = (lato) => (e) => { e.preventDefault(); tira = lato; e.currentTarget.classList.add('tira'); document.body.style.userSelect = 'none'; };
+  $('chManL').addEventListener('pointerdown', giu('L')); $('chManR').addEventListener('pointerdown', giu('R'));
+  window.addEventListener('pointermove', (e) => {
+    if(!tira) return;
+    const b = g.getBoundingClientRect();
+    if(tira === 'L') g.style.setProperty('--chL', Math.max(220, Math.min(560, e.clientX - b.left)) + 'px');
+    else g.style.setProperty('--chR', Math.max(240, Math.min(620, b.right - e.clientX)) + 'px');
+    metti();
+  });
+  window.addEventListener('pointerup', () => {
+    if(!tira) return; tira = null; document.body.style.userSelect = '';
+    document.querySelectorAll('.ch-maniglia').forEach(x => x.classList.remove('tira'));
+    try{ localStorage.setItem('regia_chat_colonne', JSON.stringify({ L: parseInt(g.style.getPropertyValue('--chL')) || 340, R: parseInt(g.style.getPropertyValue('--chR')) || 300 })); }catch(e){}
+  });
 })();
 </script></body></html>
