@@ -899,6 +899,15 @@ h1,h2,h3{color:var(--titolo)!important}
 .dxriapri:hover{color:var(--amber)}
 .dxchiudi{margin-left:10px;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);width:26px;height:24px;cursor:pointer}
 .dxchiudi:hover{color:var(--amber);border-color:var(--amber)}
+
+/* le tre icone stanno a destra, nell ultima colonna, sempre in vista anche
+   quando la tabella scorre (Sante 26/10 12:16) */
+#cCorpo td.azc,#cTesta th.azc{position:sticky;right:0;z-index:2;background:var(--ground);border-left:1px solid var(--line);width:120px}
+#cCorpo tr.scelto td.azc{background:var(--amber-wash)}
+td.azc .ico3{margin-top:0}
+/* con la Lista di oggi chiusa la maschera prende tutta la larghezza */
+#vCont .col:not(.dx) > .foglio{min-width:0;max-width:min(1400px,100%);box-sizing:border-box}
+#vCont .telaio.larga .col:not(.dx) > .foglio{max-width:100%}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -1030,7 +1039,7 @@ h1,h2,h3{color:var(--titolo)!important}
    <div class="avvolgi"><table class="tabella tCont">
      <thead id="cTesta"><tr><th style="width:34px"><input type="checkbox" id="cTutti"></th>
        <th>Contatto</th><th>Punteggio</th><th>Vincoli sul tetto</th><th>Regione</th><th>Prov.</th><th>Comune</th>
-       <th>Campagna</th><th>Entrato</th><th>Chiamate</th><th>Cosa ha chiesto</th><th>Cosa sappiamo di lui</th></tr></thead>
+       <th>Campagna</th><th>Entrato</th><th>Chiamate</th><th>Cosa ha chiesto</th><th>Cosa sappiamo di lui</th><th class="azc"></th></tr></thead>
      <tbody id="cCorpo"></tbody></table></div>
 
    <div class="barrasel">
@@ -2836,7 +2845,7 @@ function cRigaChiamate(r){ return (
     '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
     '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
     '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small>'+
-      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+cIco3(r)+'</td>'+
+      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+'</td>'+
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span>'+
       '<button class="perche" data-pt="'+r.id+'">perche</button></td>'+
     '<td>'+cFaro(r)+'</td>'+
@@ -2850,6 +2859,7 @@ function cRigaChiamate(r){ return (
     '<td class="chiesto">'+cModulo(r.modulo)+'</td>'+
     '<td class="sap">'+(r.sintesi ? '<p>'+esc(String(r.sintesi).slice(0,150))+'...</p>' : '<p class="vuoto">mai arricchito</p>')+
       (r.segnali ? '<button class="perche" data-sap="'+r.id+'">apri &middot; '+r.segnali+' segnali</button>' : '')+'</td>'+
+    '<td class="azc">'+cIco3(r)+'</td>'+
     '</tr>'); }
 
 /* --- PORTALE NEXT-110 (Sante 26/10): filtro, vista Percorso, tag colorati --- */
@@ -2892,7 +2902,7 @@ function cDisegnaEsiti(){
 }
 function cTestaPe(){
   return '<tr><th style="width:34px"><input type="checkbox" id="cTutti"></th><th>Contatto</th><th>Tetto</th><th>Filtro</th><th>Percorso, a che punto</th>'+
-    '<th>Ultima cosa fatta</th><th>Tag</th><th>Liste</th><th>Campagna</th><th>Entrato</th><th></th></tr>';
+    '<th>Ultima cosa fatta</th><th>Tag</th><th>Liste</th><th>Campagna</th><th>Entrato</th><th></th><th class="azc"></th></tr>';
 }
 
 const ICO_CHAT = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5CCFE6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg>';
@@ -2948,7 +2958,7 @@ function cRigaPercorso(r){
   const quando = x.quando ? new Date(x.quando).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
   return '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
     '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
-    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small><small>'+esc(r.comune||'')+'</small>'+cIco3(r)+'</td>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small><small>'+esc(r.comune||'')+'</small></td>'+
     '<td style="width:58px">'+cCasa(x)+'</td>'+
     '<td><span class="esf '+f+'">'+(f==='da_verificare'?'da verificare':f)+'</span>'+
       (x.filtro_perche ? '<small style="display:block;margin-top:4px;color:var(--ink-3)">'+esc(x.filtro_perche)+'</small>' : '')+
@@ -2960,6 +2970,7 @@ function cRigaPercorso(r){
     '<td class="mono">'+esc(String(r.campagna||'').replace('(senza campagna)','-').replace(' - settembre 2025 - lead',''))+'</td>'+
     '<td class="mono">'+cQuando(r.giorni)+'</td>'+
     '<td>'+(r.segnali ? '<button class="perche" data-sap="'+r.id+'">scheda &middot; '+r.segnali+' segnali</button>' : '')+'</td>'+
+    '<td class="azc">'+cIco3(r)+'</td>'+
   '</tr>';
 }
 async function cApriTag(){
