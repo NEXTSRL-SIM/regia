@@ -1083,6 +1083,20 @@ td.azc .ico3{margin-top:0}
 .inl .inr:hover{background:var(--surface-2)}
 .inl .inr small{font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
 .ch-selbar[hidden],.ch-arbar[hidden]{display:none !important}
+
+.ch-menu .vai{background:#5B3FC4 !important;color:#fff !important;font-weight:600}
+.ch-menu .vai:hover{background:#4C33AE !important}
+.ch-menu [data-mm="inoltra"]{outline:1.5px solid #5A6578;outline-offset:-5px;font-weight:600}
+.inl .inr .r1{display:flex;align-items:center;gap:8px;width:100%}
+.inl .inr .tp{margin-left:auto;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);border:1px solid var(--line-2);padding:0 5px}
+.inl{max-height:300px}
+
+.ch-call{position:fixed;right:20px;bottom:20px;z-index:96;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 14px;background:var(--surface);border:1px solid var(--sage);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.ch-call b{display:block;font-size:13px}.ch-call small{display:block;font-size:12px;color:var(--ink-3)}
+.ch-call .pall-tel{width:10px;height:10px;border-radius:50%;background:var(--sage);animation:pulsa 1.2s infinite}
+@keyframes pulsa{50%{opacity:.3}}
+.ch-call .giu{display:inline-flex;align-items:center;gap:7px;background:#DC2626;border:0;color:#fff;font-weight:600;padding:8px 12px;border-radius:999px;cursor:pointer}
+.ch-call .giu:hover{background:#B91C1C}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -4289,38 +4303,70 @@ async function chFaiValutare(){
 }
 function chAspettaRiccardo(){ setTimeout(async () => { await chCaricaCons(); chDisegnaConv(false); if(chCons.some(c => c.stato === 'in_corso')) chAspettaRiccardo(); }, 3000); }
 /* INOLTRA: a Riccardo (assistenza) oppure a un'altra chat, con il testo davanti agli occhi prima di mandare */
-function chInoltraFinestra(){
+let chDest = null;
+async function chCaricaDest(){
+  try{ const j = await (await fetch(RCH()+'?destinatari=1&chi='+encodeURIComponent(CHI || '')+'&t='+encodeURIComponent(PASS))).json(); chDest = (j && j.destinatari) || []; }catch(e){ chDest = []; }
+}
+function chTuttiDest(){
+  /* tutti: le chat che ci sono gia + clienti, preventivi, installatori, studi, rubrica personale (anche senza chat) */
+  const out = [], visti = new Set();
+  chElenco.forEach(c => { if(!c.token || c.token === chTok) return; const g = c.gruppo === 'fornitore' ? 'fornitore' : c.gruppo === 'installatore' ? 'installatore' : c.gruppo === 'personale' ? 'personale' : (c.fase === 'cliente' ? 'cliente' : c.fase === 'preventivo' ? 'preventivo' : (c.gruppo || c.fase || 'chat'));
+    out.push({ tel: c.tel, nome: c.nome, tipo: g, token: c.token, chat: true, sotto: [c.commerciale, '+'+c.tel].filter(Boolean).join(' · ') }); visti.add(c.token); visti.add(c.tel+'|'+c.nome); });
+  (chDest || []).forEach(d => { if(d.token && (visti.has(d.token) || d.token === chTok)) return; if(visti.has(d.tel+'|'+d.nome)) return;
+    out.push({ tel: d.tel, nome: d.nome, tipo: d.tipo, token: d.token || null, pratica: d.pratica || null, chat: !!d.token, sotto: [d.comune, d.commerciale, '+'+d.tel].filter(Boolean).join(' · ') }); visti.add(d.tel+'|'+d.nome); });
+  return out;
+}
+const DESTF = [['tutti','Tutti'],['chat','Con chat aperta'],['cliente','Clienti'],['preventivo','Preventivi'],['installatore','Installatori'],['fornitore','Fornitori e studi'],['personale','Personali']];
+async function chInoltraFinestra(){
   const sc = chScelti(); if(!sc.length) return;
   const testo = sc.map(m => chTestoPulito(m).replace(/^\[(foto|immagine|documento)\]\s*/, '')).filter(Boolean).join('\n\n');
   const allegati = sc.filter(m => m.media).length;
   const v = document.createElement('div'); v.className = 'conf'; v.id = 'chInol'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-modal', 'true');
-  const righe = () => chElenco.filter(c => c.token && c.token !== chTok).filter(c => { const q = (($('inCerca') || {}).value || '').toLowerCase(); return !q || String(c.nome).toLowerCase().includes(q) || String(c.tel).includes(q); }).slice(0, 40)
-    .map(c => '<button class="inr" data-ina="'+esc(c.token)+'" data-inn="'+esc(c.nome)+'"><b>'+esc(c.nome)+'</b><small>'+esc(c.gruppo || c.fase || '')+' · +'+esc(c.tel)+'</small></button>').join('');
-  v.innerHTML = '<div class="box" style="width:min(560px,calc(100vw - 32px))"><span class="mono" style="font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)">INOLTRA</span>'+
-    '<textarea id="inTesto" rows="5" style="width:100%;box-sizing:border-box;background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:8px;font:inherit;font-size:13px">'+esc(testo)+'</textarea>'+
+  let filtro = 'tutti';
+  const righe = () => {
+    const q = (($('inCerca') || {}).value || '').toLowerCase().trim();
+    const L = chTuttiDest().filter(d => (filtro === 'tutti' || (filtro === 'chat' ? d.chat : filtro === 'fornitore' ? (d.tipo === 'fornitore' || d.tipo === 'studio') : d.tipo === filtro)) && (!q || String(d.nome).toLowerCase().includes(q) || String(d.tel).includes(q.replace(/^\+/, ''))));
+    return (L.slice(0, 80).map(d => '<button class="inr" data-ina="'+esc(d.token || '')+'" data-intel="'+esc(d.tel)+'" data-intipo="'+esc(d.tipo || '')+'" data-inpr="'+esc(d.pratica || '')+'" data-inn="'+esc(d.nome)+'"><span class="r1"><b>'+esc(d.nome)+'</b><span class="tp">'+esc(d.tipo || '')+'</span></span><small>'+esc(d.sotto)+(d.chat ? '' : ' · nessuna chat ancora: si apre')+'</small></button>').join('') || '<div class="vuoto" style="padding:10px">nessuno con questo filtro</div>') + (L.length > 80 ? '<div class="vuoto" style="padding:8px">...e altri '+(L.length - 80)+': cerca per nome</div>' : '');
+  };
+  const chip = () => DESTF.map(f => '<button class="fm'+(filtro === f[0] ? ' on' : '')+'" data-inf="'+f[0]+'">'+f[1]+'</button>').join('');
+  v.innerHTML = '<div class="box" style="width:min(600px,calc(100vw - 32px));max-height:calc(100vh - 40px);overflow:auto"><span class="mono" style="font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)">INOLTRA</span>'+
+    '<textarea id="inTesto" rows="4" style="width:100%;box-sizing:border-box;background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:8px;font:inherit;font-size:13px">'+esc(testo)+'</textarea>'+
     (allegati ? '<small style="color:var(--giallo)">'+allegati+(allegati === 1 ? ' allegato' : ' allegati')+': per ora si inoltra solo il testo (foto e PDF li apri e li mandi a mano).</small>' : '')+
     '<button class="bott forte vio" data-ina="ric">Inoltra a Riccardo · assistenza (solo interno)</button>'+
-    '<span style="font-size:12px;color:var(--ink-3)">oppure a un altra persona: parte dal numero di Next, firmato col tuo nome</span>'+
-    '<input id="inCerca" placeholder="cerca la chat a cui inoltrare" style="background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:7px 9px;font:inherit">'+
-    '<div id="inLista" class="inl">'+righe()+'</div><div class="riga"><button class="bott" data-ina="no">Annulla</button></div></div>';
+    '<span style="font-size:12px;color:var(--ink-3)">oppure a chiunque: parte dal numero di Next, firmato col tuo nome</span>'+
+    '<div class="ch-fm" id="inF" style="padding:0;border:0;background:transparent">'+chip()+'</div>'+
+    '<input id="inCerca" placeholder="cerca per nome o numero" style="background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:7px 9px;font:inherit">'+
+    '<div id="inLista" class="inl"><div class="vuoto" style="padding:10px">carico la rubrica...</div></div><div class="riga"><button class="bott" data-ina="no">Annulla</button></div></div>';
   document.body.appendChild(v);
+  if(!chDest) await chCaricaDest();
+  if($('inLista')) $('inLista').innerHTML = righe();
   v.addEventListener('input', (e) => { if(e.target.id === 'inCerca') $('inLista').innerHTML = righe(); });
   v.addEventListener('click', async (e) => {
+    const f = e.target.closest('[data-inf]'); if(f){ filtro = f.dataset.inf; $('inF').innerHTML = chip(); $('inLista').innerHTML = righe(); return; }
     const b = e.target.closest('[data-ina],[data-inok]'); if(!b){ if(e.target === v) v.remove(); return; }
     if(b.dataset.ina === 'no'){ v.remove(); return; }
     if(b.dataset.ina === 'ric'){ v.remove(); chSelModo = 'ric'; await chFaiValutare(); return; }
-    if(b.dataset.ina){
+    if(b.hasAttribute('data-intel')){
       const t = $('inTesto').value.trim(); if(!t){ avvisa('niente da inoltrare'); return; }
       const box = v.querySelector('.box');
+      box.dataset.testo = t; box.dataset.tok = b.dataset.ina || ''; box.dataset.tel = b.dataset.intel; box.dataset.tipo = b.dataset.intipo; box.dataset.pr = b.dataset.inpr;
       box.innerHTML = '<b style="font-size:16px">Mandare a '+esc(b.dataset.inn)+'?</b><pre style="white-space:pre-wrap;font:inherit;font-size:13px;background:var(--ground);border:1px solid var(--line-2);padding:8px;max-height:260px;overflow:auto">'+esc(t)+'</pre>'+
-        '<small style="color:var(--ink-3)">Parte dal numero di Next con la tua firma. Se la sua chat e chiusa resta in attesa.</small><div class="riga"><button class="bott" data-ina="no">Annulla</button><button class="bott forte" data-inok="'+esc(b.dataset.ina)+'">Manda</button></div>';
-      box.dataset.testo = t; return;
+        '<small style="color:var(--ink-3)">Parte dal numero di Next con la tua firma.'+(b.dataset.ina ? '' : ' Non ha ancora una chat: la apro adesso (aprirla non manda niente).')+' Se la chat e chiusa (oltre 24 ore) il messaggio resta in attesa.</small><div class="riga"><button class="bott" data-ina="no">Annulla</button><button class="bott forte" data-inok="1">Manda</button></div>';
+      return;
     }
     if(b.dataset.inok){
+      const box = v.querySelector('.box');
       const io = await chIdentita(); if(!io){ avvisa(chIoErr || 'non riesco a riconoscerti'); return; }
       b.disabled = true;
-      const j = await chPost(WCH(), { t: b.dataset.inok, testo: v.querySelector('.box').dataset.testo, a: io });
-      v.remove(); chSelezione(false);
+      let tok = box.dataset.tok;
+      if(!tok){
+        const tipo = box.dataset.tipo === 'personale' ? 'personale' : box.dataset.tipo === 'installatore' ? 'installatore' : undefined;
+        const ja = await chPost(WCH(), { t: io, apri: { tel: box.dataset.tel, tipo, pratica: box.dataset.pr || undefined } });
+        if(!ja || !ja.ok || !ja.token){ b.disabled = false; avvisa((ja && ja.motivo) || 'la chat non si apre'); return; }
+        tok = ja.token;
+      }
+      const j = await chPost(WCH(), { t: tok, testo: box.dataset.testo, a: io });
+      v.remove(); chSelezione(false); chDest = null;
       avvisa(j && j.ok ? (j.in_attesa ? 'inoltrato: in attesa, parte quando quella persona riscrive' : 'inoltrato') : ((j && j.motivo) || 'non e partito'));
       chCaricaElenco();
     }
@@ -4595,6 +4641,23 @@ async function chTokenDi(tel){
   throw new Error((j && j.errore) || 'la chat di questo numero non si apre');
 }
 /* LA CHIAMATA, con doppia conferma: squilla prima il telefono di chi e collegato, poi il cliente dal fisso di Next (chiama-ponte) */
+
+/* LA CHIAMATA IN CORSO: barra in basso a destra con Riaggancia (Sante 26/10 13:42: dal monitor non si riusciva a mettere giu) */
+function chChiamataBar(c){
+  let b = $('chCall'); if(b) b.remove();
+  b = document.createElement('div'); b.id = 'chCall'; b.className = 'ch-call'; b.setAttribute('role', 'status');
+  b.innerHTML = '<span class="pall-tel" aria-hidden="true"></span><span><b>In chiamata</b><small>'+esc(c.nome)+'</small></span><button class="giu" data-chgiu="1" aria-label="Riaggancia">'+
+    '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c5-5 13-5 18 0l-2.5 2.5-3-1.5v-3a12 12 0 0 0-7 0v3l-3 1.5z"/></svg>Riaggancia</button>';
+  document.body.appendChild(b);
+  b.addEventListener('click', async (e) => {
+    const g = e.target.closest('[data-chgiu]'); if(!g) return;
+    g.disabled = true; g.lastChild.textContent = 'chiudo...';
+    const j = await chPost(API.replace(/regia$/, 'chiama-ponte'), { t: c.tok, a: c.io, chiudi: c.id });
+    if(j && j.ok){ b.remove(); avvisa('chiamata chiusa'); if(chTok) { await chCaricaMsg(); chDisegnaConv(false); } }
+    else { g.disabled = false; g.lastChild.textContent = 'Riaggancia'; avvisa((j && j.motivo) || 'non riesco a chiuderla'); }
+  });
+  setTimeout(() => { const x = $('chCall'); if(x) x.remove(); }, 90 * 60 * 1000);
+}
 function chChiama(tel, nome){
   const v = document.createElement('div'); v.className = 'conf'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-modal', 'true');
   const passo = (n) => {
@@ -4621,6 +4684,7 @@ function chChiama(tel, nome){
         const io = await chIdentita(); if(!io) throw new Error(chIoErr || 'non riesco a riconoscerti');
         const tok = await chTokenDi(tel);
         const j = await chPost(API.replace(/regia$/, 'chiama-ponte'), { t: tok, a: io });
+        if(j && j.ok && j.id){ chChiamataBar({ id: j.id, tok, io, nome: nome || '+'+tel }); setTimeout(() => v.remove(), 2500); }
         $('cfEsito').textContent = j && j.ok ? 'Squilla il tuo telefono: rispondi e ti colleghiamo. ' + (j.registra ? 'Registrata (avviso mandato su WhatsApp).' : 'Non registrata: ' + (j.informativa || '')) : ((j && j.motivo) || 'la chiamata non e partita');
       }catch(err){ $('cfEsito').textContent = String(err.message || err); }
     }
