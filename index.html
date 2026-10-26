@@ -1182,6 +1182,18 @@ th,.et{letter-spacing:.12em!important;font-weight:800!important}
 .dxriapri span{font-family:inherit!important;font-size:12px!important;font-weight:600!important;letter-spacing:.02em!important;text-transform:none!important;color:var(--ink-2)}
 .dxriapri:hover,.dxriapri:hover span{color:var(--amber)!important;border-color:var(--amber)!important}
 :root:not([data-tema="chiaro"]) .dxriapri{background:var(--surface)!important}
+/* Chat (110, 20:25): titolo della pagina, barre invisibili su elenco e messaggi, invio con l'aereo */
+#vChat .chTitolo{padding:18px 24px 12px}
+#vChat .chTitolo h1{font-size:26px;margin:0}
+#vChat .chTitolo p{margin:3px 0 0;font-size:13px;color:var(--ink-3)}
+#vChat .chatt{height:calc(100vh - 135px)!important}
+#vChat .ch-lista,#vChat .ch-msg{scrollbar-width:none;-ms-overflow-style:none}
+#vChat .ch-lista::-webkit-scrollbar,#vChat .ch-msg::-webkit-scrollbar{display:none;width:0;height:0}
+#chInvia{width:42px!important;height:42px!important;min-width:42px;padding:0!important;border-radius:50%!important;font-size:0!important;color:transparent!important;display:inline-flex;align-items:center;justify-content:center;align-self:flex-end;position:relative}
+#chInvia::before{content:"";width:19px;height:19px;background:#fff;margin-left:-2px;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4z'/%3E%3C/svg%3E") center/19px no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2L11 13'/%3E%3Cpath d='M22 2l-7 20-4-9-9-4z'/%3E%3C/svg%3E") center/19px no-repeat}
+#chInvia:disabled{opacity:.55}
+#chInvia:disabled::before{animation:chVola 1s ease-in-out infinite}
+@keyframes chVola{50%{transform:translate(3px,-3px)}}
 
 /* ===== MENU GENERALE NEXT ===== */
 #menuNext{display:none}
@@ -5249,6 +5261,30 @@ setTimeout(accendiTelefono, 1200);
   nav.addEventListener('mouseleave',function(){ nav.classList.remove('largo'); });
   try{ if(localStorage.getItem('mn_fisso')==='0'){ document.body.classList.add('mn-libero'); document.getElementById('mnPin').setAttribute('aria-pressed','false'); }
        if(localStorage.getItem('mn_regia')==='chiusa') document.body.classList.add('mn-regia-chiusa'); }catch(e){}
+})();
+/* PORTALE NEXT-110 (20:25): Chat con il suo titolo, nome della sezione nel nastro, scheda di destra riordinata */
+(function(){
+  var NOMI={tPerc:'Percorsi',tCont:'Contatti',tChat:'Chat',tListe:'Lista di oggi',tArch:'Archivio liste',tRub:'Rubrica',tLinea:'In linea',tArric:'Arricchimento',tRich:'Da richiamare',tChiuse:'Telefonate chiuse',tImpara:'Apprendimento',tImpost:'Impostazioni'};
+  var VISTE={tPerc:'vPerc',tCont:'vCont',tChat:'vChat',tListe:'dentro',tArch:'vArch',tRub:'vRub',tLinea:'vLinea',tArric:'vArric',tRich:'vRich',tChiuse:'vChiuse',tImpara:'vImpara',tImpost:'vImpost'};
+  var vc=document.getElementById('vChat');
+  if(vc && !vc.querySelector('.chTitolo')){ var t=document.createElement('div'); t.className='chTitolo'; t.innerHTML='<h1>Chat</h1><p>Le conversazioni WhatsApp di Next: lead, preventivi, clienti, installatori.</p>'; vc.insertBefore(t,vc.firstChild); }
+  var lab=document.querySelector('.nastro > span'); 
+  function sezione(){
+    if(!lab) return; var vp=document.getElementById('vPortale'), q='';
+    if(!(vp && !vp.classList.contains('nascosto'))){ for(var k in VISTE){ var v=document.getElementById(VISTE[k]); if(v && !v.classList.contains('nascosto')){ q=NOMI[k]; break; } } }
+    else { var on=document.querySelector('#menuNext .mn-v.on'); q=on?on.textContent.trim():''; }
+    var h=(vp && !vp.classList.contains('nascosto'))?('<b>'+q+'</b>'):('<b>Regia</b>'+(q?' &rsaquo; '+q:''));
+    if(lab.innerHTML!==h) lab.innerHTML=h;
+  }
+  sezione(); setInterval(sezione,400);
+  if(typeof chDisegnaDx==='function'){
+    var orig=chDisegnaDx;
+    chDisegnaDx=function(c){ orig(c); try{
+      var dx=document.getElementById('chDx'); if(!dx) return;
+      var pezzi={}; Array.prototype.forEach.call(dx.children,function(d){ var h=d.querySelector('h3'); if(h) pezzi[h.textContent.trim()]=d; });
+      ['Il tetto','Quello che ci ha detto','Tag','Liste','Percorso, a che punto','Cosa gli abbiamo mandato'].forEach(function(n){ if(pezzi[n]) dx.appendChild(pezzi[n]); });
+    }catch(e){} };
+  }
 })();
 </script>
 </body></html>
