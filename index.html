@@ -797,6 +797,32 @@ h1,h2,h3{color:var(--titolo)!important}
 .velo,.veloC{background:rgba(5,10,20,.75)!important}
 #tImpara,.fregola,.fstato.proposta,.avvisoLez,.carta.impara .imp.merc b,.imparo .imp.merc b{color:var(--viola)!important;border-color:var(--viola)!important}
 .avvisoLez{background:var(--viola-wash)!important}
+
+/* PORTALE NEXT-110 (Sante 26/10): filtro dei contatti, vista Percorso, tag colorati, colore delle liste */
+.cbarra{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 12px}
+.cesiti{display:flex;border:1px solid var(--line-2)}
+.cesiti button{padding:7px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);border-right:1px solid var(--line-2);display:flex;gap:7px;align-items:center;min-height:36px}
+.cesiti button:last-child{border-right:0}
+.cesiti button b{font-size:13px}
+.cesiti button[aria-pressed=true]{background:var(--amber-wash);color:var(--amber)}
+.cesiti .e-buono b{color:var(--sage)}.cesiti .e-da_verificare b{color:var(--giallo)}.cesiti .e-scartato b{color:var(--brick)}
+.cvista{display:flex;border:1px solid var(--line-2)}
+.cvista span{padding:7px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);border-right:1px solid var(--line-2);display:flex;align-items:center}
+.cvista button{padding:7px 12px;font-family:var(--mono);font-size:11px;color:var(--ink-3);min-height:36px}
+.cvista button[aria-pressed=true]{background:var(--amber-wash);color:var(--amber)}
+.ctagf{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);padding:7px 8px;font:12px var(--mono);min-height:36px}
+.etc{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;margin:2px 4px 2px 0;white-space:nowrap}
+.esf{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px}
+.esf.buono{background:var(--sage-dim);color:var(--sage)}.esf.da_verificare{background:var(--giallo-wash);color:var(--giallo)}.esf.scartato{background:var(--brick-dim);color:var(--brick)}
+.barre{display:flex;gap:3px;margin-bottom:5px}.barre i{width:13px;height:6px;border-radius:3px;background:var(--line-2)}.barre i.f{background:var(--sage)}.barre i.q{background:var(--amber)}
+.decidi{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;align-items:center}.decidi button{min-width:40px;min-height:30px;border:1px solid var(--line-2);font-size:13px;padding:0 8px}
+.decidi .si{color:var(--sage);border-color:var(--sage)}.decidi .no{color:var(--brick);border-color:var(--brick)}
+.decidi input{background:var(--surface);border:1px solid var(--line-2);color:var(--ink);padding:5px 7px;font:12px var(--sans);width:120px}
+.nodoc{font-family:var(--mono);color:var(--titolo);font-weight:600}
+.lst{display:inline-block;font-size:11px;padding:2px 7px;border:1px solid var(--line-2);margin:2px 4px 2px 0;white-space:nowrap}
+.tagp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 16px}.tagp button{border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600}
+.sw{width:28px;height:28px;border-radius:999px;border:2px solid transparent}.sw[aria-pressed=true]{border-color:var(--ink);box-shadow:0 0 0 2px var(--ground) inset}
+.colista{display:flex;gap:6px;align-items:center;margin:8px 0 2px}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -854,6 +880,7 @@ h1,h2,h3{color:var(--titolo)!important}
    </div>
 
    <div class="conta1" id="cConta"></div>
+   <div class="cbarra" id="cBarraEsiti"></div>
 
 
    <div class="testafiltri">
@@ -924,7 +951,7 @@ h1,h2,h3{color:var(--titolo)!important}
    </div>
 
    <div class="avvolgi"><table class="tabella tCont">
-     <thead><tr><th style="width:34px"><input type="checkbox" id="cTutti"></th>
+     <thead id="cTesta"><tr><th style="width:34px"><input type="checkbox" id="cTutti"></th>
        <th>Contatto</th><th>Punteggio</th><th>Vincoli sul tetto</th><th>Regione</th><th>Prov.</th><th>Comune</th>
        <th>Campagna</th><th>Entrato</th><th>Chiamate</th><th>Cosa ha chiesto</th><th>Cosa sappiamo di lui</th></tr></thead>
      <tbody id="cCorpo"></tbody></table></div>
@@ -934,6 +961,7 @@ h1,h2,h3{color:var(--titolo)!important}
      <div class="presa"><span>prendi i primi</span><input id="cPrimiN" value="20"><button class="bott" id="cPrimi">dell ordinamento</button></div>
      <button class="bott forte" id="cAggiungi">Aggiungi alla lista</button>
      <button class="bott" id="cNuovaLista" title="apre una lista nuova e ci mette i contatti che hai scelto">Crea nuova lista</button>
+     <button class="bott" id="cTagSel">Tag</button>
      <button class="bott" id="cArricchisci">Manda ad arricchire</button>
      <button class="bott" id="cTetto">Guarda il tetto</button>
      <button class="bott calmo" id="cPulisci">Deseleziona</button>
@@ -961,6 +989,7 @@ h1,h2,h3{color:var(--titolo)!important}
    <div class="barraliste" id="cBarraListe"></div>
    <label class="fetichetta" for="cNomeLista" style="display:block;margin:12px 0 4px">Nome della lista <span class="mono" id="cIdLista" style="color:var(--amber);text-transform:none;letter-spacing:0"></span></label>
    <input class="nomelista" id="cNomeLista" placeholder="Lista di oggi">
+   <div class="colista" id="cColLista"></div>
    <p class="occhio">Scrivi qui dentro per rinominarla: il nome si salva appena esci dalla casella. L id no, quello resta per sempre ed e come la ritrovi in archivio.</p>
    <div class="passi">
      <div class="passo fatto"><span class="num">1</span><span><b>Scelti</b><small id="cP1">&mdash;</small></span></div>
@@ -2571,9 +2600,10 @@ async function cCarica(){
     }
     const r = await fetch(cUrl());
     const j = await r.json();
-    cRighe = (j.contatti || []).map(x => { x.fam = cFamiglie(x); return x; });
-    if(cFiltro.presc.size) cRighe = cRighe.filter(x => x.fam.some(f => cFiltro.presc.has(f)));
-    cRiordina();
+    cTutte = (j.contatti || []).map(x => { x.fam = cFamiglie(x); return x; });
+    if(cFiltro.presc.size) cTutte = cTutte.filter(x => x.fam.some(f => cFiltro.presc.has(f)));
+    await Promise.all([cCaricaExtra(cTutte.map(x => x.id)), cCaricaTag(), cCaricaColori()]);
+    cApplicaEsito();
     cDisegna();
   }catch(e){ $('cCorpo').innerHTML = '<tr><td colspan="12" class="attesa">Non riesco a leggere i contatti.</td></tr>'; }
 }
@@ -2707,7 +2737,15 @@ function cDisegna(){
   $('cQuantiF').textContent = q; $('cQuantiF').classList.toggle('nascosto', !q);
   $('cImbuto').classList.toggle('attivo', q>0);
   $('cAzzeraB').classList.toggle('nascosto', !q);
-  $('cCorpo').innerHTML = cRighe.length ? cRighe.map(r =>
+  cDisegnaEsiti();
+  if(!cTestaCh) cTestaCh = $('cTesta').innerHTML;
+  $('cTesta').innerHTML = cVista === 'percorso' ? cTestaPe() : cTestaCh;
+  $('cCorpo').innerHTML = cRighe.length ? cRighe.map(r => cVista === 'percorso' ? cRigaPercorso(r) : cRigaChiamate(r)).join('') : '<tr><td colspan="12" class="attesa">Nessun contatto con questi filtri.</td></tr>';
+  $('cQuante').textContent = cRighe.length + ' contatti con questi filtri.';
+  $('cSelN').textContent = cScelti.size + (cScelti.size===1 ? ' selezionato' : ' selezionati');
+}
+
+function cRigaChiamate(r){ return (
     '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
     '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
     '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small>'+
@@ -2725,9 +2763,115 @@ function cDisegna(){
     '<td class="chiesto">'+cModulo(r.modulo)+'</td>'+
     '<td class="sap">'+(r.sintesi ? '<p>'+esc(String(r.sintesi).slice(0,150))+'...</p>' : '<p class="vuoto">mai arricchito</p>')+
       (r.segnali ? '<button class="perche" data-sap="'+r.id+'">apri &middot; '+r.segnali+' segnali</button>' : '')+'</td>'+
-    '</tr>').join('') : '<tr><td colspan="12" class="attesa">Nessun contatto con questi filtri.</td></tr>';
-  $('cQuante').textContent = cRighe.length + ' contatti con questi filtri.';
-  $('cSelN').textContent = cScelti.size + (cScelti.size===1 ? ' selezionato' : ' selezionati');
+    '</tr>'); }
+
+/* --- PORTALE NEXT-110 (Sante 26/10): filtro, vista Percorso, tag colorati --- */
+const CX = () => API.replace(/regia$/, 'contatti-extra');
+let cTutte = [], cExtra = {}, cEsito = 'buono', cTag = [], cTagFiltro = '', cColoriListe = {}, cTestaCh = null;
+let cVista = 'chiamate'; try{ cVista = localStorage.getItem('regia_cvista') || 'chiamate'; }catch(e){}
+const CTCOL = ['#5CCFE6','#4ADE80','#E0A93B','#FCA5A5','#C9B8FF','#93B4FF','#F472B6','#C3CFDD'];
+const cX = r => cExtra[r.id] || {};
+async function cCaricaExtra(ids){
+  const L = [...new Set(ids.filter(Boolean))];
+  for(let i = 0; i < L.length; i += 300){
+    try{ const r = await fetch(CX()+'?t='+encodeURIComponent(PASS)+'&ids='+L.slice(i, i+300).join(','));
+      const j = await r.json(); if(j && j.extra) Object.assign(cExtra, j.extra); }catch(e){}
+  }
+}
+async function cCaricaTag(){ try{ const j = await (await fetch(CX()+'?tag=1&t='+encodeURIComponent(PASS))).json(); cTag = (j && j.tag) || []; }catch(e){} }
+async function cCaricaColori(){ try{ const j = await (await fetch(CX()+'?liste=1&t='+encodeURIComponent(PASS))).json(); cColoriListe = (j && j.colori) || {}; }catch(e){} }
+async function cExtraCmd(corpo){
+  try{ const r = await fetch(CX(), { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({ t: PASS, chi: CHI }, corpo)) });
+    return await r.json(); }catch(e){ return {}; }
+}
+function cApplicaEsito(){
+  cRighe = cTutte.filter(r => (cEsito === 'tutti' || (cX(r).filtro || 'buono') === cEsito) &&
+    (!cTagFiltro || (cX(r).tag || []).some(t => String(t.id) === cTagFiltro)));
+  cRiordina();
+}
+function cTagStile(c){ c = /^#[0-9A-Fa-f]{6}$/.test(c||'') ? c : '#5CCFE6'; return 'color:'+c+';background:'+c+'22;border:1px solid '+c+'66'; }
+function cTagHtml(t){ return '<span class="etc" style="'+cTagStile(t.colore)+'">'+esc(t.nome)+'</span>'; }
+function cListaHtml(l){ const c = cColoriListe[l.id]; return '<span class="lst" title="id lista '+l.id+'" style="'+(c ? 'color:'+c+';border-color:'+c : '')+'">'+esc(l.nome)+'</span>'; }
+function cDisegnaEsiti(){
+  const n = { buono:0, da_verificare:0, scartato:0 };
+  cTutte.forEach(r => { const f = cX(r).filtro || 'buono'; n[f] = (n[f]||0) + 1; });
+  const b = (k, eti) => '<button class="e-'+k+'" data-cesito="'+k+'" aria-pressed="'+(cEsito===k)+'">'+eti+' <b>'+(k==='tutti' ? cTutte.length : n[k])+'</b></button>';
+  $('cBarraEsiti').innerHTML =
+    '<div class="cesiti" role="group" aria-label="Esito del filtro">'+b('buono','Buoni')+b('da_verificare','Da verificare')+b('scartato','Scartati')+b('tutti','Tutti')+'</div>'+
+    '<div class="cvista" role="group" aria-label="Colonne da vedere"><span>Vista</span><button data-cvista="chiamate" aria-pressed="'+(cVista!=='percorso')+'">Chiamate</button><button data-cvista="percorso" aria-pressed="'+(cVista==='percorso')+'">Percorso</button></div>'+
+    '<select class="ctagf" id="cTagF" aria-label="Filtra per tag"><option value="">tutti i tag</option>'+cTag.map(t => '<option value="'+t.id+'" '+(String(t.id)===cTagFiltro?'selected':'')+'>'+esc(t.nome)+' ('+t.quanti+')</option>').join('')+'</select>'+
+    '<span class="mono" style="font-size:11px;color:var(--ink-3)">regole del filtro: Percorsi › Filtro dei contatti (da attivare)</span>';
+}
+function cTestaPe(){
+  return '<tr><th style="width:34px"><input type="checkbox" id="cTutti"></th><th>Contatto</th><th>Filtro</th><th>Percorso, a che punto</th>'+
+    '<th>Ultima cosa fatta</th><th>Tag</th><th>Liste</th><th>Campagna</th><th>Entrato</th><th></th></tr>';
+}
+function cRigaPercorso(r){
+  const x = cX(r), n = x.n || 0, f = x.filtro || 'buono';
+  const barre = '<span class="barre" aria-hidden="true">'+[1,2,3,4,5,6,7,8,9,10,11].map(i => '<i class="'+(i<n?'f':(i===n?'q':''))+'"></i>').join('')+'</span>';
+  let dec = '';
+  if(f === 'da_verificare') dec = '<span class="decidi"><button class="si" data-fdec="'+r.id+'" data-fes="scartato" title="Confermo: va scartato" aria-label="Confermo, va scartato">&#10003;</button><button class="no" data-fdec="'+r.id+'" data-fes="buono" title="Non e cosi: e buono" aria-label="Non e cosi, e buono">&#10007;</button><input id="cNota'+r.id+'" placeholder="nota..." aria-label="Nota sulla decisione"></span>';
+  else if(f === 'scartato') dec = '<span class="decidi"><button class="no" data-fdec="'+r.id+'" data-fes="buono" title="Rimettilo tra i buoni">&#8634; e buono</button><input id="cNota'+r.id+'" placeholder="nota..." aria-label="Nota sulla decisione"></span>';
+  else dec = '<button class="perche" data-fdec="'+r.id+'" data-fes="scartato">scarta</button>';
+  const quando = x.quando ? new Date(x.quando).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
+  return '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
+    '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small><small>'+esc(r.comune||'')+'</small></td>'+
+    '<td><span class="esf '+f+'">'+(f==='da_verificare'?'da verificare':f)+'</span>'+
+      (x.filtro_perche ? '<small style="display:block;margin-top:4px;color:var(--ink-3)">'+esc(x.filtro_perche)+'</small>' : '')+
+      (x.filtro_nota ? '<small style="display:block;color:var(--ink-2)">nota: '+esc(x.filtro_nota)+'</small>' : '')+dec+'</td>'+
+    '<td>'+barre+(x.nodo ? '<span class="nodoc">'+esc(x.nodo)+'</span> ' : '')+'<span>'+esc(x.punto || 'fuori dal percorso')+'</span></td>'+
+    '<td>'+(x.ultima ? esc(x.ultima)+'<small style="display:block;color:var(--ink-3)" class="mono">'+quando+'</small>' : '<span class="vuoto">&mdash;</span>')+'</td>'+
+    '<td>'+((x.tag||[]).map(cTagHtml).join('') || '<span class="vuoto">&mdash;</span>')+'</td>'+
+    '<td>'+((Array.isArray(r.in_liste) && r.in_liste.length) ? r.in_liste.map(cListaHtml).join('') : '<span class="vuoto">&mdash;</span>')+'</td>'+
+    '<td class="mono">'+esc(String(r.campagna||'').replace('(senza campagna)','-').replace(' - settembre 2025 - lead',''))+'</td>'+
+    '<td class="mono">'+cQuando(r.giorni)+'</td>'+
+    '<td>'+(r.segnali ? '<button class="perche" data-sap="'+r.id+'">scheda &middot; '+r.segnali+' segnali</button>' : '')+'</td>'+
+  '</tr>';
+}
+async function cApriTag(){
+  await cCaricaTag();
+  const n = cScelti.size;
+  const sw = CTCOL.map((c,i) => '<button class="sw" data-tsw="'+c+'" aria-pressed="'+(i===0)+'" style="background:'+c+'" aria-label="colore '+c+'"></button>').join('');
+  cPannello('Tag',
+    '<p class="occhio">'+(n ? n+(n===1?' contatto selezionato':' contatti selezionati')+'. Tocca un tag per metterlo, la &times; accanto per toglierlo.' : 'Seleziona prima dei contatti nella tabella: qui puoi intanto creare i tag.')+'</p>'+
+    '<div class="tagp">'+(cTag.map(t => '<span style="display:inline-flex;align-items:center;gap:2px"><button data-tmetti="'+t.id+'" style="'+cTagStile(t.colore)+'">'+esc(t.nome)+' <small>'+t.quanti+'</small></button>'+
+      '<button data-ttogli="'+t.id+'" aria-label="togli '+esc(t.nome)+' dai selezionati" title="togli dai selezionati" style="color:var(--ink-3);padding:4px 7px">&times;</button></span>').join('') || '<span class="vuoto">nessun tag ancora</span>')+'</div>'+
+    '<label class="fetichetta" for="cTagNome" style="display:block;margin-bottom:6px">Nuovo tag</label>'+
+    '<input id="cTagNome" class="nomelista" style="font-size:15px" placeholder="es. interessato al termico">'+
+    '<div style="display:flex;gap:7px;margin:10px 0 12px;flex-wrap:wrap">'+sw+'</div>'+
+    '<button class="bott forte" data-tcrea="1">Crea'+(n ? ' e mettilo ai selezionati' : '')+'</button>');
+}
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest && e.target.closest('#cPCorpo button');
+  if(!b) return;
+  const d = b.dataset;
+  if(d.tsw){ document.querySelectorAll('#cPCorpo [data-tsw]').forEach(x => x.setAttribute('aria-pressed', x === b)); return; }
+  if(d.tmetti || d.ttogli){
+    if(!cScelti.size){ avvisa('seleziona prima dei contatti'); return; }
+    b.disabled = true;
+    const j = await cExtraCmd(d.tmetti ? { tag_metti:{ tag:Number(d.tmetti), ids:[...cScelti] } } : { tag_togli:{ tag:Number(d.ttogli), ids:[...cScelti] } });
+    if(!j.ok){ b.disabled = false; avvisa('non ci sono riuscito'); return; }
+    await cCaricaExtra([...cScelti]); cApplicaEsito(); cDisegna(); cApriTag(); return;
+  }
+  if(d.tcrea){
+    const nome = ($('cTagNome').value || '').trim(); if(!nome){ $('cTagNome').focus(); return; }
+    const s = document.querySelector('#cPCorpo [data-tsw][aria-pressed=true]');
+    b.disabled = true;
+    const j = await cExtraCmd({ tag_nuovo:{ nome, colore: s ? s.dataset.tsw : CTCOL[0] } });
+    if(!j.ok || !j.tag){ b.disabled = false; avvisa('il tag non si e creato'); return; }
+    if(cScelti.size){ await cExtraCmd({ tag_metti:{ tag:j.tag.id, ids:[...cScelti] } }); await cCaricaExtra([...cScelti]); }
+    await cCaricaTag(); cApplicaEsito(); cDisegna(); cApriTag(); return;
+  }
+});
+document.addEventListener('change', (e) => {
+  if(e.target && e.target.id === 'cTagF'){ cTagFiltro = e.target.value; cApplicaEsito(); cDisegna(); }
+});
+function cDisegnaColLista(){
+  const box = $('cColLista'); if(!box) return;
+  if(!cListaId){ box.innerHTML = ''; return; }
+  const att = cColoriListe[cListaId] || '';
+  box.innerHTML = '<span class="fetichetta" style="flex:0 0 auto">Colore</span>'+CTCOL.map(c => '<button class="sw" data-lcol="'+c+'" aria-pressed="'+(c===att)+'" style="background:'+c+'" aria-label="colore della lista '+c+'"></button>').join('');
 }
 
 /* --- la lista di oggi, la colonna di destra e l archivio --- */
@@ -2984,6 +3128,7 @@ function cDisegnaArchivio(){
 }
 
 function cDisegnaLista(){
+  setTimeout(() => { cCaricaColori().then(cDisegnaColLista); }, 0);
   const aperte = cListe.filter(l => l.stato === 'aperta');
   const l = cListe.find(x => x.id === cListaId) || null;
   /* QUI NON SI SCEGLIE FRA LE LISTE, SE NE FA UNA. Un pulsante per ogni
@@ -3333,6 +3478,22 @@ document.addEventListener('click', async (e) => {
   if(t && t.id === 'cPChiudi'){ cChiudiPannello(); return; }
   if(!t || !t.closest('#vCont, #vListe, #vArch, #cVeloImp')) return;
   const d = t.dataset;
+
+  if(d.cesito){ cEsito = d.cesito; cApplicaEsito(); cDisegna(); return; }
+  if(d.cvista){ cVista = d.cvista; try{ localStorage.setItem('regia_cvista', cVista); }catch(err){} cDisegna(); return; }
+  if(d.fdec){
+    const id = Number(d.fdec), nota = $('cNota'+id);
+    t.disabled = true;
+    const j = await cExtraCmd({ filtro:{ id, esito:d.fes, nota: nota ? nota.value : '' } });
+    if(!j.ok){ t.disabled = false; avvisa('non sono riuscito a salvare la decisione'); return; }
+    await cCaricaExtra([id]); cApplicaEsito(); cDisegna(); avvisa(d.fes === 'buono' ? 'rimesso tra i buoni' : 'scartato: resta tra gli scartati, non si cancella'); return;
+  }
+  if(t.id === 'cTagSel'){ cApriTag(); return; }
+  if(d.lcol){
+    const j = await cExtraCmd({ lista_colore:{ lista:cListaId, colore:d.lcol } });
+    if(j.ok){ cColoriListe[cListaId] = d.lcol; cDisegnaColLista(); } else avvisa('colore non salvato');
+    return;
+  }
 
   if(t.id === 'cCaricaMano'){ impApri(); return; }
   if(t.id === 'impChiudi' || t.id === 'impAnnulla'){ impChiudi(); return; }
