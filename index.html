@@ -1117,8 +1117,6 @@ td button:has(svg),[data-ichat],[data-isch],button.tel,.dxriapri,.dxchiudi{borde
 th,.et{letter-spacing:.12em!important;font-weight:800!important}
 .grosso,time,.l-dati b,#orologio{font-family:var(--cifre)!important}
 @media (min-width:821px){
- body:has(#dentro:not(.nascosto)){padding-left:212px}
- .barrasel{left:212px!important}
  .schede{position:fixed;left:0;top:0;bottom:0;width:212px;box-sizing:border-box;flex-direction:column;flex-wrap:nowrap;gap:1px;padding:66px 10px 14px;background:#0B1119!important;border:0!important;z-index:60;overflow:auto}
  .schede:before{content:"Regia";position:absolute;left:52px;top:20px;font:800 14px var(--sans);color:#E6EDF5}
  .schede:after{content:"N";position:absolute;left:16px;top:14px;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#22D3EE,#0891B2);color:#0E141D;font:800 14px var(--sans);display:flex;align-items:center;justify-content:center}
@@ -1159,6 +1157,57 @@ th,.et{letter-spacing:.12em!important;font-weight:800!important}
 #tImpara{--ico:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%209l10-5%2010%205-10%205zM6%2011v5c3%202%209%202%2012%200v-5%22/%3E%3C/svg%3E")}
 #tImpost{--ico:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%223%22/%3E%3Cpath%20d%3D%22M19.4%2015a1.7%201.7%200%200%200%20.3%201.8l.1.1a2%202%200%201%201-2.8%202.8l-.1-.1a1.7%201.7%200%200%200-2.9%201.2V21a2%202%200%201%201-4%200v-.1a1.7%201.7%200%200%200-2.9-1.2l-.1.1a2%202%200%201%201-2.8-2.8l.1-.1a1.7%201.7%200%200%200-1.2-2.9H3a2%202%200%201%201%200-4h.1a1.7%201.7%200%200%200%201.2-2.9l-.1-.1a2%202%200%201%201%202.8-2.8l.1.1a1.7%201.7%200%200%200%202.9-1.2V3a2%202%200%201%201%204%200v.1a1.7%201.7%200%200%200%202.9%201.2l.1-.1a2%202%200%201%201%202.8%202.8l-.1.1a1.7%201.7%200%200%200%201.2%202.9H21a2%202%200%201%201%200%204h-.1a1.7%201.7%200%200%200-1.5%201z%22/%3E%3C/svg%3E")}
 .cesiti button,.cnt,.imbuto,.cnts button,[data-cvista],.dxriapri span{text-transform:none!important;letter-spacing:0!important;font-family:var(--sans)!important}
+.minif,.apriF,.pling,.dett,.chiplista,.sw,.cerca input{border-radius:8px!important}
+.minif,.apriF,.pling,.chiplista,.banco *,.periodi *,.testafiltri *{text-transform:none!important;letter-spacing:0!important;font-family:var(--sans)!important}
+.banco .tasto{border-radius:10px!important;font-weight:700!important}
+#vArch button,#vRub button,#vListe .barraliste button{text-transform:lowercase!important}
+#vArch button::first-letter,#vRub button::first-letter,#vListe .barraliste button::first-letter{text-transform:uppercase}
+
+/* ===== MENU GENERALE NEXT ===== */
+#menuNext{display:none}
+@media (min-width:821px){
+ body:has(#dentro:not(.nascosto)) #menuNext{display:flex}
+ #menuNext{position:fixed;left:0;top:0;bottom:0;width:224px;box-sizing:border-box;flex-direction:column;gap:1px;padding:14px 10px;background:#0B1119;z-index:70;overflow-y:auto;overflow-x:hidden;font-family:var(--sans);scrollbar-width:none;transition:width .15s}
+ #menuNext::-webkit-scrollbar{display:none}
+ body:has(#dentro:not(.nascosto)){padding-left:224px}
+ .barrasel{left:224px!important}
+ .schede{display:none!important}
+ .mn-brand{display:flex;align-items:center;gap:9px;padding:2px 6px 14px}
+ .mn-lg{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#22D3EE,#0891B2);display:inline-flex;align-items:center;justify-content:center;font-weight:800;color:#0E141D;flex:none}
+ .mn-brand .mn-t{display:flex;flex-direction:column;color:#E6EDF5}.mn-brand b{font-size:13.5px}.mn-brand small{font-size:10.5px;color:#7A889A}
+ .mn-tasti{margin-left:auto}
+ .mn-tasti button{width:24px;height:24px;border-radius:6px;border:0;background:transparent;color:#7A889A;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+ .mn-tasti button[aria-pressed=true]{color:#22D3EE;background:rgba(34,211,238,.1)}
+ .mn-v,#menuNext .st{display:flex!important;align-items:center;gap:10px;padding:7px 10px!important;border-radius:8px!important;border:0!important;margin:0!important;color:#9AA8B9!important;text-decoration:none;font:600 12.5px var(--sans)!important;white-space:nowrap;cursor:pointer;background:transparent;text-align:left;width:100%;box-sizing:border-box}
+ .mn-v svg,#menuNext .st svg{flex:none}
+ .mn-v:hover,#menuNext .st:hover{background:#151E2A;color:#E6EDF5!important}
+ .mn-v.on,#menuNext .st[aria-selected=true]{background:rgba(34,211,238,.12)!important;color:#22D3EE!important}
+ #menuNext .st:before{display:none!important}
+ .mn-sub{display:flex;flex-direction:column;gap:1px;margin:1px 0 4px 17px;padding-left:8px;border-left:1px solid #1E2836}
+ #menuNext .st{padding:5px 10px!important;font-size:12px!important}
+ #menuNext .st .nchat,#menuNext .st span[id^=n]{margin-left:auto}
+ body.mn-regia-chiusa .mn-sub{display:none}
+ body:not(.mn-regia-chiusa) .mn-chev{transform:rotate(180deg)}
+ .mn-chev{margin-left:auto;display:inline-flex}
+ .mn-g{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#5F6E81;font-weight:800;padding:12px 10px 4px}
+ .mn-sep{display:none;height:1px;background:#1E2836;margin:8px 6px}
+ .mn-ext{margin-left:auto;color:#7A889A}
+ .mn-me{margin-top:auto;display:flex;align-items:center;gap:9px;padding:12px 6px 0;border-top:1px solid #1A2330;color:#E6EDF5;font-size:12px}
+ .mn-av{width:28px;height:28px;border-radius:50%;background:#1F2B3A;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#A3B1C2;flex:none}
+ /* menu non fissato: resta a icone e si apre passandoci sopra */
+ body.mn-libero:has(#dentro:not(.nascosto)){padding-left:60px}
+ body.mn-libero .barrasel{left:60px!important}
+ body.mn-libero #menuNext{width:60px}
+ body.mn-libero #menuNext:not(.largo) .mn-t,body.mn-libero #menuNext:not(.largo) .mn-tasti{display:none}
+ body.mn-libero #menuNext:not(.largo) .mn-sep{display:block}
+ body.mn-libero #menuNext:not(.largo) .mn-v,body.mn-libero #menuNext:not(.largo) .st{justify-content:center;font-size:0!important;gap:0}
+ body.mn-libero #menuNext:not(.largo) .st span{display:none}
+ body.mn-libero #menuNext:not(.largo) .mn-sub{margin:0;padding:0;border:0}
+ body.mn-libero #menuNext:not(.largo) .mn-brand{justify-content:center;padding:2px 0 14px}
+ body.mn-libero #menuNext.largo{width:224px;box-shadow:12px 0 32px rgba(0,0,0,.35)}
+ #vPortale{height:calc(100vh - 53px)}
+ #vPortale iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+}
 </style>
 </head><body>
 <div class="porta" id="porta">
@@ -5143,4 +5192,42 @@ setTimeout(accendiTelefono, 1200);
     try{ localStorage.setItem('regia_chat_colonne', JSON.stringify({ L: parseInt(g.style.getPropertyValue('--chL')) || 340, R: parseInt(g.style.getPropertyValue('--chR')) || 300 })); }catch(e){}
   });
 })();
-</script></body></html>
+</script><script id="menu-next">
+/* MENU GENERALE NEXT dentro la regia (PORTALE NEXT-110, 26/10). Solo navigazione:
+   le schede della regia vengono SPOSTATE nel sottomenu Regia, con i loro gestori;
+   le altre voci aprono le pagine del portale in un riquadro accanto. */
+(function(){
+  var B='https://n8n.srv1030489.hstgr.cloud/webhook/';
+  var nav=document.createElement('nav'); nav.id='menuNext'; nav.setAttribute('aria-label','Menu Next'); nav.innerHTML="<div class=\"mn-brand\"><span class=\"mn-lg\">N</span><span class=\"mn-t\"><b>Next S.r.l.</b><small>portale gestione</small></span><span class=\"mn-tasti\"><button type=\"button\" id=\"mnPin\" title=\"Fissa il menu aperto\" aria-pressed=\"true\"><svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 4h6l-1 6 3 3H7l3-3zM12 13v8\"/></svg></button></span></div><a class=\"mn-v\" data-pag=\"dashboard\" title=\"Panoramica\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 19V9M10 19V5M16 19v-7M22 19H2\"/></svg><span class=\"mn-t\">Panoramica</span></a><a class=\"mn-v mn-grp\" id=\"mnRegia\" title=\"Regia\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2\"/></svg><span class=\"mn-t\">Regia</span><span class=\"mn-t mn-chev\"><svg aria-hidden=\"true\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 9l6 6 6-6\"/></svg></span></a><div class=\"mn-sub\" id=\"mnSub\"></div><div class=\"mn-g mn-t\">Preventivi e clienti</div><div class=\"mn-sep\"></div><a class=\"mn-v\" data-pag=\"portale-preventivi\" title=\"Nuovo preventivo\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6M12 12v6M9 15h6\"/></svg><span class=\"mn-t\">Nuovo preventivo</span></a><a class=\"mn-v\" data-pag=\"lead-form\" title=\"Nuovo cliente\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"10\" cy=\"8\" r=\"4\"/><path d=\"M3 21a7 7 0 0 1 14 0M19 8v6M16 11h6\"/></svg><span class=\"mn-t\">Nuovo cliente</span></a><a class=\"mn-v\" data-pag=\"upload\" title=\"Upload documenti\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 15V3M7 8l5-5 5 5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4\"/></svg><span class=\"mn-t\">Upload documenti</span></a><div class=\"mn-g mn-t\">Contratti</div><div class=\"mn-sep\"></div><a class=\"mn-v\" data-pag=\"prepara-contratto-form\" title=\"Genera contratto\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 4h12l4 4v12H4z\"/><path d=\"M12 10v6M9 13h6\"/></svg><span class=\"mn-t\">Genera contratto</span></a><a class=\"mn-v\" data-pag=\"contratti-firmati\" title=\"Contratti firmati\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 4h12l4 4v12H4z\"/><path d=\"M8 13l2.5 2.5L16 10\"/></svg><span class=\"mn-t\">Contratti firmati</span></a><div class=\"mn-g mn-t\">Pagamenti</div><div class=\"mn-sep\"></div><a class=\"mn-v\" data-pag=\"riconciliazione\" title=\"Verifica bonifici\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"5\" width=\"20\" height=\"14\" rx=\"2\"/><path d=\"M2 10h20M6 15h4\"/></svg><span class=\"mn-t\">Verifica bonifici</span></a><a class=\"mn-v\" data-pag=\"avvisi-merce-pronta\" title=\"Avvisi merce pronta\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 7l9-4 9 4v10l-9 4-9-4z\"/><path d=\"M3 7l9 4 9-4M12 11v10\"/></svg><span class=\"mn-t\">Avvisi merce pronta</span></a><div class=\"mn-g mn-t\">Odoo</div><div class=\"mn-sep\"></div><a class=\"mn-v\" data-pag=\"dashboard-wf5\" title=\"Ordini Odoo\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"6.5\"/></svg><span class=\"mn-t\">Ordini Odoo</span></a><div class=\"mn-g mn-t\">Installazioni</div><div class=\"mn-sep\"></div><a class=\"mn-v\" data-pag=\"gestione-next\" title=\"Gestione installatori\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z\"/></svg><span class=\"mn-t\">Gestione installatori</span></a><a class=\"mn-v\" data-pag=\"gestione-progettisti\" title=\"Gestione progettisti\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l-8 18M12 3l8 18M6.5 15h11\"/><circle cx=\"12\" cy=\"3\" r=\"1.5\"/></svg><span class=\"mn-t\">Gestione progettisti</span></a><div class=\"mn-g mn-t\">Strumenti</div><div class=\"mn-sep\"></div><a class=\"mn-v\" data-pag=\"@supabase\" title=\"Database Supabase\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><ellipse cx=\"12\" cy=\"5.5\" rx=\"8\" ry=\"3\"/><path d=\"M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3\"/></svg><span class=\"mn-t\">Database Supabase</span><span class=\"mn-t mn-ext\">\u2197</span></a><div class=\"mn-g mn-t\">Impostazioni</div><div class=\"mn-sep\"></div><a class=\"mn-v\" data-pag=\"vendor-admin\" title=\"Gestione venditori\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/></svg><span class=\"mn-t\">Gestione venditori</span></a><div class=\"mn-me\"><span class=\"mn-av\">SB</span><span class=\"mn-t\"><b>Sante</b></span></div>";
+  document.body.appendChild(nav);
+  var ICO={"tPerc": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"5\" cy=\"6\" r=\"2\"/><circle cx=\"19\" cy=\"6\" r=\"2\"/><circle cx=\"12\" cy=\"18\" r=\"2\"/><path d=\"M7 6h10M6 8l5 8M18 8l-5 8\"/></svg>", "tCont": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"8\" r=\"3.5\"/><path d=\"M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6\"/></svg>", "tChat": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z\"/></svg>", "tListe": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01\"/></svg>", "tArch": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"5\" rx=\"1\"/><path d=\"M5 9v10h14V9M10 13h4\"/></svg>", "tRub": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5zM9 3v18M21 7v3M21 14v3\"/></svg>", "tLinea": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2\"/></svg>", "tArric": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z\"/></svg>", "tRich": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2\"/></svg>", "tChiuse": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2M15 3l6 6M21 3l-6 6\"/></svg>", "tImpara": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5\"/></svg>", "tImpost": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/></svg>"}, sub=document.getElementById('mnSub');
+  Object.keys(ICO).forEach(function(id){ var b=document.getElementById(id); if(!b) return; b.insertAdjacentHTML('afterbegin',ICO[id]); b.title=b.textContent.trim(); sub.appendChild(b); });
+  var vp=document.createElement('div'); vp.id='vPortale'; vp.className='nascosto'; vp.innerHTML='<iframe id="ifPortale" title="Pagina del portale"></iframe>';
+  var dentro=document.getElementById('dentro'); (dentro.parentNode).insertBefore(vp, dentro.nextSibling);
+  var VISTE=['vCont','vListe','vArch','vRub','vLinea','vArric','vRich','vChiuse','vImpara','vImpost','vChat','vPerc'];
+  var salvate=null;
+  function apriPortale(p,el){
+    if(p.charAt(0)==='@'){ window.open('https://supabase.com/dashboard/project/pnxhthrheqeucoisifjw','supabase'); return; }
+    salvate=VISTE.filter(function(v){var e=document.getElementById(v);return e&&!e.classList.contains('nascosto');});
+    VISTE.forEach(function(v){var e=document.getElementById(v); if(e) e.classList.add('nascosto');});
+    sub.querySelectorAll('.st').forEach(function(b){b.setAttribute('aria-selected','false');});
+    nav.querySelectorAll('.mn-v').forEach(function(a){a.classList.toggle('on',a===el);});
+    var f=document.getElementById('ifPortale'); if(f.getAttribute('data-p')!==p){ f.src=B+p; f.setAttribute('data-p',p); }
+    vp.classList.remove('nascosto');
+    try{localStorage.setItem('mn_pag',p)}catch(e){}
+    if(!fisso()) nav.classList.remove('largo');
+  }
+  nav.addEventListener('click',function(e){
+    var a=e.target.closest('.mn-v[data-pag]'); if(a){ e.preventDefault(); apriPortale(a.getAttribute('data-pag'),a); return; }
+    if(e.target.closest('#mnRegia')){ var o=!document.body.classList.contains('mn-regia-chiusa'); document.body.classList.toggle('mn-regia-chiusa',o); try{localStorage.setItem('mn_regia',o?'chiusa':'aperta')}catch(x){} return; }
+    if(e.target.closest('#mnPin')){ var f=!fisso(); document.body.classList.toggle('mn-libero',!f); document.getElementById('mnPin').setAttribute('aria-pressed',f); try{localStorage.setItem('mn_fisso',f?'1':'0')}catch(x){} return; }
+    if(e.target.closest('.st')){ vp.classList.add('nascosto'); nav.querySelectorAll('.mn-v').forEach(function(a){a.classList.remove('on');}); try{localStorage.removeItem('mn_pag')}catch(x){} if(!fisso()) nav.classList.remove('largo'); }
+  }, true);
+  function fisso(){ return !document.body.classList.contains('mn-libero'); }
+  nav.addEventListener('mouseenter',function(){ if(!fisso()) nav.classList.add('largo'); });
+  nav.addEventListener('mouseleave',function(){ nav.classList.remove('largo'); });
+  try{ if(localStorage.getItem('mn_fisso')==='0'){ document.body.classList.add('mn-libero'); document.getElementById('mnPin').setAttribute('aria-pressed','false'); }
+       if(localStorage.getItem('mn_regia')==='chiusa') document.body.classList.add('mn-regia-chiusa'); }catch(e){}
+})();
+</script>
+</body></html>
