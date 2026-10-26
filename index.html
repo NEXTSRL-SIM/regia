@@ -5305,5 +5305,17 @@ setTimeout(accendiTelefono, 1200);
   var a=nav.querySelector('.mn-v[data-pag="'+(p||'dashboard')+'"]')||nav.querySelector('.mn-v[data-pag="dashboard"]');
   if(a) a.click();
 })();
+/* PORTALE NEXT-110 (23:46): la scheda lead si apriva dalla funzione Supabase, che manda l HTML come testo
+   e il browser mostrava il codice. Si apre invece dal webhook n8n scheda-lead, che la serve come pagina. */
+(function(){
+  var SL='https://n8n.srv1030489.hstgr.cloud/webhook/scheda-lead';
+  function url(id){ var k=''; try{ k=PASS; }catch(e){} return SL+'?id='+encodeURIComponent(id)+'&k='+encodeURIComponent(k); }
+  window.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('[data-isch]');
+    if(b){ e.preventDefault(); e.stopImmediatePropagation(); window.open(url(b.getAttribute('data-isch')),'_blank','noopener'); return; }
+    var a=e.target.closest&&e.target.closest('a[href*="/functions/v1/lead-scheda"]');
+    if(a){ var m=a.getAttribute('href').match(/[?&]id=(\d+)/); if(m){ e.preventDefault(); e.stopImmediatePropagation(); window.open(url(m[1]),'_blank','noopener'); } }
+  },true);
+})();
 </script>
 </body></html>
