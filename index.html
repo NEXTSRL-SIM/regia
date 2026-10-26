@@ -1033,6 +1033,18 @@ td.azc .ico3{margin-top:0}
 .ch-dx .pic.due .lstx{display:flex;align-items:center;min-width:0;margin:0}
 .ch-dx .pic.due .lst{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0}
 .ch-dx .pic.due .vuoto{grid-column:1/-1}
+
+/* il tondo + accanto a Tag e Liste (Sante 13:19) */
+.ch-dx .tit-piu{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.ch-dx .piu-t{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--amber);color:var(--amber);background:transparent;font:700 15px/1 var(--sans);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+.ch-dx .piu-t[aria-expanded=true]{background:var(--amber);color:#05202a}
+.ch-dx .pop{margin-top:6px;padding:8px;border:1px solid var(--line-2);background:var(--surface-2);display:flex;flex-wrap:wrap;gap:4px}
+.ch-dx .pop > button{font-size:11px;font-weight:600;padding:2px 7px;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:1px solid}
+.ch-dx .pop .nuovo{flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
+.ch-dx .pop input{background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:6px 8px;font:inherit;font-size:12.5px}
+.ch-dx .pop .sws{display:flex;gap:5px;flex-wrap:wrap}
+.ch-dx .pop .sw{width:18px;height:18px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer}
+.ch-dx .pop .sw[aria-pressed=true]{border-color:var(--ink)}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -4080,7 +4092,7 @@ async function chIdentita(){
   if(j && j.ok){ chIo = j.token; chIoNome = j.nome; } else chIoErr = (j && j.errore) || 'non riesco a riconoscerti';
   return chIo;
 }
-let chCorr = null, chListe = null;
+let chCorr = null, chListe = null, chAperto = null;
 async function chApri(arg){
   const c = chElenco.find(x => chKey(x) === arg) || chElenco.find(x => x.tel === arg) || (chSpunto && chSpunto.tel === arg ? chSpunto : { tel: arg, nome: '+'+arg });
   const tel = c.tel;
@@ -4273,11 +4285,13 @@ function chDisegnaDx(c){
   }
   if(c.contatto_id){
     const giaTag = (x.tag || []).map(t => t.id);
-    h += '<div><h3>Tag</h3><div class="pic">'+((x.tag||[]).map(t => '<span class="lstx">'+cTagHtml(t)+'<button data-chtagx="'+t.id+'" aria-label="togli '+esc(t.nome)+'">&times;</button></span>').join('') || '<span class="vuoto">nessuno</span>')+'</div>'+
-      '<select id="chTagAgg" aria-label="Metti un tag"><option value="">+ metti un tag</option>'+cTag.filter(t => !giaTag.includes(t.id)).map(t => '<option value="'+t.id+'">'+esc(t.nome)+'</option>').join('')+'</select></div>';
+    h += '<div><div class="tit-piu"><h3>Tag</h3><button class="piu-t" data-chpiu="tag" aria-expanded="'+(chAperto === 'tag')+'" aria-label="Aggiungi un tag" title="Aggiungi un tag">+</button></div><div class="pic">'+((x.tag||[]).map(t => '<span class="lstx">'+cTagHtml(t)+'<button data-chtagx="'+t.id+'" aria-label="togli '+esc(t.nome)+'">&times;</button></span>').join('') || '<span class="vuoto">nessuno</span>')+'</div>'+
+      (chAperto === 'tag' ? '<div class="pop">'+(cTag.filter(t => !giaTag.includes(t.id)).map(t => '<button class="etc" data-chtagm="'+t.id+'" style="'+cTagStile(t.colore)+'">'+esc(t.nome)+'</button>').join('') || '<span class="vuoto">nessun tag ancora: crealo qui sotto</span>')+
+        '<div class="nuovo"><input id="chTagNome" placeholder="nuovo tag, es. interessato al termico" maxlength="40"><div class="sws">'+CTCOL.map((c, i) => '<button class="sw" data-chsw="'+c+'" aria-pressed="'+(i === 0)+'" style="background:'+c+'" aria-label="colore '+c+'"></button>').join('')+'</div><button class="bott forte" data-chtagnuovo="1">Crea e metti</button></div></div>' : '')+'</div>';
     const giaL = (x.liste || []).map(l => l.id);
-    h += '<div><h3>Liste</h3><div class="pic due">'+((x.liste||[]).map(l => '<span class="lstx" title="'+esc(l.nome)+'">'+cListaHtml(l)+'<button data-chlx="'+l.id+'" aria-label="togli dalla lista">&times;</button></span>').join('') || '<span class="vuoto">in nessuna lista</span>')+'</div>'+
-      '<select id="chListaAgg" aria-label="Metti in una lista"><option value="">+ metti in una lista</option>'+(chListe||[]).filter(l => l.stato !== 'archiviata' && !giaL.includes(l.id)).map(l => '<option value="'+l.id+'">'+esc(l.nome)+'</option>').join('')+'</select></div>';
+    h += '<div><div class="tit-piu"><h3>Liste</h3><button class="piu-t" data-chpiu="lista" aria-expanded="'+(chAperto === 'lista')+'" aria-label="Metti in una lista" title="Metti in una lista">+</button></div><div class="pic due">'+((x.liste||[]).map(l => '<span class="lstx" title="'+esc(l.nome)+'">'+cListaHtml(l)+'<button data-chlx="'+l.id+'" aria-label="togli dalla lista">&times;</button></span>').join('') || '<span class="vuoto">in nessuna lista</span>')+'</div>'+
+      (chAperto === 'lista' ? '<div class="pop">'+((chListe||[]).filter(l => l.stato !== 'archiviata' && !giaL.includes(l.id)).map(l => '<button class="lst" data-chlistam="'+l.id+'" title="'+esc(l.nome)+'" style="color:'+(cColoriListe[l.id] || CTCOL[Number(l.id) % CTCOL.length])+';border-color:'+(cColoriListe[l.id] || CTCOL[Number(l.id) % CTCOL.length])+'">'+esc(l.nome)+'</button>').join('') || '<span class="vuoto">nessuna lista aperta</span>')+
+        '<div class="nuovo"><input id="chListaNome" placeholder="nuova lista, es. Termici" maxlength="60"><button class="bott forte" data-chlistanuova="1">Crea e metti</button></div></div>' : '')+'</div>';
   }
   $('chDx').innerHTML = h;
 }
@@ -4292,14 +4306,40 @@ document.addEventListener('click', async (e) => {
     chElenco.filter(y => y.tel === c.tel).forEach(y => y.in_mano = j.in_mano); c.in_mano = j.in_mano;
     chDisegnaDx(c); chDisegnaElenco(); return;
   }
-  if(d.chtagx){ await cExtraCmd({ tag_togli: { tag: Number(d.chtagx), ids: [c.contatto_id] } }); await chRicaricaDx(); return; }
+  if(d.chpiu){ chAperto = chAperto === d.chpiu ? null : d.chpiu; chDisegnaDx(c); const i = $(chAperto === 'tag' ? 'chTagNome' : 'chListaNome'); if(i) i.focus(); return; }
+  if(d.chsw){ document.querySelectorAll('#chDx [data-chsw]').forEach(y => y.setAttribute('aria-pressed', y === b)); return; }
+  if(d.chtagm){ b.disabled = true; const j = await cExtraCmd({ tag_metti: { tag: Number(d.chtagm), ids: [c.contatto_id] } }); if(!j || !j.ok) avvisa('il tag non si e messo'); chAperto = null; await cCaricaTag(); await chRicaricaDx(); chCaricaElenco(); return; }
+  if(d.chtagnuovo){
+    const nome = ($('chTagNome').value || '').trim(); if(!nome){ $('chTagNome').focus(); return; }
+    const sw = document.querySelector('#chDx [data-chsw][aria-pressed=true]');
+    b.disabled = true;
+    const j = await cExtraCmd({ tag_nuovo: { nome, colore: sw ? sw.dataset.chsw : CTCOL[0] } });
+    if(!j || !j.ok || !j.tag){ b.disabled = false; avvisa('il tag non si e creato'); return; }
+    await cExtraCmd({ tag_metti: { tag: j.tag.id, ids: [c.contatto_id] } });
+    chAperto = null; await cCaricaTag(); await chRicaricaDx(); chCaricaElenco(); avvisa('tag «'+nome+'» creato e messo'); return;
+  }
+  if(d.chlistam){ b.disabled = true; await chPost(CAPI(), { t: PASS, chi: CHI, lista: Number(d.chlistam), aggiungi: [c.contatto_id] }); chAperto = null; await chRicaricaDx(); chCaricaElenco(); return; }
+  if(d.chlistanuova){
+    const nome = ($('chListaNome').value || '').trim(); if(!nome){ $('chListaNome').focus(); return; }
+    b.disabled = true;
+    const j = await chPost(CAPI(), { t: PASS, chi: CHI, lista_nuova: { nome } });
+    if(!j || !j.ok || !j.lista){ b.disabled = false; avvisa('la lista non si e creata'); return; }
+    await chPost(CAPI(), { t: PASS, chi: CHI, lista: j.lista.id, aggiungi: [c.contatto_id] });
+    chListe = null; await chCaricaListe(); chAperto = null; await chRicaricaDx(); chCaricaElenco(); avvisa('lista «'+nome+'» creata'); return;
+  }
+  if(d.chtagx){ await cExtraCmd({ tag_togli: { tag: Number(d.chtagx), ids: [c.contatto_id] } }); await chRicaricaDx(); chCaricaElenco(); return; }
   if(d.chlx){
-    await chPost(CAPI(), { t: PASS, chi: CHI, lista: Number(d.chlx), togli: c.contatto_id }); await chRicaricaDx(); return;
+    await chPost(CAPI(), { t: PASS, chi: CHI, lista: Number(d.chlx), togli: c.contatto_id }); await chRicaricaDx(); chCaricaElenco(); return;
   }
   if(b.id === 'chNotaSalva'){
     b.disabled = true; const j = await cExtraCmd({ nota: { id: c.contatto_id, testo: $('chNotaC').value } });
     b.disabled = false; avvisa(j && j.ok ? 'nota salvata' : 'la nota non si e salvata'); return;
   }
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key !== 'Enter' || !e.target) return;
+  if(e.target.id === 'chTagNome'){ e.preventDefault(); const b = document.querySelector('#chDx [data-chtagnuovo]'); if(b) b.click(); }
+  if(e.target.id === 'chListaNome'){ e.preventDefault(); const b = document.querySelector('#chDx [data-chlistanuova]'); if(b) b.click(); }
 });
 document.addEventListener('change', async (e) => {
   const t = e.target; if(!t || !chCorr || !t.value) return;
