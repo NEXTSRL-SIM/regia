@@ -819,10 +819,60 @@ h1,h2,h3{color:var(--titolo)!important}
 .decidi .si{color:var(--sage);border-color:var(--sage)}.decidi .no{color:var(--brick);border-color:var(--brick)}
 .decidi input{background:var(--surface);border:1px solid var(--line-2);color:var(--ink);padding:5px 7px;font:12px var(--sans);width:120px}
 .nodoc{font-family:var(--mono);color:var(--titolo);font-weight:600}
-.lst{display:inline-block;font-size:11px;padding:2px 7px;border:1px solid var(--line-2);margin:2px 4px 2px 0;white-space:nowrap}
+.lst{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border:1.5px solid var(--line-2);margin:2px 4px 2px 0;white-space:nowrap}
 .tagp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 16px}.tagp button{border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600}
 .sw{width:28px;height:28px;border-radius:999px;border:2px solid transparent}.sw[aria-pressed=true]{border-color:var(--ink);box-shadow:0 0 0 2px var(--ground) inset}
 .colista{display:flex;gap:6px;align-items:center;margin:8px 0 2px}
+
+/* PORTALE NEXT-110 (Sante 26/10): la Chat nella regia */
+#vChat .chatt{display:grid;grid-template-columns:340px minmax(0,1fr) 300px;height:calc(100vh - 96px);border-top:1px solid var(--line)}
+.ch-el{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0;background:var(--surface)}
+.ch-cerca{padding:10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.ch-cerca input{background:var(--ground);border:1px solid var(--line-2);color:var(--ink);padding:8px 10px;font:13px var(--sans)}
+.ch-filtri{display:flex;gap:5px;flex-wrap:wrap}
+.ch-lista{overflow:auto;flex:1}
+.ch-r{display:flex;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);width:100%;text-align:left;color:var(--ink)}
+.ch-r:hover{background:var(--surface-2)}.ch-r[aria-current=true]{background:var(--amber-wash)}
+.ch-av{width:38px;height:38px;flex:none;border-radius:50%;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink-2);font-size:13px}
+.ch-r .cc{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ch-r .n{display:flex;justify-content:space-between;gap:6px}.ch-r b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-r .o{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);flex:none}.ch-r .o.da{color:var(--sage)}
+.ch-r .u{font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:6px;align-items:center}
+.ch-r .f{display:flex;gap:6px;align-items:center;font-size:11px;color:var(--ink-3)}
+.pall{width:9px;height:9px;border-radius:50%;background:var(--sage);flex:none}
+.ch-conv{display:flex;flex-direction:column;min-width:0;min-height:0;background:#0B141A}
+:root[data-tema="chiaro"] .ch-conv{background:#EFEAE2}
+.ch-testa{padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface);display:flex;gap:12px;align-items:center;min-height:60px}
+.ch-msg{flex:1;overflow:auto;padding:14px 34px;display:flex;flex-direction:column;gap:6px}
+.bo{max-width:min(520px,80%);border-radius:8px;padding:7px 9px 5px;display:flex;flex-direction:column;gap:3px;font-size:13.5px;line-height:1.42;white-space:pre-wrap;overflow-wrap:anywhere}
+.bo.in{align-self:flex-start;background:#202C33;color:#E9EDEF;border-top-left-radius:0}
+.bo.out{align-self:flex-end;background:#005C4B;color:#E9EDEF;border-top-right-radius:0}
+:root[data-tema="chiaro"] .bo.in{background:#fff;color:#111B21}:root[data-tema="chiaro"] .bo.out{background:#D9FDD3;color:#111B21}
+.bo .chi{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;opacity:.75;text-transform:uppercase}
+.bo .ora{align-self:flex-end;font-size:10.5px;opacity:.7}
+.bo .pls{border-top:1px solid rgba(255,255,255,.18);padding-top:5px;text-align:center;color:#53BDEB}
+.bo a{color:#53BDEB}
+.ev{align-self:center;font-size:11.5px;color:var(--ink-3);border:1px dashed var(--line-2);padding:3px 10px;background:var(--ground);max-width:80%;text-align:center}
+.giorno{align-self:center;font-size:11px;color:#8696A0;background:#182229;padding:3px 10px;border-radius:7px;margin-top:6px}
+.ch-scrivi{border-top:1px solid var(--line);background:var(--surface);padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.ch-scrivi .rr{display:flex;gap:8px}
+.ch-scrivi textarea{flex:1;background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:9px 10px;font:13.5px var(--sans);resize:vertical;min-height:46px}
+.ch-dx{border-left:1px solid var(--line);background:var(--surface);overflow:auto;padding:14px;display:flex;flex-direction:column;gap:14px}
+.ch-dx h3{margin:0;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.ch-dx a.bott{display:inline-flex;align-items:center;text-decoration:none}
+.ch-vuoto{margin:auto;color:var(--ink-3);text-align:center;padding:30px;line-height:1.6}
+.nchat{background:var(--sage);color:#0E2A16;border-radius:999px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:5px}
+.passi-ch{display:flex;flex-direction:column;gap:4px}.passi-ch div{display:flex;gap:8px;font-size:12.5px;align-items:center}
+
+/* le tre icone: chat, telefono, schede (Sante 26/10 12:01) */
+.ico3{display:flex;gap:4px;margin-top:6px}
+.ico3 button{width:32px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);background:var(--surface)}
+.ico3 button:hover{border-color:var(--amber)}
+.ico3 .tel{border-color:var(--sage)}
+.conf{position:fixed;inset:0;background:rgba(5,10,18,.62);z-index:90;display:flex;align-items:center;justify-content:center}
+.conf .box{width:min(420px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line-2);padding:20px;display:flex;flex-direction:column;gap:12px}
+.conf .box.due{border-color:var(--sage)}
+.conf .riga{display:flex;gap:8px;justify-content:flex-end}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -837,6 +887,7 @@ h1,h2,h3{color:var(--titolo)!important}
  <div class="schede">
   <button class="st" id="tPerc" aria-selected="false">Percorsi</button>
   <button class="st" id="tCont">Contatti</button>
+  <button class="st" id="tChat">Chat<span class="nchat" id="nChat" hidden></span></button>
   <button class="st" id="tListe">Lista di oggi</button>
   <button class="st" id="tArch">Archivio liste</button>
   <button class="st" id="tRub">Rubrica</button>
@@ -961,7 +1012,7 @@ h1,h2,h3{color:var(--titolo)!important}
      <div class="presa"><span>prendi i primi</span><input id="cPrimiN" value="20"><button class="bott" id="cPrimi">dell ordinamento</button></div>
      <button class="bott forte" id="cAggiungi">Aggiungi alla lista</button>
      <button class="bott" id="cNuovaLista" title="apre una lista nuova e ci mette i contatti che hai scelto">Crea nuova lista</button>
-     <button class="bott" id="cTagSel">Tag</button>
+     <button class="bott" id="cTagSel" style="border-color:#C9B8FF;color:#C9B8FF">&#9679; Metti un tag</button>
      <button class="bott" id="cArricchisci">Manda ad arricchire</button>
      <button class="bott" id="cTetto">Guarda il tetto</button>
      <button class="bott calmo" id="cPulisci">Deseleziona</button>
@@ -1059,6 +1110,15 @@ h1,h2,h3{color:var(--titolo)!important}
    <div id="impCorpo"></div>
  </div></div>
 
+<div id="vChat" class="nascosto"><div class="chatt">
+ <section class="ch-el" aria-label="Conversazioni">
+  <div class="ch-cerca"><input type="search" id="chCerca" placeholder="cerca nome o numero" aria-label="Cerca nelle chat">
+   <div class="ch-filtri" role="group" aria-label="Quali chat"><button class="chip" data-chf="tutte" aria-pressed="true">tutte</button><button class="chip" data-chf="da" aria-pressed="false">ha scritto lui</button><button class="chip" data-chf="lead" aria-pressed="false">lead</button><button class="chip" data-chf="preventivo" aria-pressed="false">preventivi</button><button class="chip" data-chf="cliente" aria-pressed="false">clienti</button></div></div>
+  <div id="chLista" class="ch-lista"><div class="ch-vuoto">carico le chat...</div></div>
+ </section>
+ <section class="ch-conv" aria-label="Conversazione"><div id="chTesta" class="ch-testa"></div><div id="chMsg" class="ch-msg"><div class="ch-vuoto">Scegli una conversazione a sinistra.<br>In alto c e sempre chi ha scritto per ultimo.</div></div><div id="chScrivi" class="ch-scrivi" hidden></div></section>
+ <aside class="ch-dx" id="chDx" aria-label="Scheda del contatto"></aside>
+</div></div>
 <div id="vPerc" class="nascosto"><iframe id="ifPerc" title="Percorsi" style="display:block;width:100%;height:calc(100vh - 96px);border:0"></iframe></div>
 <div id="vImpost" class="nascosto"><div class="foglio">
    <h1>Impostazioni</h1>
@@ -2749,7 +2809,7 @@ function cRigaChiamate(r){ return (
     '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
     '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
     '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small>'+
-      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+'</td>'+
+      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+cIco3(r)+'</td>'+
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span>'+
       '<button class="perche" data-pt="'+r.id+'">perche</button></td>'+
     '<td>'+cFaro(r)+'</td>'+
@@ -2789,9 +2849,9 @@ function cApplicaEsito(){
     (!cTagFiltro || (cX(r).tag || []).some(t => String(t.id) === cTagFiltro)));
   cRiordina();
 }
-function cTagStile(c){ c = /^#[0-9A-Fa-f]{6}$/.test(c||'') ? c : '#5CCFE6'; return 'color:'+c+';background:'+c+'22;border:1px solid '+c+'66'; }
+function cTagStile(c){ c = /^#[0-9A-Fa-f]{6}$/.test(c||'') ? c : '#5CCFE6'; return 'color:'+c+';background:'+c+'38;border:1px solid '+c; }
 function cTagHtml(t){ return '<span class="etc" style="'+cTagStile(t.colore)+'">'+esc(t.nome)+'</span>'; }
-function cListaHtml(l){ const c = cColoriListe[l.id]; return '<span class="lst" title="id lista '+l.id+'" style="'+(c ? 'color:'+c+';border-color:'+c : '')+'">'+esc(l.nome)+'</span>'; }
+function cListaHtml(l){ const c = cColoriListe[l.id] || CTCOL[Number(l.id) % CTCOL.length]; return '<span class="lst" title="id lista '+l.id+'" style="color:'+c+';border-color:'+c+';background:'+c+'26">'+esc(l.nome)+'</span>'; }
 function cDisegnaEsiti(){
   const n = { buono:0, da_verificare:0, scartato:0 };
   cTutte.forEach(r => { const f = cX(r).filtro || 'buono'; n[f] = (n[f]||0) + 1; });
@@ -2800,11 +2860,23 @@ function cDisegnaEsiti(){
     '<div class="cesiti" role="group" aria-label="Esito del filtro">'+b('buono','Buoni')+b('da_verificare','Da verificare')+b('scartato','Scartati')+b('tutti','Tutti')+'</div>'+
     '<div class="cvista" role="group" aria-label="Colonne da vedere"><span>Vista</span><button data-cvista="chiamate" aria-pressed="'+(cVista!=='percorso')+'">Chiamate</button><button data-cvista="percorso" aria-pressed="'+(cVista==='percorso')+'">Percorso</button></div>'+
     '<select class="ctagf" id="cTagF" aria-label="Filtra per tag"><option value="">tutti i tag</option>'+cTag.map(t => '<option value="'+t.id+'" '+(String(t.id)===cTagFiltro?'selected':'')+'>'+esc(t.nome)+' ('+t.quanti+')</option>').join('')+'</select>'+
+    '<button class="bott" data-ctagmenu="1" style="border-color:#C9B8FF;color:#C9B8FF" title="crea i tag, scegli il colore, mettili ai contatti selezionati">&#9679; Tag</button>'+
     '<span class="mono" style="font-size:11px;color:var(--ink-3)">regole del filtro: Percorsi › Filtro dei contatti (da attivare)</span>';
 }
 function cTestaPe(){
   return '<tr><th style="width:34px"><input type="checkbox" id="cTutti"></th><th>Contatto</th><th>Filtro</th><th>Percorso, a che punto</th>'+
     '<th>Ultima cosa fatta</th><th>Tag</th><th>Liste</th><th>Campagna</th><th>Entrato</th><th></th></tr>';
+}
+
+const ICO_CHAT = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5CCFE6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg>';
+const ICO_TEL = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
+const ICO_SCH = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C3CFDD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>';
+function cIco3(r){
+  const tel = String(r.tel || '').replace(/\D/g, '');
+  return '<span class="ico3">'+
+    (tel ? '<button data-ichat="'+tel+'" data-inome="'+esc(r.nome||'')+'" data-iid="'+(r.id||r.contatto_id||'')+'" aria-label="Apri la chat" title="Apri la chat">'+ICO_CHAT+'</button>'+
+           '<button class="tel" data-itel="'+tel+'" data-inome="'+esc(r.nome||'')+'" aria-label="Chiama (con doppia conferma)" title="Chiama: prima squilla il tuo telefono">'+ICO_TEL+'</button>' : '')+
+    '<button data-isch="'+(r.id||r.contatto_id)+'" aria-label="Scheda del contatto" title="Scheda del lead e arricchimento">'+ICO_SCH+'</button></span>';
 }
 function cRigaPercorso(r){
   const x = cX(r), n = x.n || 0, f = x.filtro || 'buono';
@@ -2816,7 +2888,7 @@ function cRigaPercorso(r){
   const quando = x.quando ? new Date(x.quando).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
   return '<tr class="'+(cScelti.has(r.id)?'scelto':'')+'">'+
     '<td><input type="checkbox" data-csel="'+r.id+'" '+(cScelti.has(r.id)?'checked':'')+'></td>'+
-    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small><small>'+esc(r.comune||'')+'</small></td>'+
+    '<td class="nomeC"><b>'+esc(r.nome||'(senza nome)')+'</b><small>'+esc(r.tel||'nessun recapito')+'</small><small>'+esc(r.comune||'')+'</small>'+cIco3(r)+'</td>'+
     '<td><span class="esf '+f+'">'+(f==='da_verificare'?'da verificare':f)+'</span>'+
       (x.filtro_perche ? '<small style="display:block;margin-top:4px;color:var(--ink-3)">'+esc(x.filtro_perche)+'</small>' : '')+
       (x.filtro_nota ? '<small style="display:block;color:var(--ink-2)">nota: '+esc(x.filtro_nota)+'</small>' : '')+dec+'</td>'+
@@ -2870,7 +2942,7 @@ document.addEventListener('change', (e) => {
 function cDisegnaColLista(){
   const box = $('cColLista'); if(!box) return;
   if(!cListaId){ box.innerHTML = ''; return; }
-  const att = cColoriListe[cListaId] || '';
+  const att = cColoriListe[cListaId] || CTCOL[Number(cListaId) % CTCOL.length];
   box.innerHTML = '<span class="fetichetta" style="flex:0 0 auto">Colore</span>'+CTCOL.map(c => '<button class="sw" data-lcol="'+c+'" aria-pressed="'+(c===att)+'" style="background:'+c+'" aria-label="colore della lista '+c+'"></button>').join('');
 }
 
@@ -3168,7 +3240,7 @@ function cDisegnaLista(){
     '<tr class="'+(r.stato==='linea'?'inlinea':r.stato==='fatta'?'fatta':'')+'">'+
     '<td class="grip"><b class="mono">'+(i+1)+'</b> <button data-su="'+r.contatto_id+'">&#8593;</button><button data-giu="'+r.contatto_id+'">&#8595;</button></td>'+
     '<td class="nomeC"><b>'+esc(r.nome||'')+'</b><small>'+esc(r.tel||'')+'</small>'+
-      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+'</td>'+
+      (r.tel ? '<button class="perche" data-rub="'+esc(r.tel)+'" data-rubnome="'+esc(r.nome||'')+'" data-rubcom="'+esc(r.comune||'')+'">+ in rubrica</button>' : '')+cIco3(r)+'</td>'+
     '<td><span class="pt '+cFascia(r.punteggio||0)+'"><span class="pallino"></span><b>'+(r.punteggio==null?'-':r.punteggio)+'</b></span></td>'+
     '<td>'+cFaro(r)+'</td>'+
     '<td>'+esc(r.comune||'-')+(r.prov?' <span class="mono">('+esc(r.prov)+')</span>':'')+'</td>'+
@@ -3731,8 +3803,190 @@ document.addEventListener('dragleave', (e) => { const z = e.target.closest && e.
   if(z) z.classList.remove('sopra'); });
 document.addEventListener('drop', (e) => { const z = e.target.closest && e.target.closest('#zonaFile');
   if(z){ e.preventDefault(); z.classList.remove('sopra'); impLeggiFile(e.dataTransfer.files && e.dataTransfer.files[0]); } });
+
+/* --- PORTALE NEXT-110 (Sante 26/10): la Chat nella regia. Legge e scrive con la funzione della Chat Next (wa-chat);
+   quello che si scrive parte dal numero di Next, firmato col nome di chi e collegato (regola d identita: regia-chat io). --- */
+const RCH = () => API.replace(/regia$/, 'regia-chat');
+const WCH = () => API.replace(/regia$/, 'wa-chat');
+let chElenco = [], chSel = null, chTok = null, chIo = null, chIoNome = '', chIoErr = '', chFiltro = 'tutte', chMsgs = [], chFin = null, chAttesa = null, chEv = null, chExtra = null;
+const FASEN = { lead:'lead', preventivo:'preventivo', cliente:'cliente' };
+function chIni(n){ const p = String(n||'?').replace(/^\+/, '').split(/\s+/).filter(Boolean); return /^\d/.test(p[0]||'') ? '#' : ((p[0]||'?')[0] + ((p[1]||'')[0]||'')).toUpperCase(); }
+function chQuando(t){ if(!t) return ''; const d = new Date(t), o = new Date(); const g = Math.floor((new Date(o.toDateString()) - new Date(d.toDateString())) / 864e5);
+  return g === 0 ? d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' }) : g === 1 ? 'ieri' : d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit' }); }
+async function chCaricaElenco(){
+  try{ const j = await (await fetch(RCH()+'?elenco=1&t='+encodeURIComponent(PASS))).json(); chElenco = (j && j.chat) || []; }catch(e){ $('chLista').innerHTML = '<div class="ch-vuoto">Non riesco a leggere le chat.</div>'; return; }
+  const n = chElenco.filter(c => c.da_rispondere).length; const b = $('nChat'); b.textContent = n; b.hidden = !n;
+  chDisegnaElenco();
+}
+function chDisegnaElenco(){
+  const q = ($('chCerca').value || '').toLowerCase().replace(/\s/g, '');
+  const L = chElenco.filter(c => (chFiltro === 'tutte' || (chFiltro === 'da' ? c.da_rispondere : c.fase === chFiltro)) &&
+    (!q || String(c.nome||'').toLowerCase().replace(/\s/g,'').includes(q) || String(c.tel).includes(q.replace(/^\+/, ''))));
+  document.querySelectorAll('#vChat [data-chf]').forEach(b => b.setAttribute('aria-pressed', b.dataset.chf === chFiltro));
+  $('chLista').innerHTML = L.length ? L.map(c => '<button class="ch-r" data-chtel="'+esc(c.tel)+'" aria-current="'+(c.tel===chSel)+'">'+
+    '<span class="ch-av" aria-hidden="true">'+esc(chIni(c.nome))+'</span><span class="cc">'+
+    '<span class="n"><b>'+esc(c.nome)+'</b><span class="o '+(c.da_rispondere?'da':'')+'">'+chQuando(c.t)+'</span></span>'+
+    '<span class="u">'+(c.da_rispondere ? '<span class="pall" title="ha scritto lui: aspetta una risposta"></span>' : '')+esc(((c.ultimo && c.ultimo.da === 'next') ? 'Next: ' : '') + String((c.ultimo && c.ultimo.testo) || '').replace(/\s+/g, ' ').slice(0, 80))+'</span>'+
+    '<span class="f">'+(c.fase ? '<span class="tag">'+esc(FASEN[c.fase]||c.fase)+'</span>' : '')+'<span class="mono">+'+esc(c.tel)+'</span></span>'+
+    '</span></button>').join('') : '<div class="ch-vuoto">Nessuna chat con questo filtro.</div>';
+}
+async function chPost(url, corpo){ try{ const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(corpo) }); return await r.json(); }catch(e){ return {}; } }
+async function chIdentita(){
+  if(chIo) return chIo;
+  const j = await chPost(RCH(), { t: PASS, chi: CHI, io: 1 });
+  if(j && j.ok){ chIo = j.token; chIoNome = j.nome; } else chIoErr = (j && j.errore) || 'non riesco a riconoscerti';
+  return chIo;
+}
+async function chApri(tel){
+  chSel = tel; chDisegnaElenco();
+  const c = chElenco.find(x => x.tel === tel) || (chSpunto && chSpunto.tel === tel ? chSpunto : { tel, nome: '+'+tel });
+  $('chMsg').innerHTML = '<div class="ch-vuoto">apro la conversazione...</div>'; $('chScrivi').hidden = true; $('chTesta').innerHTML = ''; $('chDx').innerHTML = '';
+  chTok = c.token || null;
+  if(!chTok){ const j = await chPost(RCH(), { t: PASS, chi: CHI, apri: tel }); if(j && j.ok){ chTok = j.token; c.token = j.token; } else { $('chMsg').innerHTML = '<div class="ch-vuoto">'+esc((j && j.errore) || 'la chat non si apre')+'</div>'; return; } }
+  await Promise.all([chCaricaMsg(), chCaricaEventi(tel), chCaricaExtraContatto(c)]);
+  if(chSel !== tel) return;
+  chDisegnaConv(true); chDisegnaDx(c); chDisegnaScrivi(c);
+}
+async function chCaricaMsg(){ try{ const j = await (await fetch(WCH()+'?t='+encodeURIComponent(chTok)+'&json=1')).json(); chMsgs = (j && j.msgs) || []; chFin = j && j.finestra; chAttesa = j && j.in_attesa; }catch(e){ chMsgs = []; } }
+async function chCaricaEventi(tel){ try{ chEv = await (await fetch(RCH()+'?eventi='+tel+'&t='+encodeURIComponent(PASS))).json(); }catch(e){ chEv = null; } }
+async function chCaricaExtraContatto(c){ chExtra = null; if(!c.contatto_id) return; try{ const j = await (await fetch(CX()+'?t='+encodeURIComponent(PASS)+'&ids='+c.contatto_id)).json(); chExtra = j && j.extra ? j.extra[c.contatto_id] : null; }catch(e){} }
+const PAGN = { configuratore:'Configuratore', proposta:'Proposta', riepilogo:'Riepilogo', calendario:'Calendario' };
+function chEventi(){
+  /* gli eventi delle pagine, raggruppati: una riga per pagina aperta, con i passi in fila */
+  const E = (chEv && chEv.eventi) || [], out = [];
+  E.forEach(e => {
+    const ult = out[out.length-1], t = new Date(e.t);
+    const voce = String(e.evento||'').replace(/_/g, ' ');
+    if(ult && ult.pagina === e.pagina && (t - ult.ultimo) < 30*60e3){ if(ult.voci[ult.voci.length-1] !== voce) ult.voci.push(voce); ult.ultimo = t; }
+    else out.push({ t: e.t, pagina: e.pagina, voci: [voce], ultimo: t, ev: true });
+  });
+  ((chEv && chEv.appuntamenti) || []).forEach(a => out.push({ t: a.quando, ev: true, app: true, testo: 'Telefonata ' + (a.stato === 'fissato' ? 'fissata' : a.stato) + ' per ' + new Date(a.quando).toLocaleString('it-IT', { weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' }), futuro: true }));
+  return out;
+}
+function chDisegnaConv(inFondo){
+  const box = $('chMsg'), giu = inFondo || (box.scrollHeight - box.scrollTop - box.clientHeight < 80);
+  const tutti = chMsgs.map(m => Object.assign({ tt: m.t }, m)).concat(chEventi().filter(e => !e.futuro).map(e => Object.assign({ tt: e.t }, e))).sort((a,b) => a.tt < b.tt ? -1 : 1);
+  let g = '', h = '';
+  tutti.forEach(m => {
+    const d = new Date(m.tt).toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long' });
+    if(d !== g){ g = d; h += '<span class="giorno">'+esc(d.toUpperCase())+'</span>'; }
+    const ora = new Date(m.tt).toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+    if(m.ev){ h += '<span class="ev">'+(m.app ? esc(m.testo) : esc(PAGN[m.pagina] || m.pagina)+': '+esc(m.voci.join(' · ')))+' · '+ora+'</span>'; return; }
+    if(m.tipo === 'chiamata'){ h += '<span class="ev">&#9742; '+esc(m.testo)+(m.chi ? ' · '+esc(m.chi) : '')+(m.chiamata && m.chiamata.durata ? ' · '+Math.round(m.chiamata.durata/60)+' min' : '')+' · '+ora+'</span>'; return; }
+    const out = m.da === 'next';
+    const st = out && m.st ? (m.st === 'read' ? ' &#10003;&#10003; letto' : m.st === 'delivered' ? ' &#10003;&#10003;' : m.st === 'sent' ? ' &#10003;' : m.st === 'failed' ? ' non consegnato' : '') : '';
+    h += '<div class="bo '+(out?'out':'in')+'">'+(out ? '<span class="chi">'+esc(m.chi || 'Next')+'</span>' : '')+
+      (m.testa ? '<b>'+esc(m.testa)+'</b>' : '')+'<span>'+esc(m.testo || '')+'</span>'+
+      (m.media ? '<a href="'+WCH()+'?t='+encodeURIComponent(chTok)+'&media='+encodeURIComponent(m.media)+'" target="_blank" rel="noopener">apri '+(m.k === 'foto' ? 'la foto' : 'il file')+' ↗</a>' : '')+
+      (m.piede ? '<small style="opacity:.7">'+esc(m.piede)+'</small>' : '')+'<span class="ora">'+ora+st+'</span>'+
+      ((m.pulsanti||[]).map(p => '<span class="pls">'+(p.url ? '&#8599; ' : '&#8617; ')+esc(p.testo || '')+'</span>').join(''))+'</div>';
+  });
+  if(chAttesa && chAttesa.testo) h += '<div class="bo out" style="opacity:.6"><span class="chi">in attesa: parte quando il cliente riscrive</span><span>'+esc(chAttesa.testo)+'</span></div>';
+  box.innerHTML = h || '<div class="ch-vuoto">Nessun messaggio.</div>';
+  if(giu) box.scrollTop = box.scrollHeight;
+}
+function chDisegnaDx(c){
+  const x = chExtra || {}, cod = (chEv && chEv.codici) || [], app = chEventi().filter(e => e.futuro);
+  const fase = c.fase ? (FASEN[c.fase] || c.fase) : 'non in archivio';
+  $('chTesta').innerHTML = '<span class="ch-av">'+esc(chIni(c.nome))+'</span><span style="display:flex;flex-direction:column;min-width:0"><b style="font-size:15px">'+esc(c.nome)+'</b><span class="mono" style="font-size:11.5px;color:var(--ink-3)">+'+esc(c.tel)+' · '+esc(fase)+' · '+(chFin && chFin.aperta ? 'chat aperta' : 'chat chiusa: messaggi liberi in attesa, o un modello')+'</span></span>'+
+    '<span class="ico3" style="margin:0 0 0 auto"><button class="tel" data-itel="'+esc(c.tel)+'" data-inome="'+esc(c.nome)+'" aria-label="Chiama (con doppia conferma)" title="Chiama: prima squilla il tuo telefono">'+ICO_TEL+'</button>'+(c.contatto_id ? '<button data-isch="'+c.contatto_id+'" aria-label="Scheda del contatto" title="Scheda del lead">'+ICO_SCH+'</button>' : '')+'</span>'+
+    '<a class="bott" style="text-decoration:none" href="https://next-srl.net/chat/?t='+encodeURIComponent(chTok)+'" target="_blank" rel="noopener">apri nella Chat Next ↗</a>';
+  let h = '<div><h3>Contatto</h3><b style="font-size:15px">'+esc(c.nome)+'</b><div class="mono" style="font-size:12px;color:var(--ink-3)">+'+esc(c.tel)+' · '+esc(fase)+'</div></div>';
+  if(c.contatto_id){
+    const f = x.filtro || 'buono';
+    h += '<div><h3>Filtro</h3><span class="esf '+f+'">'+(f==='da_verificare'?'da verificare':f)+'</span>'+(x.filtro_perche ? ' <small>'+esc(x.filtro_perche)+'</small>' : '')+'</div>';
+    h += '<div><h3>Percorso</h3><div class="passi-ch">'+(x.nodo ? '<div><span class="nodoc">'+esc(x.nodo)+'</span><span>'+esc(x.punto||'')+'</span></div>' : '<div>fuori dal percorso</div>')+
+      app.map(a => '<div>&#9742; '+esc(a.testo)+'</div>').join('')+'</div></div>';
+    h += '<div><h3>Tag</h3>'+((x.tag||[]).map(cTagHtml).join('') || '<span class="vuoto">nessuno: si mettono da Contatti</span>')+'</div>';
+  }
+  h += '<div><h3>Schede collegate</h3><div style="display:flex;flex-wrap:wrap;gap:6px">'+
+    (c.contatto_id ? '<a class="bott" target="_blank" rel="noopener" href="'+API.replace(/regia$/, 'lead-scheda')+'?id='+c.contatto_id+'&k='+encodeURIComponent(PASS)+'">scheda lead ↗</a>' : '')+
+    (cod[0] ? '<a class="bott" target="_blank" rel="noopener" href="'+API.replace(/regia$/, 'lead-pdf')+'?tipo=riepilogo&c='+encodeURIComponent(cod[0].codice)+'">ricevuta PDF ↗</a>' : '')+
+    (cod[0] && (cod[0].stato === 'esito_inviato' || app.length) ? '<a class="bott" target="_blank" rel="noopener" href="'+API.replace(/regia$/, 'lead-pdf')+'?tipo=proposta&c='+encodeURIComponent(cod[0].codice)+'">verifica e proposta PDF ↗</a>' : '')+
+    '</div></div>';
+  $('chDx').innerHTML = h;
+}
+function chDisegnaScrivi(c){
+  const box = $('chScrivi'); box.hidden = false;
+  box.innerHTML = '<div class="rr"><label for="chTesto" class="nascosto">Scrivi un messaggio</label><textarea id="chTesto" rows="2" placeholder="Scrivi a '+esc(c.nome)+'..."></textarea><button class="bott forte" id="chInvia">Invia</button></div>'+
+    '<span class="mono" id="chNota" style="font-size:11px;color:var(--ink-3)">Parte dal numero di Next, firmato col tuo nome, e resta nella chat. '+(chFin && chFin.aperta ? '' : 'La chat e chiusa (oltre 24 ore): il messaggio resta in attesa e parte quando il cliente riscrive.')+'</span>';
+}
+async function chInvia(){
+  const ta = $('chTesto'), testo = (ta.value || '').trim(); if(!testo){ ta.focus(); return; }
+  const b = $('chInvia'); b.disabled = true; b.textContent = 'invio...';
+  const io = await chIdentita();
+  if(!io){ b.disabled = false; b.textContent = 'Invia'; avvisa(chIoErr || 'non riesco a riconoscerti'); return; }
+  const j = await chPost(WCH(), { t: chTok, testo, a: io });
+  b.disabled = false; b.textContent = 'Invia';
+  if(!j || !j.ok){ avvisa((j && j.motivo) || 'il messaggio non e partito'); return; }
+  ta.value = ''; avvisa(j.in_attesa ? 'in attesa: parte quando il cliente riscrive' : 'mandato');
+  await chCaricaMsg(); chDisegnaConv(true); chCaricaElenco();
+}
+document.addEventListener('click', (e) => {
+  const t = e.target.closest && e.target.closest('#vChat button'); if(!t) return;
+  if(t.dataset.chtel){ chApri(t.dataset.chtel); return; }
+  if(t.dataset.chf){ chFiltro = t.dataset.chf; chDisegnaElenco(); return; }
+  if(t.id === 'chInvia'){ chInvia(); return; }
+});
+document.addEventListener('input', (e) => { if(e.target && e.target.id === 'chCerca') chDisegnaElenco(); });
+setInterval(async () => {
+  if($('vChat').classList.contains('nascosto') || document.hidden) return;
+  await chCaricaElenco();
+  if(chTok && chSel){ await chCaricaMsg(); chDisegnaConv(false); }
+}, 15000);
+
+
+let chSpunto = null;
+async function chTokenDi(tel){
+  const c = chElenco.find(x => x.tel === tel);
+  if(c && c.token) return c.token;
+  const j = await chPost(RCH(), { t: PASS, chi: CHI, apri: tel });
+  if(j && j.ok){ if(c) c.token = j.token; return j.token; }
+  throw new Error((j && j.errore) || 'la chat di questo numero non si apre');
+}
+/* LA CHIAMATA, con doppia conferma: squilla prima il telefono di chi e collegato, poi il cliente dal fisso di Next (chiama-ponte) */
+function chChiama(tel, nome){
+  const v = document.createElement('div'); v.className = 'conf'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-modal', 'true');
+  const passo = (n) => {
+    v.innerHTML = n === 1
+      ? '<div class="box"><span class="mono" style="font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)">1 DI 2</span><b style="font-size:18px">Chiamare '+esc(nome || '+'+tel)+'?</b>'+
+        '<span style="color:var(--ink-2);line-height:1.5">+'+esc(tel)+'. Prima squilla il tuo telefono, poi chiamiamo lui dal fisso di Next.</span>'+
+        '<span class="mono" style="font-size:12px;border:1px solid var(--line-2);padding:8px">collegato: '+esc(CHI || '?')+'</span>'+
+        '<div class="riga"><button class="bott" data-cf="no">Annulla</button><button class="bott forte" data-cf="2">Si, avanti</button></div></div>'
+      : n === 2
+      ? '<div class="box due"><span class="mono" style="font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)">2 DI 2</span><b style="font-size:18px">Confermi? Parte adesso.</b>'+
+        '<span style="color:var(--ink-2);line-height:1.5">Se la sua chat WhatsApp e aperta gli arriva prima l avviso che la chiamata puo essere registrata. La telefonata finisce nella sua chat.</span>'+
+        '<div class="riga"><button class="bott" data-cf="no">Annulla</button><button class="bott forte" data-cf="via">Chiama ora</button></div></div>'
+      : '<div class="box"><b id="cfEsito">sto chiamando...</b><div class="riga"><button class="bott" data-cf="no">Chiudi</button></div></div>';
+    const b = v.querySelector('[data-cf="2"],[data-cf="via"]'); if(b) b.focus();
+  };
+  passo(1); document.body.appendChild(v);
+  v.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-cf]'); if(!b){ if(e.target === v) v.remove(); return; }
+    if(b.dataset.cf === 'no'){ v.remove(); return; }
+    if(b.dataset.cf === '2'){ passo(2); return; }
+    if(b.dataset.cf === 'via'){
+      passo(3);
+      try{
+        const io = await chIdentita(); if(!io) throw new Error(chIoErr || 'non riesco a riconoscerti');
+        const tok = await chTokenDi(tel);
+        const j = await chPost(API.replace(/regia$/, 'chiama-ponte'), { t: tok, a: io });
+        $('cfEsito').textContent = j && j.ok ? 'Squilla il tuo telefono: rispondi e ti colleghiamo. ' + (j.registra ? 'Registrata (avviso mandato su WhatsApp).' : 'Non registrata: ' + (j.informativa || '')) : ((j && j.motivo) || 'la chiamata non e partita');
+      }catch(err){ $('cfEsito').textContent = String(err.message || err); }
+    }
+  });
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest && e.target.closest('[data-ichat],[data-itel],[data-isch],[data-ctagmenu]'); if(!b) return;
+  if(b.dataset.ctagmenu){ e.stopPropagation(); cApriTag(); return; }
+  e.stopPropagation();
+  if(b.dataset.ichat){ chSpunto = { tel: b.dataset.ichat, nome: b.dataset.inome || '+'+b.dataset.ichat, contatto_id: Number(b.dataset.iid) || null }; scheda('tChat'); chCaricaElenco().then(() => chApri(b.dataset.ichat)); return; }
+  if(b.dataset.itel){ chChiama(b.dataset.itel, b.dataset.inome); return; }
+  if(b.dataset.isch){ window.open(API.replace(/regia$/, 'lead-scheda')+'?id='+b.dataset.isch+'&k='+encodeURIComponent(PASS), '_blank', 'noopener'); return; }
+}, true);
+
 function scheda(q){
-  ['tCont','tListe','tArch','tRub','tLinea','tArric','tRich','tChiuse','tImpara','tImpost','tPerc'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
+  ['tCont','tChat','tListe','tArch','tRub','tLinea','tArric','tRich','tChiuse','tImpara','tImpost','tPerc'].forEach(k => { const b=$(k); if(b) b.setAttribute('aria-selected', k===q); });
   $('vCont').classList.toggle('nascosto', q!=='tCont');
   $('vListe').classList.toggle('nascosto', q!=='tListe');
   $('vArch').classList.toggle('nascosto', q!=='tArch');
@@ -3752,12 +4006,15 @@ function scheda(q){
   $('vImpost').classList.toggle('nascosto', q!=='tImpost');
   if(q==='tImpost'){ pCarica(); }
   /* Percorsi (PORTALE NEXT-110): la pagina sta nel repo regia-percorsi e si carica solo quando si apre la scheda */
+  $('vChat').classList.toggle('nascosto', q!=='tChat');
+  if(q==='tChat'){ chCaricaElenco(); }
   $('vPerc').classList.toggle('nascosto', q!=='tPerc');
   if(q==='tPerc' && !$('ifPerc').getAttribute('src')){ $('ifPerc').src='https://nextsrl-sim.github.io/regia-percorsi/?v='+Date.now(); }
 }
 $('bTema').onclick = () => tema(document.documentElement.getAttribute('data-tema') === 'chiaro' ? 'scuro' : 'chiaro');
 $('bPieno').onclick = () => schermoPieno();
 $('tCont').onclick = () => scheda('tCont');
+$('tChat').onclick = () => scheda('tChat');
 $('tListe').onclick = () => scheda('tListe');
 $('tArch').onclick = () => scheda('tArch');
 /* i due pulsanti dell apprendimento: da lavorare e scartate */
