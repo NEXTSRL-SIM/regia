@@ -840,20 +840,20 @@ h1,h2,h3{color:var(--titolo)!important}
 .ch-r .u{font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:6px;align-items:center}
 .ch-r .f{display:flex;gap:6px;align-items:center;font-size:11px;color:var(--ink-3)}
 .pall{width:9px;height:9px;border-radius:50%;background:var(--sage);flex:none}
-.ch-conv{display:flex;flex-direction:column;min-width:0;min-height:0;background:#0B141A}
+.ch-conv{display:flex;flex-direction:column;min-width:0;min-height:0;background:#17212E}
 :root[data-tema="chiaro"] .ch-conv{background:#EFEAE2}
 .ch-testa{padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface);display:flex;gap:12px;align-items:center;min-height:60px}
 .ch-msg{flex:1;overflow:auto;padding:14px 34px;display:flex;flex-direction:column;gap:6px}
 .bo{max-width:min(520px,80%);border-radius:8px;padding:7px 9px 5px;display:flex;flex-direction:column;gap:3px;font-size:13.5px;line-height:1.42;white-space:pre-wrap;overflow-wrap:anywhere}
-.bo.in{align-self:flex-start;background:#202C33;color:#E9EDEF;border-top-left-radius:0}
-.bo.out{align-self:flex-end;background:#005C4B;color:#E9EDEF;border-top-right-radius:0}
+.bo.in{align-self:flex-start;background:#243243;color:#E9EDEF;border-top-left-radius:0}
+.bo.out{align-self:flex-end;background:#145A52;color:#EEF6F4;border-top-right-radius:0}
 :root[data-tema="chiaro"] .bo.in{background:#fff;color:#111B21}:root[data-tema="chiaro"] .bo.out{background:#D9FDD3;color:#111B21}
 .bo .chi{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;opacity:.75;text-transform:uppercase}
 .bo .ora{align-self:flex-end;font-size:10.5px;opacity:.7}
 .bo .pls{border-top:1px solid rgba(255,255,255,.18);padding-top:5px;text-align:center;color:#53BDEB}
 .bo a{color:#53BDEB}
-.ev{align-self:center;font-size:11.5px;color:var(--ink-3);border:1px dashed var(--line-2);padding:3px 10px;background:var(--ground);max-width:80%;text-align:center}
-.giorno{align-self:center;font-size:11px;color:#8696A0;background:#182229;padding:3px 10px;border-radius:7px;margin-top:6px}
+.ev{align-self:center;font-size:11.5px;color:#D9BE86;padding:3px 12px;background:rgba(224,169,59,.10);border-radius:999px;max-width:80%;text-align:center}
+.giorno{align-self:center;font-size:11px;font-weight:600;letter-spacing:.04em;color:#A8DCE8;background:rgba(92,207,230,.13);padding:4px 12px;border-radius:999px;margin-top:8px}
 .ch-scrivi{border-top:1px solid var(--line);background:var(--surface);padding:10px 14px;display:flex;flex-direction:column;gap:6px}
 .ch-scrivi .rr{display:flex;gap:8px}
 .ch-scrivi textarea{flex:1;background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:9px 10px;font:13.5px var(--sans);resize:vertical;min-height:46px}
@@ -951,6 +951,41 @@ td.azc .ico3{margin-top:0}
 .scherm.wa .sIn{background:#0b141a;display:flex;align-items:center;justify-content:center;color:#25D366;font:700 28px sans-serif}
 .pcella{display:flex;align-items:flex-start}
 .dsint{display:block;margin-top:4px;font-size:11.5px;color:var(--ink-3);line-height:1.35}
+
+.ch-dx .corsie{display:grid;grid-template-columns:1fr 92px;gap:0 10px}
+.ch-dx .corsie .tc{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding-bottom:4px;border-bottom:1px solid var(--line)}
+.ch-dx .pw{display:grid;grid-template-columns:18px 34px minmax(0,1fr) auto;gap:6px;align-items:baseline;font-size:12.5px;padding:3px 0;color:var(--ink-3)}
+.ch-dx .pw.f{color:#B9EBC9}.ch-dx .pw.f i{color:#B9EBC9;font-weight:700}
+.ch-dx .pw.q{color:#5CCFE6;font-weight:600}.ch-dx .pw.q i{color:#5CCFE6}
+.ch-dx .pw i{font-style:normal;text-align:center;font-weight:700}.ch-dx .pw .sg{font-weight:700;font-size:11.5px}.ch-dx .pw .o{white-space:nowrap}.ch-dx .pw .m{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-align:center;border-left:1px dashed var(--line-2)}
+.ch-dx .pwt{display:grid;grid-template-columns:1fr 26px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--line);padding-bottom:3px}.ch-dx .pw .sg{font-family:var(--mono);font-size:10.5px}.ch-dx .pw .o{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);font-weight:400}
+.ch-dx .mcol{font-size:11.5px;color:var(--ink-3);padding-top:6px;line-height:1.4;border-left:1px dashed var(--line-2);padding-left:8px}
+.ch-dx .inv{display:flex;flex-direction:column;gap:5px}
+.ch-dx .inv a,.ch-dx .inv span.r{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;font-size:12.5px;color:var(--ink);text-decoration:none;padding:6px 8px;border:1px solid var(--line-2)}
+.ch-dx .inv a:hover{border-color:var(--amber)}
+.ch-dx .inv .sg{font-family:var(--mono);font-size:10px;color:var(--amber)}
+.ch-dx .inv .o{font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+
+/* in testa alla conversazione: tondi con il simbolo (Sante 26/10 12:56) */
+.ch-tonde{margin-left:auto;display:flex;gap:10px;align-items:center}
+.ch-tonde button{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:transparent;cursor:pointer;padding:0}
+.ch-tonde .t-tel{border:1.5px solid var(--sage)}
+.ch-tonde .t-tel:hover{background:var(--sage-dim)}
+.ch-tonde .t-mano{border:1.5px solid var(--giallo)}
+.ch-tonde .t-mano:hover{background:var(--giallo-wash)}
+.ch-tonde .t-mano[aria-pressed=true]{background:var(--giallo);}
+.ch-tonde .t-mano[aria-pressed=true] svg{stroke:#1a1405}
+.ch-tonde .t-sch{border:1.5px solid var(--line-2)}
+.ch-tonde .lbl{font-size:11.5px;color:var(--giallo);font-weight:600;max-width:120px;line-height:1.2}
+/* allegati come su WhatsApp: niente "[documento] Next - ...", il simbolo del file */
+.bo .file{display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);text-decoration:none;color:inherit;min-width:220px;margin:2px 0}
+.bo .file:hover{border-color:#5CCFE6}
+.bo .file .ic{flex:0 0 auto}
+.bo .file .nm{display:flex;flex-direction:column;min-width:0}
+.bo .file .nm b{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
+.bo .file .nm small{font-family:var(--mono);font-size:10px;letter-spacing:.06em;opacity:.7}
+.bo .foto{display:block;margin:2px 0}
+.bo .foto img{display:block;max-width:240px;max-height:240px;border-radius:4px}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -4021,12 +4056,12 @@ function chEventi(){
   return out;
 }
 const SIGLE = { prova_lead:['W1','primo messaggio'], lead_configura:['W2','invito al configuratore'], lead_attesa:['W4','configurazione ricevuta'], lead_pdf:['W5','ricevuta PDF'],
-  lead_esito:['W6','esito del tetto'], lead_telefonata:['W8','telefonata fissata'], lead_promemoria:['','promemoria'], lead_sposta:['','spostamento'] };
+  lead_esito:['W6','esito del tetto'], lead_telefonata:['W8','telefonata fissata'], lead_promemoria:['W10','promemoria'], lead_sposta:['','spostamento'] };
 function chSigla(m){
   const U = (chEv && chEv.uscite) || []; const t = new Date(m.tt).getTime();
   const u = U.find(x => Math.abs(new Date(x.t).getTime() - t) < 1500);
   if(!u) return '';
-  const s = SIGLE[u.tipo] || (String(u.tipo).startsWith('lead') ? ['', String(u.tipo).replace(/_/g, ' ')] : null);
+  const s = u.tipo === 'lead_pdf' && /verifica|proposta/i.test(u.file || '') ? ['W9','verifica e proposta PDF'] : (SIGLE[u.tipo] || (String(u.tipo).startsWith('lead') ? ['', String(u.tipo).replace(/_/g, ' ')] : null));
   return s ? '<span class="sigla" title="messaggio automatico del percorso">'+esc((s[0] ? s[0]+' · ' : '')+s[1])+'</span>' : '';
 }
 function chVisti(){
@@ -4034,6 +4069,27 @@ function chVisti(){
   const n = k => o.filter(m => m.st === k).length;
   return '<span class="ch-vis"><b>'+o.length+' mandati</b><span>'+n('read')+' letti</span><span>'+n('delivered')+' consegnati, non letti</span>'+
     (n('sent')+n('attesa') ? '<span>'+(n('sent')+n('attesa'))+' in viaggio</span>' : '')+(n('failed') ? '<span style="color:var(--brick)">'+n('failed')+' non consegnati</span>' : '')+'</span>';
+}
+
+const ICO_MANO = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E0A93B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></svg>';
+const ICO_PDF = '<svg aria-hidden="true" width="30" height="36" viewBox="0 0 30 36"><path d="M3 1h16l8 8v24a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z" fill="#fff"/><path d="M19 1v8h8" fill="#E5E7EB"/><rect x="1" y="20" width="22" height="10" rx="1.5" fill="#E5322D"/><text x="12" y="27.8" font-family="Arial,sans-serif" font-size="7.5" font-weight="700" fill="#fff" text-anchor="middle">PDF</text></svg>';
+const ICO_FILE = (est) => '<svg aria-hidden="true" width="30" height="36" viewBox="0 0 30 36"><path d="M3 1h16l8 8v24a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2z" fill="#fff"/><path d="M19 1v8h8" fill="#E5E7EB"/><rect x="1" y="20" width="22" height="10" rx="1.5" fill="#2F6FD6"/><text x="12" y="27.8" font-family="Arial,sans-serif" font-size="7" font-weight="700" fill="#fff" text-anchor="middle">'+est+'</text></svg>';
+/* il corpo del messaggio: testo, oppure il file col suo simbolo, oppure la foto */
+function chCorpo(m){
+  const t = String(m.testo || ''), url = m.media ? WCH()+'?t='+encodeURIComponent(chTok)+'&media='+encodeURIComponent(m.media) : null;
+  const doc = t.match(/^\[documento\]\s*(.*)$/s);
+  if(doc){
+    const nome = (doc[1] || 'documento').trim(), est = ((nome.match(/\.([a-z0-9]{2,4})$/i) || [])[1] || 'file').toUpperCase();
+    const vis = nome.replace(/^Next\s*-\s*/i, '').replace(/\.[a-z0-9]{2,4}$/i, '');
+    const card = '<span class="ic">'+(est === 'PDF' ? ICO_PDF : ICO_FILE(est))+'</span><span class="nm"><b>'+esc(vis.charAt(0).toUpperCase()+vis.slice(1))+'</b><small>'+esc(est)+'</small></span>';
+    return url ? '<a class="file" href="'+url+'" target="_blank" rel="noopener" title="apri '+esc(nome)+'">'+card+'</a>' : '<span class="file">'+card+'</span>';
+  }
+  const foto = t.match(/^\[(foto|immagine)\]\s*(.*)$/s);
+  if(foto){
+    return (url ? '<a class="foto" href="'+url+'" target="_blank" rel="noopener" title="apri la foto"><img loading="lazy" alt="foto" src="'+url+'"></a>' : '<span class="file"><span class="ic">'+ICO_FILE('JPG')+'</span><span class="nm"><b>Foto</b><small>JPG</small></span></span>')+
+      (foto[2] ? '<span>'+esc(foto[2])+'</span>' : '');
+  }
+  return '<span>'+esc(t)+'</span>';
 }
 function chDisegnaConv(inFondo){
   const box = $('chMsg'), giu = inFondo || (box.scrollHeight - box.scrollTop - box.clientHeight < 80);
@@ -4048,8 +4104,8 @@ function chDisegnaConv(inFondo){
     const out = m.da === 'next';
     const st = out && m.st ? (m.st === 'read' ? ' &#10003;&#10003; letto' : m.st === 'delivered' ? ' &#10003;&#10003;' : m.st === 'sent' ? ' &#10003;' : m.st === 'failed' ? ' non consegnato' : '') : '';
     h += '<div class="bo '+(out?'out':'in')+'">'+(out ? '<span class="chi">'+chSigla(m)+esc(m.chi || 'Next')+'</span>' : '')+
-      (m.testa ? '<b>'+esc(m.testa)+'</b>' : '')+'<span>'+esc(m.testo || '')+'</span>'+
-      (m.media ? '<a href="'+WCH()+'?t='+encodeURIComponent(chTok)+'&media='+encodeURIComponent(m.media)+'" target="_blank" rel="noopener">apri '+(m.k === 'foto' ? 'la foto' : 'il file')+' ↗</a>' : '')+
+      (m.testa ? '<b>'+esc(m.testa)+'</b>' : '')+chCorpo(m)+
+      (m.media && !/^\[(documento|foto|immagine)\]/.test(String(m.testo || '')) ? '<a href="'+WCH()+'?t='+encodeURIComponent(chTok)+'&media='+encodeURIComponent(m.media)+'" target="_blank" rel="noopener">apri il file ↗</a>' : '')+
       (m.piede ? '<small style="opacity:.7">'+esc(m.piede)+'</small>' : '')+'<span class="ora">'+ora+st+'</span>'+
       ((m.pulsanti||[]).map(p => '<span class="pls">'+(p.url ? '&#8599; ' : '&#8617; ')+esc(p.testo || '')+'</span>').join(''))+'</div>';
   });
@@ -4073,22 +4129,64 @@ function chDatiHtml(d){
   if(d.spesa_gas) R.push(['Spesa gas', d.spesa_gas+' al mese']);
   return R.length ? '<div class="dati">'+R.map(x => '<span>'+esc(x[0])+'</span><span>'+esc(String(x[1]))+'</span>').join('')+'</div>' : '';
 }
+
+/* IL PERCORSO DI QUESTO CONTATTO, passo per passo con l ora (come nel disegno approvato) */
+function chOra(t){ if(!t) return ''; const d = new Date(t), h = d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+  return d.toDateString() === new Date().toDateString() ? h : d.toLocaleDateString('it-IT', { weekday:'short', day:'numeric' })+' '+h; }
+function chPassiW(){
+  const U = (chEv && chEv.uscite) || [], E = (chEv && chEv.eventi) || [], A = ((chEv && chEv.appuntamenti) || [])[0] || null;
+  const pu = f => (U.find(f) || {}).t || null, pe = f => (E.find(f) || {}).t || null;
+  const isLead = u => String(u.tipo).startsWith('lead') || u.tipo === 'prova_lead';
+  const futuro = A && A.stato === 'fissato' && new Date(A.quando) > new Date();
+  const W = [
+    ['W1', 'Primo contatto', pu(isLead)],
+    ['W2', 'Inizia la configurazione', pu(u => u.tipo === 'lead_configura')],
+    ['W3', 'Configuratore', pe(e => e.pagina === 'configuratore')],
+    ['W4', 'Grazie', pu(u => u.tipo === 'lead_attesa') || pe(e => e.evento === 'configurazione_inviata')],
+    ['W5', 'Ricevuta PDF', pu(u => u.tipo === 'lead_pdf' && /ricevuta/i.test(u.file || ''))],
+    ['W6', 'Esito del tetto', pu(u => u.tipo === 'lead_esito')],
+    ['W7', 'Proposta', pe(e => e.pagina === 'proposta')],
+    ['W8', 'Telefonata fissata', pu(u => u.tipo === 'lead_telefonata') || (A && A.creato) || null],
+    ['W9', 'Verifica e proposta PDF', pu(u => u.tipo === 'lead_pdf' && /verifica|proposta/i.test(u.file || ''))],
+    ['W10', 'Promemoria mattina', A && A.mattina_at || null, futuro ? A.quando : null],
+    ['W11', 'Promemoria un ora prima', A && A.ora_at || null, futuro ? A.quando : null],
+  ];
+  let ultimo = -1; W.forEach((w, i) => { if(w[2]) ultimo = i; });
+  return W.map((w, i) => {
+    const cl = w[2] ? (i === ultimo ? 'f q' : 'f') : '';
+    const segno = w[2] ? (i === ultimo ? '&#9679;' : '&#10003;') : '&#9675;';
+    const ora = w[2] ? chOra(w[2]) : (w[3] ? chOra(w[3]) : '');
+    return '<div class="pw '+cl+'"><i>'+segno+'</i><span class="sg">'+w[0]+'</span><span>'+esc(w[1])+'</span><span class="o">'+esc(ora)+'</span></div>';
+  }).join('');
+}
+/* COSA ABBIAMO MANDATO A LUI: messaggi automatici e PDF, in ordine, i PDF si aprono */
+function chInviati(){
+  const U = ((chEv && chEv.uscite) || []).filter(u => String(u.tipo).startsWith('lead') || u.tipo === 'prova_lead');
+  if(!U.length) return '<span class="vuoto">ancora niente</span>';
+  const nome = { lead_configura:'invito al configuratore', lead_attesa:'grazie, stiamo verificando', lead_esito:'esito del tetto', lead_telefonata:'conferma della telefonata', lead_promemoria:'promemoria della telefonata', lead_sposta:'telefonata spostata', prova_lead:'primo messaggio' };
+  return '<div class="inv">'+U.slice().reverse().map(u => {
+    const sg = u.tipo === 'lead_pdf' ? (/verifica|proposta/i.test(u.file || '') ? 'W9' : 'W5') : ((SIGLE[u.tipo] || [''])[0] || '');
+    const cosa = u.file ? u.file.replace(/^Next - /, '').replace(/\.pdf$/i, '') : (nome[u.tipo] || String(u.tipo).replace(/_/g, ' '));
+    const riga = '<span class="sg">'+esc(sg || 'WA')+'</span><span style="display:flex;align-items:center;gap:7px">'+(u.file ? ICO_PDF.replace('width="30" height="36"', 'width="16" height="19"') : '')+esc(cosa.charAt(0).toUpperCase()+cosa.slice(1))+'</span><span class="o">'+esc(chOra(u.t))+'</span>';
+    return u.link ? '<a href="'+esc(u.link)+'" target="_blank" rel="noopener" title="apri il PDF come l ha ricevuto">'+riga+'</a>' : '<span class="r">'+riga+'</span>';
+  }).join('')+'</div>';
+}
 function chDisegnaDx(c){
   const x = chExtra || {}, cod = (chEv && chEv.codici) || [], app = chEventi().filter(e => e.futuro);
   const fase = c.fase ? (FASEN[c.fase] || c.fase) : (c.gruppo ? (GRUPPON[c.gruppo] || c.gruppo) : 'non in archivio');
-  $('chTesta').innerHTML = '<span class="ch-av">'+esc(chIni(c.nome))+'</span><span style="display:flex;flex-direction:column;min-width:0;gap:2px"><b style="font-size:15px">'+esc(c.nome)+'</b><span class="mono" style="font-size:11.5px;color:var(--ink-3)">+'+esc(c.tel)+' · '+esc(fase)+' · '+(chFin && chFin.aperta ? 'chat aperta' : 'chat chiusa: messaggi liberi in attesa, o un modello')+'</span>'+chVisti()+'</span>';
+  $('chTesta').innerHTML = '<span class="ch-av">'+esc(chIni(c.nome))+'</span><span style="display:flex;flex-direction:column;min-width:0;gap:2px"><b style="font-size:15px">'+esc(c.nome)+'</b><span class="mono" style="font-size:11.5px;color:var(--ink-3)">+'+esc(c.tel)+' · '+esc(fase)+' · '+(chFin && chFin.aperta ? 'chat aperta' : 'chat chiusa: messaggi liberi in attesa, o un modello')+'</span>'+chVisti()+'</span>'+
+    '<span class="ch-tonde">'+(c.in_mano ? '<span class="lbl">in mano a '+esc(String(c.in_mano.chi).split(' ')[0])+'</span>' : '')+
+      '<button class="t-mano" data-chmano="'+(c.in_mano ? '0' : '1')+'" aria-pressed="'+(!!c.in_mano)+'" aria-label="'+(c.in_mano ? 'Ridai agli automatismi' : 'Prendo io: fermo gli automatismi')+'" title="'+(c.in_mano ? 'Ridai agli automatismi' : 'Prendo io: fermo gli automatismi')+'">'+ICO_MANO+'</button>'+
+      '<button class="t-tel" data-itel="'+esc(c.tel)+'" data-inome="'+esc(c.nome)+'" aria-label="Chiama (con doppia conferma)" title="Chiama: prima squilla il tuo telefono">'+ICO_TEL+'</button>'+
+      (c.contatto_id ? '<button class="t-sch" data-isch="'+c.contatto_id+'" aria-label="Scheda del lead" title="Scheda del lead">'+ICO_SCH+'</button>' : '')+'</span>';
   const mano = c.in_mano;
   let h = '<div><h3>Contatto</h3><b style="font-size:16px">'+esc(c.nome)+'</b><div class="mono" style="font-size:12px;color:var(--ink-3)">+'+esc(c.tel)+' · '+esc(fase)+(c.commerciale ? ' · '+esc(c.commerciale) : '')+'</div></div>';
-  h += '<div class="riga2"><button class="bgr tel" data-itel="'+esc(c.tel)+'" data-inome="'+esc(c.nome)+'">'+ICO_TEL+' Chiama</button>'+
-    '<button class="bgr mano" data-chmano="'+(mano ? '0' : '1')+'" aria-pressed="'+(!!mano)+'">'+(mano ? 'Ridai agli automatismi' : 'Prendo io: fermo gli automatismi')+'</button></div>';
   if(mano) h += '<div class="inmano">In mano a <b>'+esc(mano.chi)+'</b> dal '+esc(new Date(mano.dal).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }))+'. Su questo numero gli automatismi del percorso stanno fermi: rispondi tu.</div>';
   if(c.contatto_id){
     const f = x.filtro || 'buono', n = x.n || 0;
     h += '<div><h3>Filtro</h3><span class="esf '+f+'">'+(f==='da_verificare'?'da verificare':f)+'</span>'+(x.filtro_perche ? ' <small>'+esc(x.filtro_perche)+'</small>' : '')+'</div>';
-    h += '<div><h3>Percorso, a che punto</h3>'+(x.tappa ? '<div style="font-size:12.5px;margin-bottom:6px">Tappa <b>'+x.tappa+' di 12</b>: '+esc(TAPPE[x.tappa])+'</div>' : '')+'<div class="vis">'+cSchermo(x, true)+'<div class="passi">'+PASSIW.map((p, i) => {
-        const k = i + 1, cl = k < n ? 'fatto' : k === n ? 'fatto qui' : '';
-        return '<div class="'+cl+'"><i>'+(k <= n ? '&#10003;' : '&middot;')+'</i><span class="sg">'+p[0]+'</span><span>'+esc(p[1])+(k === n && x.punto ? ' <small style="color:var(--ink-3);font-weight:400">'+esc(x.punto)+'</small>' : '')+'</span></div>';
-      }).join('')+app.map(a => '<div class="qui"><i>&#9742;</i><span class="sg"></span><span>'+esc(a.testo)+'</span></div>').join('')+'</div></div></div>';
+    h += '<div><h3>Percorso, a che punto</h3><div class="vis" style="margin-bottom:8px">'+cSchermo(x, true)+'<div style="font-size:12.5px;line-height:1.45">'+(x.tappa ? 'Tappa <b>'+x.tappa+' di 12</b>: '+esc(TAPPE[x.tappa])+'<br>' : '')+(x.nodo ? '<span class="nodoc">'+esc(x.nodo)+'</span> ' : '')+esc(x.punto || 'fuori dal percorso')+'</div></div>'+chPassiW()+'</div>';
+    h += '<div><h3>Cosa gli abbiamo mandato</h3>'+chInviati()+'</div>';
     h += '<div><h3>Il tetto</h3>'+cCasa(x, true)+'</div>';
     const dati = chDatiHtml(x.dati);
     h += '<div><h3>Quello che ci ha detto</h3>'+(dati || '<span class="vuoto">ancora niente: i dati compaiono qui man mano che li scrive</span>')+'</div>';
@@ -4112,7 +4210,7 @@ function chDisegnaDx(c){
 }
 async function chRicaricaDx(){ if(!chCorr) return; await chCaricaExtraContatto(chCorr); chDisegnaDx(chCorr); }
 document.addEventListener('click', async (e) => {
-  const b = e.target.closest && e.target.closest('#chDx button'); if(!b || !chCorr) return;
+  const b = e.target.closest && e.target.closest('#chDx button, #chTesta [data-chmano]'); if(!b || !chCorr) return;
   const c = chCorr, d = b.dataset;
   if(d.chmano){
     b.disabled = true;
