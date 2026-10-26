@@ -5282,7 +5282,7 @@ setTimeout(accendiTelefono, 1200);
     chDisegnaDx=function(c){ orig(c); try{
       var dx=document.getElementById('chDx'); if(!dx) return;
       var pezzi={}; Array.prototype.forEach.call(dx.children,function(d){ var h=d.querySelector('h3'); if(h) pezzi[h.textContent.trim()]=d; });
-      ['Il tetto','Quello che ci ha detto','Tag','Liste','Percorso, a che punto','Cosa gli abbiamo mandato'].forEach(function(n){ if(pezzi[n]) dx.appendChild(pezzi[n]); });
+      ['Percorso, a che punto','Il tetto','Quello che ci ha detto','Tag','Liste','Cosa gli abbiamo mandato'].forEach(function(n){ if(pezzi[n]) dx.appendChild(pezzi[n]); });
     }catch(e){} };
   }
 })();
