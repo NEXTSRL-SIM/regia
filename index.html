@@ -5248,7 +5248,7 @@ window.PAGINE_NUOVE={'contratti-firmati':'https://nextsrl-sim.github.io/contratt
     VISTE.forEach(function(v){var e=document.getElementById(v); if(e) e.classList.add('nascosto');});
     sub.querySelectorAll('.st').forEach(function(b){b.setAttribute('aria-selected','false');});
     nav.querySelectorAll('.mn-v').forEach(function(a){a.classList.toggle('on',a===el);});
-    var f=document.getElementById('ifPortale'); if(f.getAttribute('data-p')!==p){ f.src=(window.PAGINE_NUOVE&&PAGINE_NUOVE[p])||(B+p); f.setAttribute('data-p',p); }
+    var f=document.getElementById('ifPortale'); if(f.getAttribute('data-p')!==p){ f.src=(window.PAGINE_NUOVE&&PAGINE_NUOVE[p])?(PAGINE_NUOVE[p]+'?v='+Date.now()):(B+p); f.setAttribute('data-p',p); }
     vp.classList.remove('nascosto');
     try{localStorage.setItem('mn_pag',p)}catch(e){}
     if(!fisso()) nav.classList.remove('largo');
