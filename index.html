@@ -5303,6 +5303,8 @@ window.PAGINE_NUOVE={'contratti-firmati':'https://nextsrl-sim.github.io/contratt
   try{ if(!localStorage.getItem('portale_primo')){ localStorage.setItem('portale_primo','1'); if(typeof tema==='function') tema('chiaro'); } }catch(e){}
   nav.addEventListener('click',function(e){ if(e.target.closest('.st')){ try{localStorage.setItem('mn_pag','regia')}catch(x){} } });
   var p=null; try{ p=localStorage.getItem('mn_pag'); }catch(e){}
+  /* i vecchi indirizzi n8n rimandano qui con #apri=<pagina>: si apre quella */
+  var h=(location.hash.match(/apri=([a-z0-9-]+)/)||[])[1]; if(h){ p=h; try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} }
   if(p==='regia') return;
   var a=nav.querySelector('.mn-v[data-pag="'+(p||'dashboard')+'"]')||nav.querySelector('.mn-v[data-pag="dashboard"]');
   if(a) a.click();
