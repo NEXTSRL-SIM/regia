@@ -1035,8 +1035,8 @@ td.azc .ico3{margin-top:0}
 .ch-dx .pic.due .vuoto{grid-column:1/-1}
 
 /* il tondo + accanto a Tag e Liste (Sante 13:19) */
-.ch-dx .tit-piu{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.ch-dx .piu-t{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--amber);color:var(--amber);background:transparent;font:700 15px/1 var(--sans);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+.ch-dx .tit-piu{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ch-dx .piu-t{width:16px;height:16px;border-radius:50%;border:1px solid var(--amber);color:var(--amber);background:transparent;display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;line-height:0;transition:background .12s}.ch-dx .piu-t:hover{background:var(--amber-wash)}.ch-dx .piu-t svg{display:block}
 .ch-dx .piu-t[aria-expanded=true]{background:var(--amber);color:#05202a}
 .ch-dx .pop{margin-top:6px;padding:8px;border:1px solid var(--line-2);background:var(--surface-2);display:flex;flex-wrap:wrap;gap:4px}
 .ch-dx .pop > button{font-size:11px;font-weight:600;padding:2px 7px;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:1px solid}
@@ -1052,6 +1052,37 @@ td.azc .ico3{margin-top:0}
 .ch-fm .fm.on{background:var(--amber-wash);border-color:var(--amber);color:var(--titolo)}
 .ch-fm .fm.multi{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border-style:dashed}
 .ch-fm .fm.multi.on{border-style:solid}
+
+/* tenere premuto: menu, selezione, Riccardo (come nella Chat Next) */
+.ch-menu{position:fixed;z-index:95;display:flex;flex-direction:column;min-width:220px;background:var(--surface);border:1px solid var(--line-2);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.ch-menu button{text-align:left;padding:10px 14px;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer}
+.ch-menu button:hover{background:var(--surface-2)}
+.ch-menu .vai{color:#C9B8FF;font-weight:600}
+.ch-menu .sec{color:var(--ink-3)}
+.bo[data-mk]{cursor:default;user-select:text;position:relative}
+.bo.scelto{outline:2px solid #A78BFA;outline-offset:2px}
+.bo .spunta{position:absolute;left:-26px;top:6px;width:18px;height:18px;border-radius:50%;border:1.5px solid #A78BFA;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.bo.scelto .spunta{background:#A78BFA}
+.ch-selbar{display:flex;align-items:center;gap:12px;padding:8px 10px;margin-bottom:8px;border:1px solid var(--line-2)}
+.ch-selbar.ric{background:var(--viola-wash);border-color:#A78BFA}
+.ch-selbar.inol{background:var(--amber-wash);border-color:var(--amber)}
+.ch-arbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 10px;margin-bottom:8px;background:var(--viola-wash);border:1px solid #A78BFA;color:#C9B8FF;font-size:12.5px}
+.bott.vio{background:#7C5CE0 !important;border-color:#7C5CE0 !important;color:#fff !important}
+.bo.cons{align-self:center;max-width:min(560px,88%);background:var(--viola-wash);border:1px solid #6D5BD0;color:var(--ink);border-radius:8px}
+.bo.cons .chi{color:#C9B8FF}
+.bo.cons .cit{display:block;border-left:3px solid #A78BFA;padding-left:7px;opacity:.85;font-size:12.5px}
+.bo.cons .pcli{display:flex;flex-direction:column;gap:3px;margin-top:4px;padding:7px 9px;background:rgba(0,0,0,.18);border-radius:6px}
+.bo.cons .pcli b{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#C9B8FF}
+.bo.cons .az{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.bo.cons .az button{font-size:12px;padding:4px 9px;border:1px solid #A78BFA;background:transparent;color:#C9B8FF;cursor:pointer}
+.bo.cons .att{font-style:italic;opacity:.8}
+:root[data-tema="chiaro"] .bo.cons{background:#F1ECFF;color:#2B2250}
+:root[data-tema="chiaro"] .bo.cons .chi,:root[data-tema="chiaro"] .bo.cons .pcli b{color:#5B3FC4}
+.inl{display:flex;flex-direction:column;max-height:240px;overflow:auto;border:1px solid var(--line-2)}
+.inl .inr{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:7px 10px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;cursor:pointer}
+.inl .inr:hover{background:var(--surface-2)}
+.inl .inr small{font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.ch-selbar[hidden],.ch-arbar[hidden]{display:none !important}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script></head><body>
 <div class="porta" id="porta">
@@ -4110,7 +4141,8 @@ async function chApri(arg){
   chTok = c.token || null;
   if(!chTok){ const j = await chPost(RCH(), { t: PASS, chi: CHI, apri: tel }); if(j && j.ok){ chTok = j.token; c.token = j.token; chSel = chKey(c); } else { $('chMsg').innerHTML = '<div class="ch-vuoto">'+esc((j && j.errore) || 'la chat non si apre')+'</div>'; return; } }
   const mia = chSel;
-  await Promise.all([chCaricaMsg(), chCaricaEventi(tel), chCaricaExtraContatto(c), cCaricaTag(), chListe ? null : chCaricaListe()]);
+  chSelMsg = null; chSelModo = null;
+  await Promise.all([chCaricaMsg(), chCaricaEventi(tel), chCaricaExtraContatto(c), cCaricaTag(), chListe ? null : chCaricaListe(), chCaricaCons()]);
   if(chSel !== mia) return;
   chDisegnaConv(true); chDisegnaDx(c); chDisegnaScrivi(c);
 }
@@ -4172,6 +4204,7 @@ function chCorpo(m){
 /* FILTRO DEI MESSAGGI PER CHI LI HA SCRITTI (Sante 26/10 13:21): i tasti nascono da quello che c e nella conversazione */
 let chFm = new Set(), chFmMulti = false;
 function chChiDi(m){
+  if(m.cons) return 'Riccardo · interno';
   if(m.ev) return 'Pagine';
   if(m.tipo === 'chiamata') return 'Chiamate';
   if(m.da === 'cliente') return 'Cliente';
@@ -4198,21 +4231,146 @@ document.addEventListener('click', (e) => {
   else chFm = chFm.has(k) && chFm.size === 1 ? new Set() : new Set([k]);
   chDisegnaConv(true);
 });
+
+/* ===== TENENDO PREMUTO UN MESSAGGIO (come nella Chat Next): Fai valutare a Riccardo, Copia il testo, Inoltra ===== */
+const RICC = () => API.replace(/regia$/, 'riccardo-consulto');
+let chCons = [], chMappa = {}, chSelMsg = null, chSelModo = null, chAR = false, chPremi = null;
+function chChiaveMsg(m){ return (m.da || '') + '|' + m.t; }
+function chTestoPulito(m){ return String(m.testo || '').replace(/\n\n[^\n]{2,60} · Next S\.r\.l\.\s*$/, '').trim(); }
+async function chCaricaCons(){ chCons = []; if(!chTok) return; try{ const j = await (await fetch(RICC()+'?t='+encodeURIComponent(chTok), { cache:'no-store' })).json(); if(j && j.ok) chCons = j.consulti || []; }catch(e){} }
+function chConsHtml(c, ora){
+  if(c.da === 'riccardo'){
+    const pz = String(c.testo || '').split(/\n\s*\*?TESTO PER IL CLIENTE:?\*?\s*\n/i);
+    return '<div class="bo cons ric"><span class="chi">Riccardo · solo interno · '+ora+'</span>'+(c.stato === 'in_corso' ? '<span class="att">Riccardo sta valutando…</span>' : '<span>'+esc(pz[0])+'</span>'+(pz[1] ? '<span class="pcli"><b>Testo per il cliente</b>'+esc(pz[1])+'</span>' : ''))+
+      (c.stato === 'ok' ? '<span class="az"><button data-crisp="1">Rispondi a Riccardo</button>'+(pz[1] ? '<button data-cgira="'+c.id+'">Gira al cliente</button>' : '')+'</span>' : '')+'</div>';
+  }
+  return '<div class="bo cons dom"><span class="chi">'+esc(c.autore || 'Next')+' a Riccardo · '+ora+'</span>'+((c.messaggi || []).map(q => '<span class="cit">'+esc(q.chi || 'Cliente')+': '+esc(q.testo || '')+'</span>').join(''))+'<span>'+esc(c.testo || '')+'</span></div>';
+}
+function chMenu(k, x, y){
+  chChiudiMenu();
+  const d = document.createElement('div'); d.className = 'ch-menu'; d.id = 'chMenu';
+  d.innerHTML = '<button data-mm="ric" class="vai">Fai valutare a Riccardo</button><button data-mm="copia">Copia il testo</button><button data-mm="inoltra">Inoltra…</button><button data-mm="no" class="sec">Annulla</button>';
+  d.dataset.k = k; document.body.appendChild(d);
+  const w = d.offsetWidth, h = d.offsetHeight;
+  d.style.left = Math.min(x, window.innerWidth - w - 10) + 'px'; d.style.top = Math.min(y, window.innerHeight - h - 10) + 'px';
+}
+function chChiudiMenu(){ const m = $('chMenu'); if(m) m.remove(); }
+function chSelezione(si, k, modo){
+  chSelMsg = si ? new Set(k ? [k] : []) : null; chSelModo = si ? modo : null;
+  const bar = $('chSelBar');
+  if(bar){ bar.hidden = !si; bar.className = 'ch-selbar '+(modo === 'ric' ? 'ric' : 'inol'); }
+  chContaSel(); chDisegnaConv(false);
+}
+function chContaSel(){
+  const n = chSelMsg ? chSelMsg.size : 0, b = $('chSelBar'); if(!b) return;
+  b.innerHTML = '<b>'+n+(n === 1 ? ' messaggio scelto' : ' messaggi scelti')+'</b><span style="font-size:12px;opacity:.8">'+(chSelModo === 'ric' ? 'tocca altri messaggi da aggiungere; se vuoi scrivi una nota nel campo in basso' : 'tocca altri messaggi da aggiungere')+'</span>'+
+    '<span style="margin-left:auto;display:flex;gap:8px"><button class="bott" data-sel="no">Annulla</button>'+
+    (chSelModo === 'ric' ? '<button class="bott forte vio" data-sel="ric"'+(n ? '' : ' disabled')+'>Fai valutare a Riccardo</button>' : '<button class="bott forte" data-sel="inoltra"'+(n ? '' : ' disabled')+'>Inoltra…</button>')+'</span>';
+}
+function chScelti(){ return [...(chSelMsg || [])].map(k => chMappa[k]).filter(Boolean).sort((a, b) => a.tt < b.tt ? -1 : 1); }
+async function chCopia(t){ try{ await navigator.clipboard.writeText(t); avvisa('Testo copiato'); }catch(e){ const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); avvisa('Testo copiato'); }catch(_){ avvisa('non riesco a copiare'); } ta.remove(); } }
+async function chFaiValutare(){
+  const sc = chScelti(); if(!sc.length) return;
+  const io = await chIdentita(); if(!io){ avvisa(chIoErr || 'non riesco a riconoscerti'); return; }
+  const ta = $('chTesto'), nota = ta ? ta.value.trim() : '';
+  const messaggi = sc.map(m => ({ testo: chTestoPulito(m), ora: new Date(m.tt).toLocaleString('it-IT', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }), chi: m.da === 'cliente' ? 'Cliente' : (m.chi || 'Next'), media: m.media || undefined }));
+  const j = await chPost(RICC(), { t: chTok, a: io, chiedi: { messaggi, nota } });
+  if(!j || !j.ok){ avvisa('Non arrivato a Riccardo: '+((j && j.motivo) || 'errore')); return; }
+  if(nota && ta) ta.value = '';
+  chSelezione(false); await chCaricaCons(); chDisegnaConv(true); avvisa('Riccardo sta valutando: la risposta compare qui, la vedete solo voi di Next');
+  chAspettaRiccardo();
+}
+function chAspettaRiccardo(){ setTimeout(async () => { await chCaricaCons(); chDisegnaConv(false); if(chCons.some(c => c.stato === 'in_corso')) chAspettaRiccardo(); }, 3000); }
+/* INOLTRA: a Riccardo (assistenza) oppure a un'altra chat, con il testo davanti agli occhi prima di mandare */
+function chInoltraFinestra(){
+  const sc = chScelti(); if(!sc.length) return;
+  const testo = sc.map(m => chTestoPulito(m).replace(/^\[(foto|immagine|documento)\]\s*/, '')).filter(Boolean).join('\n\n');
+  const allegati = sc.filter(m => m.media).length;
+  const v = document.createElement('div'); v.className = 'conf'; v.id = 'chInol'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-modal', 'true');
+  const righe = () => chElenco.filter(c => c.token && c.token !== chTok).filter(c => { const q = (($('inCerca') || {}).value || '').toLowerCase(); return !q || String(c.nome).toLowerCase().includes(q) || String(c.tel).includes(q); }).slice(0, 40)
+    .map(c => '<button class="inr" data-ina="'+esc(c.token)+'" data-inn="'+esc(c.nome)+'"><b>'+esc(c.nome)+'</b><small>'+esc(c.gruppo || c.fase || '')+' · +'+esc(c.tel)+'</small></button>').join('');
+  v.innerHTML = '<div class="box" style="width:min(560px,calc(100vw - 32px))"><span class="mono" style="font-size:10.5px;letter-spacing:.09em;color:var(--ink-3)">INOLTRA</span>'+
+    '<textarea id="inTesto" rows="5" style="width:100%;box-sizing:border-box;background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:8px;font:inherit;font-size:13px">'+esc(testo)+'</textarea>'+
+    (allegati ? '<small style="color:var(--giallo)">'+allegati+(allegati === 1 ? ' allegato' : ' allegati')+': per ora si inoltra solo il testo (foto e PDF li apri e li mandi a mano).</small>' : '')+
+    '<button class="bott forte vio" data-ina="ric">Inoltra a Riccardo · assistenza (solo interno)</button>'+
+    '<span style="font-size:12px;color:var(--ink-3)">oppure a un altra persona: parte dal numero di Next, firmato col tuo nome</span>'+
+    '<input id="inCerca" placeholder="cerca la chat a cui inoltrare" style="background:var(--ground);color:var(--ink);border:1px solid var(--line-2);padding:7px 9px;font:inherit">'+
+    '<div id="inLista" class="inl">'+righe()+'</div><div class="riga"><button class="bott" data-ina="no">Annulla</button></div></div>';
+  document.body.appendChild(v);
+  v.addEventListener('input', (e) => { if(e.target.id === 'inCerca') $('inLista').innerHTML = righe(); });
+  v.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-ina],[data-inok]'); if(!b){ if(e.target === v) v.remove(); return; }
+    if(b.dataset.ina === 'no'){ v.remove(); return; }
+    if(b.dataset.ina === 'ric'){ v.remove(); chSelModo = 'ric'; await chFaiValutare(); return; }
+    if(b.dataset.ina){
+      const t = $('inTesto').value.trim(); if(!t){ avvisa('niente da inoltrare'); return; }
+      const box = v.querySelector('.box');
+      box.innerHTML = '<b style="font-size:16px">Mandare a '+esc(b.dataset.inn)+'?</b><pre style="white-space:pre-wrap;font:inherit;font-size:13px;background:var(--ground);border:1px solid var(--line-2);padding:8px;max-height:260px;overflow:auto">'+esc(t)+'</pre>'+
+        '<small style="color:var(--ink-3)">Parte dal numero di Next con la tua firma. Se la sua chat e chiusa resta in attesa.</small><div class="riga"><button class="bott" data-ina="no">Annulla</button><button class="bott forte" data-inok="'+esc(b.dataset.ina)+'">Manda</button></div>';
+      box.dataset.testo = t; return;
+    }
+    if(b.dataset.inok){
+      const io = await chIdentita(); if(!io){ avvisa(chIoErr || 'non riesco a riconoscerti'); return; }
+      b.disabled = true;
+      const j = await chPost(WCH(), { t: b.dataset.inok, testo: v.querySelector('.box').dataset.testo, a: io });
+      v.remove(); chSelezione(false);
+      avvisa(j && j.ok ? (j.in_attesa ? 'inoltrato: in attesa, parte quando quella persona riscrive' : 'inoltrato') : ((j && j.motivo) || 'non e partito'));
+      chCaricaElenco();
+    }
+  });
+}
+/* tenere premuto (o tasto destro) su una bolla */
+document.addEventListener('pointerdown', (e) => {
+  const b = e.target.closest && e.target.closest('#chMsg .bo[data-mk]'); if(!b || e.button === 2) return;
+  if(chSelMsg) return;
+  chPremi = setTimeout(() => { chPremi = 'fatto'; chMenu(b.dataset.mk, e.clientX, e.clientY); }, 550);
+});
+['pointerup','pointerleave','pointercancel'].forEach(t => document.addEventListener(t, () => { if(chPremi && chPremi !== 'fatto') clearTimeout(chPremi); }));
+document.addEventListener('contextmenu', (e) => { const b = e.target.closest && e.target.closest('#chMsg .bo[data-mk]'); if(!b) return; e.preventDefault(); chMenu(b.dataset.mk, e.clientX, e.clientY); });
+document.addEventListener('click', async (e) => {
+  const mm = e.target.closest && e.target.closest('#chMenu [data-mm]');
+  if(mm){ const k = $('chMenu').dataset.k, a = mm.dataset.mm; chChiudiMenu();
+    if(a === 'ric') chSelezione(true, k, 'ric');
+    else if(a === 'inoltra') chSelezione(true, k, 'inoltra');
+    else if(a === 'copia'){ const m = chMappa[k]; if(m) chCopia(chTestoPulito(m)); }
+    return; }
+  if(!(e.target.closest && e.target.closest('#chMenu'))) chChiudiMenu();
+  if(chPremi === 'fatto'){ chPremi = null; return; }
+  const bo = e.target.closest && e.target.closest('#chMsg .bo[data-mk]');
+  if(bo && chSelMsg){ const k = bo.dataset.mk; chSelMsg.has(k) ? chSelMsg.delete(k) : chSelMsg.add(k); chContaSel(); chDisegnaConv(false); return; }
+  const sb = e.target.closest && e.target.closest('#chSelBar [data-sel]');
+  if(sb){ if(sb.dataset.sel === 'no') chSelezione(false); else if(sb.dataset.sel === 'ric') chFaiValutare(); else chInoltraFinestra(); return; }
+  const rp = e.target.closest && e.target.closest('#chMsg [data-crisp]');
+  if(rp){ chModoRiccardo(true); return; }
+  const gi = e.target.closest && e.target.closest('#chMsg [data-cgira]');
+  if(gi){ const c = chCons.find(z => String(z.id) === gi.dataset.cgira); if(!c) return; chModoRiccardo(false);
+    const pz = String(c.testo).split(/\n\s*\*?TESTO PER IL CLIENTE:?\*?\s*\n/i); const ta = $('chTesto'); if(ta){ ta.value = (pz[1] || '').trim(); ta.focus(); avvisa('Testo nel campo in basso: controllalo e premi Invia'); } return; }
+  if(e.target.closest && e.target.closest('#chArEsci')){ chModoRiccardo(false); return; }
+});
+function chModoRiccardo(si){
+  chAR = !!si; const b = $('chArBar'); if(b) b.hidden = !chAR;
+  const ta = $('chTesto'); if(ta){ ta.placeholder = chAR ? 'Scrivi a Riccardo… (solo interno, il cliente non lo vede)' : 'Scrivi a '+((chCorr && chCorr.nome) || '')+'...'; if(chAR) ta.focus(); }
+  const inv = $('chInvia'); if(inv) inv.classList.toggle('vio', chAR);
+}
 function chDisegnaConv(inFondo){
   const box = $('chMsg'), giu = inFondo || (box.scrollHeight - box.scrollTop - box.clientHeight < 80);
-  const tuttiM = chMsgs.map(m => Object.assign({ tt: m.t }, m)).concat(chEventi().filter(e => !e.futuro).map(e => Object.assign({ tt: e.t }, e))).sort((a,b) => a.tt < b.tt ? -1 : 1);
+  const tuttiM = chMsgs.map(m => Object.assign({ tt: m.t }, m)).concat(chEventi().filter(e => !e.futuro).map(e => Object.assign({ tt: e.t }, e)))
+    .concat((chCons || []).map(c => ({ tt: new Date(c.creato_at).toISOString(), cons: c }))).sort((a,b) => a.tt < b.tt ? -1 : 1);
   chDisegnaFm(tuttiM);
   const tutti = chFm.size ? tuttiM.filter(m => chFm.has(chChiDi(m))) : tuttiM;
+  chMappa = {};
   let g = '', h = '';
   tutti.forEach(m => {
     const d = new Date(m.tt).toLocaleDateString('it-IT', { weekday:'long', day:'numeric', month:'long' });
     if(d !== g){ g = d; h += '<span class="giorno">'+esc(d.toUpperCase())+'</span>'; }
     const ora = new Date(m.tt).toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+    if(m.cons){ h += chConsHtml(m.cons, ora); return; }
     if(m.ev){ h += '<span class="ev">'+(m.app ? esc(m.testo) : esc(PAGN[m.pagina] || m.pagina)+': '+esc(m.voci.join(' · ')))+' · '+ora+'</span>'; return; }
     if(m.tipo === 'chiamata'){ h += '<span class="ev">&#9742; '+esc(m.testo)+(m.chi ? ' · '+esc(m.chi) : '')+(m.chiamata && m.chiamata.durata ? ' · '+Math.round(m.chiamata.durata/60)+' min' : '')+' · '+ora+'</span>'; return; }
     const out = m.da === 'next';
     const st = out && m.st ? (m.st === 'read' ? ' &#10003;&#10003; letto' : m.st === 'delivered' ? ' &#10003;&#10003;' : m.st === 'sent' ? ' &#10003;' : m.st === 'failed' ? ' non consegnato' : '') : '';
-    h += '<div class="bo '+(out?'out':'in')+'">'+(out ? '<span class="chi">'+chSigla(m)+esc(m.chi || 'Next')+'</span>' : '')+
+    const kk = chChiaveMsg(m); chMappa[kk] = m;
+    h += '<div class="bo '+(out?'out':'in')+(chSelMsg && chSelMsg.has(kk) ? ' scelto' : '')+'" data-mk="'+esc(kk)+'">'+(chSelMsg ? '<span class="spunta" aria-hidden="true">'+(chSelMsg.has(kk) ? '&#10003;' : '')+'</span>' : '')+(out ? '<span class="chi">'+chSigla(m)+esc(m.chi || 'Next')+'</span>' : '')+
       (m.testa ? '<b>'+esc(m.testa)+'</b>' : '')+chCorpo(m)+
       (m.media && !/^\[(documento|foto|immagine)\]/.test(String(m.testo || '')) ? '<a href="'+WCH()+'?t='+encodeURIComponent(chTok)+'&media='+encodeURIComponent(m.media)+'" target="_blank" rel="noopener">apri il file ↗</a>' : '')+
       (m.piede ? '<small style="opacity:.7">'+esc(m.piede)+'</small>' : '')+'<span class="ora">'+ora+st+'</span>'+
@@ -4324,11 +4482,11 @@ function chDisegnaDx(c){
   }
   if(c.contatto_id){
     const giaTag = (x.tag || []).map(t => t.id);
-    h += '<div><div class="tit-piu"><h3>Tag</h3><button class="piu-t" data-chpiu="tag" aria-expanded="'+(chAperto === 'tag')+'" aria-label="Aggiungi un tag" title="Aggiungi un tag">+</button></div><div class="pic">'+((x.tag||[]).map(t => '<span class="lstx">'+cTagHtml(t)+'<button data-chtagx="'+t.id+'" aria-label="togli '+esc(t.nome)+'">&times;</button></span>').join('') || '<span class="vuoto">nessuno</span>')+'</div>'+
+    h += '<div><div class="tit-piu"><h3>Tag</h3><button class="piu-t" data-chpiu="tag" aria-expanded="'+(chAperto === 'tag')+'" aria-label="Aggiungi un tag" title="Aggiungi un tag"><svg aria-hidden="true" width="8" height="8" viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button></div><div class="pic">'+((x.tag||[]).map(t => '<span class="lstx">'+cTagHtml(t)+'<button data-chtagx="'+t.id+'" aria-label="togli '+esc(t.nome)+'">&times;</button></span>').join('') || '<span class="vuoto">nessuno</span>')+'</div>'+
       (chAperto === 'tag' ? '<div class="pop">'+(cTag.filter(t => !giaTag.includes(t.id)).map(t => '<button class="etc" data-chtagm="'+t.id+'" style="'+cTagStile(t.colore)+'">'+esc(t.nome)+'</button>').join('') || '<span class="vuoto">nessun tag ancora: crealo qui sotto</span>')+
         '<div class="nuovo"><input id="chTagNome" placeholder="nuovo tag, es. interessato al termico" maxlength="40"><div class="sws">'+CTCOL.map((c, i) => '<button class="sw" data-chsw="'+c+'" aria-pressed="'+(i === 0)+'" style="background:'+c+'" aria-label="colore '+c+'"></button>').join('')+'</div><button class="bott forte" data-chtagnuovo="1">Crea e metti</button></div></div>' : '')+'</div>';
     const giaL = (x.liste || []).map(l => l.id);
-    h += '<div><div class="tit-piu"><h3>Liste</h3><button class="piu-t" data-chpiu="lista" aria-expanded="'+(chAperto === 'lista')+'" aria-label="Metti in una lista" title="Metti in una lista">+</button></div><div class="pic due">'+((x.liste||[]).map(l => '<span class="lstx" title="'+esc(l.nome)+'">'+cListaHtml(l)+'<button data-chlx="'+l.id+'" aria-label="togli dalla lista">&times;</button></span>').join('') || '<span class="vuoto">in nessuna lista</span>')+'</div>'+
+    h += '<div><div class="tit-piu"><h3>Liste</h3><button class="piu-t" data-chpiu="lista" aria-expanded="'+(chAperto === 'lista')+'" aria-label="Metti in una lista" title="Metti in una lista"><svg aria-hidden="true" width="8" height="8" viewBox="0 0 8 8"><path d="M4 1v6M1 4h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button></div><div class="pic due">'+((x.liste||[]).map(l => '<span class="lstx" title="'+esc(l.nome)+'">'+cListaHtml(l)+'<button data-chlx="'+l.id+'" aria-label="togli dalla lista">&times;</button></span>').join('') || '<span class="vuoto">in nessuna lista</span>')+'</div>'+
       (chAperto === 'lista' ? '<div class="pop">'+((chListe||[]).filter(l => l.stato !== 'archiviata' && !giaL.includes(l.id)).map(l => '<button class="lst" data-chlistam="'+l.id+'" title="'+esc(l.nome)+'" style="color:'+(cColoriListe[l.id] || CTCOL[Number(l.id) % CTCOL.length])+';border-color:'+(cColoriListe[l.id] || CTCOL[Number(l.id) % CTCOL.length])+'">'+esc(l.nome)+'</button>').join('') || '<span class="vuoto">nessuna lista aperta</span>')+
         '<div class="nuovo"><input id="chListaNome" placeholder="nuova lista, es. Termici" maxlength="60"><button class="bott forte" data-chlistanuova="1">Crea e metti</button></div></div>' : '')+'</div>';
   }
@@ -4386,8 +4544,8 @@ document.addEventListener('change', async (e) => {
   if(t.id === 'chListaAgg'){ await chPost(CAPI(), { t: PASS, chi: CHI, lista: Number(t.value), aggiungi: [chCorr.contatto_id] }); await chRicaricaDx(); }
 });
 function chDisegnaScrivi(c){
-  const box = $('chScrivi'); box.hidden = false;
-  box.innerHTML = '<div class="rr"><label for="chTesto" class="nascosto">Scrivi un messaggio</label><textarea id="chTesto" rows="2" placeholder="Scrivi a '+esc(c.nome)+'..."></textarea><button class="bott forte" id="chInvia">Invia</button></div>'+
+  const box = $('chScrivi'); box.hidden = false; chAR = false;
+  box.innerHTML = '<div class="ch-selbar" id="chSelBar" hidden></div><div class="ch-arbar" id="chArBar" hidden><b>&#8617; Stai scrivendo a Riccardo · solo interno</b><button class="bott" id="chArEsci">torna al cliente</button></div><div class="rr"><label for="chTesto" class="nascosto">Scrivi un messaggio</label><textarea id="chTesto" rows="2" placeholder="Scrivi a '+esc(c.nome)+'..."></textarea><button class="bott forte" id="chInvia">Invia</button></div>'+
     '<span class="mono" id="chNota" style="font-size:11px;color:var(--ink-3)">Parte dal numero di Next, firmato col tuo nome, e resta nella chat. '+(chFin && chFin.aperta ? '' : 'La chat e chiusa (oltre 24 ore): il messaggio resta in attesa e parte quando il cliente riscrive.')+'</span>';
 }
 async function chInvia(){
@@ -4395,6 +4553,12 @@ async function chInvia(){
   const b = $('chInvia'); b.disabled = true; b.textContent = 'invio...';
   const io = await chIdentita();
   if(!io){ b.disabled = false; b.textContent = 'Invia'; avvisa(chIoErr || 'non riesco a riconoscerti'); return; }
+  if(chAR){
+    const jr = await chPost(RICC(), { t: chTok, a: io, rispondi: testo });
+    b.disabled = false; b.textContent = 'Invia';
+    if(!jr || !jr.ok){ avvisa('Non arrivato a Riccardo: '+((jr && jr.motivo) || 'errore')); return; }
+    ta.value = ''; chModoRiccardo(false); await chCaricaCons(); chDisegnaConv(true); chAspettaRiccardo(); return;
+  }
   const j = await chPost(WCH(), { t: chTok, testo, a: io });
   b.disabled = false; b.textContent = 'Invia';
   if(!j || !j.ok){ avvisa((j && j.motivo) || 'il messaggio non e partito'); return; }
