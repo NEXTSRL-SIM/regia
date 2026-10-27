@@ -1263,6 +1263,14 @@ th,.et{letter-spacing:.12em!important;font-weight:800!important}
 :root[data-tema="scuro"] .pa,:root:not([data-tema]) .pa{}
 .pa *{box-sizing:border-box}
 .pa[hidden],.pa [hidden]{display:none!important}
+body.pa-agente>*:not(#paAg):not(.pa-ov):not(script):not(style){display:none!important}
+#paAg{position:fixed;inset:0;display:flex;flex-direction:column;background:#F1F4F8;z-index:40}
+.pa-ag-h{display:flex;align-items:center;gap:12px;padding:10px 18px;background:#0F172A;color:#E2E8F0;font:14px/1.2 Inter,system-ui,sans-serif}
+.pa-ag-h b{font-weight:800;letter-spacing:.08em}.pa-ag-t{color:#94A3B8}.pa-ag-sp{flex:1}.pa-ag-n{font-weight:600}
+.pa-ag-h button{font:600 13px Inter,system-ui,sans-serif;color:#E2E8F0;background:transparent;border:1px solid rgba(148,163,184,.4);border-radius:8px;padding:7px 12px;cursor:pointer}
+.pa-ag-h button:hover{background:rgba(148,163,184,.15)}
+#paAgF{flex:1;width:100%;border:0;background:#F1F4F8}
+@media (max-width:600px){.pa-ag-t,.pa-ag-n{display:none}}
 .pa-sx h2{color:#fff!important}.pa-dx h3,.pa-card b{color:var(--pa-ink)!important}
 .pa select.pa-i{height:44px;font:inherit;font-size:14px;border:1px solid var(--pa-ln);border-radius:10px;background:#fff;color:var(--pa-ink);width:100%}
 .pa-io{color:var(--ink)!important;margin-left:auto;font-size:12.5px}.pa-io>button{color:var(--ink)!important;border-color:var(--line-2)!important}
@@ -5464,8 +5472,9 @@ window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','cont
   function tema(){ return document.documentElement.getAttribute('data-tema')||'scuro'; }
   window.addEventListener('message',function(e){
     var d=e.data||{}; if(d.tipo!=='chiedi_pass'||!FIDATI.test(e.origin)||!e.source) return;
-    var k=''; try{ k=PASS; }catch(x){} if(!k) return;
+    var k=''; try{ k=PASS; }catch(x){}
     var tkp=''; try{ tkp=sessionStorage.getItem('portale_token')||localStorage.getItem('portale_token')||''; }catch(x){}
+    if(!k && !tkp) return;   /* l'agente non ha la password della regia: riceve solo il suo accesso */
     try{ e.source.postMessage({tipo:'pass',pass:k,token:tkp},e.origin); e.source.postMessage({tipo:'tema',tema:tema()},e.origin); }catch(x){}
   });
   function aPortale(){ var f=document.getElementById('ifPortale'); if(f&&f.contentWindow){ try{ f.contentWindow.postMessage({tipo:'tema',tema:tema()},'*'); }catch(x){} } }
@@ -5499,8 +5508,13 @@ window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','cont
  function togliTok(){try{sessionStorage.removeItem('portale_token');localStorage.removeItem('portale_token');sessionStorage.removeItem('regia_pass');sessionStorage.removeItem('regia_chi');}catch(e){}}
  async function chiama(o){var r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});var j=await r.json().catch(function(){return {ok:false,errore:'risposta non valida'};});return j;}
  function msg(id,t,ok){var m=g(id);m.textContent=t;m.className='pa-msg on '+(ok?'ok':'ko');}
+ /* AGENTE (Sante, 27/10): chi entra come agente vede solo le sue provvigioni, a tutto schermo; la regia e il resto del portale non partono */
+ function modoAgente(){document.body.classList.add('pa-agente');if(g('paAg'))return;var w=document.createElement('div');w.id='paAg';
+  w.innerHTML='<header class="pa-ag-h"><b>Next</b><span class="pa-ag-t">Le tue provvigioni</span><span class="pa-ag-sp"></span><span class="pa-ag-n">'+esc2(IO.nome||'')+'</span><button type="button" id="paAgPw">Cambia password</button><button type="button" id="paAgEsci">Esci</button></header><iframe id="paAgF" title="Provvigioni" src="'+window.PAGINE_NUOVE.provvigioni+'?v='+Date.now()+'"></iframe>';
+  document.body.appendChild(w);g('paAgPw').onclick=function(){apriPw(false);};
+  g('paAgEsci').onclick=async function(){try{await chiama({azione:'esci',token:tok()});}catch(e){}togliTok();location.reload();};}
  function dentro(j){IO=j.utente;PASS=j.pass;CHI=j.chi;try{sessionStorage.setItem('regia_pass',PASS);sessionStorage.setItem('regia_chi',CHI);sessionStorage.setItem('portale_ruolo',IO.ruolo);sessionStorage.setItem('portale_nome',IO.nome);}catch(e){}
-  g('paPorta').hidden=true;var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');menu();apri();if(IO.deve_cambiare)apriPw(true);
+  g('paPorta').hidden=true;var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');menu();if(IO.ruolo==='agente'){modoAgente();}else{apri();}if(IO.deve_cambiare)apriPw(true);
   /* la pagina del portale aperta prima dell'accesso si ricarica, cosi riceve l'accesso della persona */
   var fp=document.getElementById('ifPortale');if(fp&&fp.getAttribute('src'))fp.setAttribute('src',fp.getAttribute('src'));}
  window.__portaleIo=function(){return IO;};
