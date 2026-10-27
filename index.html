@@ -2517,7 +2517,7 @@ async function elencoFormazione(velo, appena){
     d.querySelectorAll('[data-butta]').forEach(b => b.onclick = async () => {
       const riga = b.closest('.flez');
       const che = riga && riga.querySelector('.ftitolo');
-      if(!await rChiedi('Scarto questa proposta?',((che && che.textContent) || '')+'\n\nResta scritta con sopra «scartata», e da qui la puoi rimettere.','Scarta',true)) return;
+      if(!await rConferma('Scarto questa proposta?',((che && che.textContent) || '')+'\n\nResta scritta con sopra «scartata», e da qui la puoi rimettere.','Scarta',true)) return;
       b.disabled = true;
       try{
         await fetch(RAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
@@ -3557,7 +3557,7 @@ async function caricaImparato(){
     scartaLezione({ tipo, id: Number(id) }, true);
   });
   box.querySelectorAll('[data-scartatutto]').forEach(b => b.onclick = async () => {
-    if(!await rChiedi('Scarto tutto quello che ha imparato in questa telefonata?','Non si cancella niente: smette di valere e lo ritrovi qui sotto, da dove puoi rimetterlo.','Scarta tutto',true)) return;
+    if(!await rConferma('Scarto tutto quello che ha imparato in questa telefonata?','Non si cancella niente: smette di valere e lo ritrovi qui sotto, da dove puoi rimetterlo.','Scarta tutto',true)) return;
     scartaLezione({ tipo: 'tutto', conversazione: b.dataset.scartatutto }, false);
   });
 }
@@ -3956,7 +3956,7 @@ async function cFaiPartire(contattoId, bottone){
   const r = cListaRighe.find(x => x.contatto_id === Number(contattoId));
   if(!r){ avvisa('questa riga non e piu nella lista'); return; }
   if(!r.tel){ avvisa('questo contatto non ha un numero'); return; }
-  if(!await rChiedi('Faccio squillare adesso?',(r.nome||'(senza nome)')+'\n'+r.tel,'Chiama'))
+  if(!await rConferma('Faccio squillare adesso?',(r.nome||'(senza nome)')+'\n'+r.tel,'Chiama'))
     return;
   if(bottone) bottone.disabled = true;
   const e = await cComando({ lista: cListaId, chiama: Number(contattoId) });
@@ -4147,7 +4147,7 @@ document.addEventListener('click', async (e) => {
   if(d.cancella){
     const id = Number(d.cancella);
     const f = cListe.find(x => x.id === id);
-    if(!await rChiedi('Cancello la lista «'+(f ? f.nome : '#'+id)+'»?',
+    if(!await rConferma('Cancello la lista «'+(f ? f.nome : '#'+id)+'»?',
       (f ? (f.in_lista||0) : 0)+' contatti in lista, '+(f ? (f.fatte||0) : 0)+' gia chiamati.\n'+
       'La lista sparisce per sempre. I contatti restano dove sono.','Cancella la lista',true)) return;
     const r = await cComando({ lista: id, cancella: true });
@@ -4197,7 +4197,7 @@ document.addEventListener('click', async (e) => {
     await cComando({ lista: cListaId, quante: q }); await cCaricaListe(); return; }
   if(t.id === 'cSvuota'){
     if(!cListaId || !cListaRighe.length) return;
-    if(!await rChiedi('Svuoto la lista?','Tolgo tutti i '+cListaRighe.length+' nomi da questa lista. La lista resta, si svuota.','Svuota',true)) return;
+    if(!await rConferma('Svuoto la lista?','Tolgo tutti i '+cListaRighe.length+' nomi da questa lista. La lista resta, si svuota.','Svuota',true)) return;
     t.disabled = true; await cComando({ lista: cListaId, svuota: true }); t.disabled = false;
     await cCaricaListe(); avvisa('lista svuotata'); return; }
   /* LA TELEFONATA PARTE DAVVERO. Una alla volta, sempre con la conferma che
@@ -5239,8 +5239,8 @@ setTimeout(accendiTelefono, 1200);
   });
 })();
 </script><script id="conferme-portale-js">
-/* PORTALE NEXT-110: rChiedi(titolo, testo, tasto, rosso) -> Promise<true/false>. Sostituisce confirm() */
-function rChiedi(titolo,testo,tasto,rosso){return new Promise(function(ok){
+/* PORTALE NEXT-110: rConferma(titolo, testo, tasto, rosso) -> Promise<true/false>. Sostituisce confirm() */
+function rConferma(titolo,testo,tasto,rosso){return new Promise(function(ok){
   var old=document.getElementById('rVelo'); if(old) old.remove();
   var e=function(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
   var v=document.createElement('div'); v.className='rvelo'; v.id='rVelo';
@@ -5253,7 +5253,7 @@ function rChiedi(titolo,testo,tasto,rosso){return new Promise(function(ok){
 });}
 </script><script id="menu-next">
 /* pagine gia rifatte fuori da n8n (PORTALE NEXT-110): la voce del menu apre queste al posto del webhook */
-window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','contratti-firmati':'https://nextsrl-sim.github.io/contratti-firmati/','gestione-next':'https://nextsrl-sim.github.io/gestione-installatori/','prepara-contratto-form':'https://nextsrl-sim.github.io/genera-contratto/','avvisi-merce-pronta':'https://nextsrl-sim.github.io/avvisi-merce/','portale-preventivi':'https://nextsrl-sim.github.io/nuovo-preventivo/','riconciliazione':'https://nextsrl-sim.github.io/verifica-bonifici/'};
+window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','contratti-firmati':'https://nextsrl-sim.github.io/contratti-firmati/','gestione-next':'https://nextsrl-sim.github.io/gestione-installatori/','prepara-contratto-form':'https://nextsrl-sim.github.io/genera-contratto/','avvisi-merce-pronta':'https://nextsrl-sim.github.io/avvisi-merce/','portale-preventivi':'https://nextsrl-sim.github.io/nuovo-preventivo/','riconciliazione':'https://nextsrl-sim.github.io/verifica-bonifici/','upload':'https://nextsrl-sim.github.io/upload-documenti/'};
 /* MENU GENERALE NEXT dentro la regia (PORTALE NEXT-110, 26/10). Solo navigazione:
    le schede della regia vengono SPOSTATE nel sottomenu Regia, con i loro gestori;
    le altre voci aprono le pagine del portale in un riquadro accanto. */
