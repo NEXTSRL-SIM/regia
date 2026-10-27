@@ -5514,7 +5514,7 @@ window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','cont
  g('paDim').onclick=function(){msg('paMsg','Chiedi a Next una password provvisoria nuova: si genera dalla pagina Utenti.',true);};
  g('paForm').addEventListener('submit',async function(e){e.preventDefault();var b=g('paEntra');b.disabled=true;b.textContent='Un momento…';
   try{var j=MODO==='mail'?await chiama({azione:'entra',email:g('paMail').value,password:g('paPw').value,resta:g('paResta').checked}):await chiama({azione:'parola',parola:g('paParola').value});
-   if(!j.ok&&MODO==='parola'){/* chi ha la parola ma non ancora un utente del portale entra come prima */
+   if(!j.ok&&MODO==='parola'&&/non hai ancora un utente/.test(j.errore||'')){/* chi ha la parola ma non ancora un utente del portale entra come prima */
     try{var r=await fetch(API+'-entra',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({parola:g('paParola').value})});var v=await r.json();
      if(v&&v.pass){PASS=v.pass;CHI=v.chi;try{sessionStorage.setItem('regia_pass',PASS);sessionStorage.setItem('regia_chi',CHI||'');}catch(e){}g('paPorta').hidden=true;apri();return;}}catch(e){}}
    if(!j.ok){msg('paMsg',j.errore||'Accesso non riuscito.');g('paPw').value='';g('paParola').value='';return;}
