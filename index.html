@@ -5500,8 +5500,12 @@ window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','cont
  async function chiama(o){var r=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});var j=await r.json().catch(function(){return {ok:false,errore:'risposta non valida'};});return j;}
  function msg(id,t,ok){var m=g(id);m.textContent=t;m.className='pa-msg on '+(ok?'ok':'ko');}
  function dentro(j){IO=j.utente;PASS=j.pass;CHI=j.chi;try{sessionStorage.setItem('regia_pass',PASS);sessionStorage.setItem('regia_chi',CHI);sessionStorage.setItem('portale_ruolo',IO.ruolo);sessionStorage.setItem('portale_nome',IO.nome);}catch(e){}
-  g('paPorta').hidden=true;var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');menu();apri();if(IO.deve_cambiare)apriPw(true);}
+  g('paPorta').hidden=true;var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');menu();apri();if(IO.deve_cambiare)apriPw(true);
+  /* la pagina del portale aperta prima dell'accesso si ricarica, cosi riceve l'accesso della persona */
+  var fp=document.getElementById('ifPortale');if(fp&&fp.getAttribute('src'))fp.setAttribute('src',fp.getAttribute('src'));}
  window.__portaleIo=function(){return IO;};
+ window.addEventListener('message',function(e){var d=e.data||{};if(d.tipo!=='serve_accesso'||!/^https:\/\/(nextsrl-sim\.github\.io|portale\.next-srl\.net)$/.test(e.origin))return;if(tok())return;
+  g('paPorta').hidden=false;if(MODO==='mail')g('paCambiaModo').click();msg('paMsg','Questa pagina mostra i dati di chi entra: entra con il tuo nome. La prima volta usa la parola d\'ordine, poi scegli la tua password.',true);});
  /* porta */
  g('paOcchio').onclick=function(){var p=g('paPw');p.type=p.type==='password'?'text':'password';};
  g('paCambiaModo').onclick=function(){MODO=MODO==='mail'?'parola':'mail';g('paConMail').hidden=MODO!=='mail';g('paConParola').hidden=MODO==='mail';
@@ -5561,7 +5565,7 @@ window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','cont
   if(!j.ok){g('paTmp').innerHTML='<p class="pa-msg on ko">'+esc2(j.errore||'Utente non creato.')+'</p>';return;}mostraTmp(g('paFNome').value,g('paFMail').value,j.provvisoria);g('paFNome').value='';g('paFMail').value='';await caricaUt();};
  /* all'avvio: con una sessione valida si entra senza chiedere nulla; altrimenti la porta nuova */
  window.__portaleAvvio=async function(){var t=tok();if(t){try{var j=await chiama({azione:'chi',token:t});if(j.ok){dentro(j);return;}}catch(e){}togliTok();PASS='';}
-  else if(PASS){var vp0=document.getElementById('porta');if(vp0)vp0.classList.add('nascosto');apri();return;}
+  /* chi era entrato con la vecchia porta (solo parola d'ordine) passa dalla porta nuova una volta */
   var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');g('paPorta').hidden=false;setTimeout(function(){g('paMail').focus();},50);};
 })();
 </script>
