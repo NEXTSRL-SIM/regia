@@ -5228,7 +5228,7 @@ setTimeout(accendiTelefono, 1200);
 })();
 </script><script id="menu-next">
 /* pagine gia rifatte fuori da n8n (PORTALE NEXT-110): la voce del menu apre queste al posto del webhook */
-window.PAGINE_NUOVE={'contratti-firmati':'https://nextsrl-sim.github.io/contratti-firmati/','gestione-next':'https://nextsrl-sim.github.io/gestione-installatori/','prepara-contratto-form':'https://nextsrl-sim.github.io/genera-contratto/','avvisi-merce-pronta':'https://nextsrl-sim.github.io/avvisi-merce/'};
+window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','contratti-firmati':'https://nextsrl-sim.github.io/contratti-firmati/','gestione-next':'https://nextsrl-sim.github.io/gestione-installatori/','prepara-contratto-form':'https://nextsrl-sim.github.io/genera-contratto/','avvisi-merce-pronta':'https://nextsrl-sim.github.io/avvisi-merce/'};
 /* MENU GENERALE NEXT dentro la regia (PORTALE NEXT-110, 26/10). Solo navigazione:
    le schede della regia vengono SPOSTATE nel sottomenu Regia, con i loro gestori;
    le altre voci aprono le pagine del portale in un riquadro accanto. */
@@ -5334,6 +5334,20 @@ window.PAGINE_NUOVE={'contratti-firmati':'https://nextsrl-sim.github.io/contratt
   function aPortale(){ var f=document.getElementById('ifPortale'); if(f&&f.contentWindow){ try{ f.contentWindow.postMessage({tipo:'tema',tema:tema()},'*'); }catch(x){} } }
   var f=document.getElementById('ifPortale'); if(f) f.addEventListener('load',function(){ aPortale(); setTimeout(aPortale,600); });
   new MutationObserver(aPortale).observe(document.documentElement,{attributes:true,attributeFilter:['data-tema']});
+})();
+
+/* PORTALE NEXT-110: le pagine del portale (es. il Percorso) chiedono di aprire un'altra pagina del portale o la regia */
+(function(){
+  var FIDATI=/^https:\/\/(nextsrl-sim\.github\.io|portale\.next-srl\.net)$/;
+  window.addEventListener('message',function(e){
+    var d=e.data||{}; if(d.tipo!=='apri'||!d.pag||!FIDATI.test(e.origin)) return;
+    if(d.pag==='regia'){
+      var t=document.getElementById('tCont'); if(t) t.click();
+      if(d.cerca){ setTimeout(function(){ var c=document.getElementById('cCerca'); if(c){ c.value=d.cerca; c.dispatchEvent(new Event('input',{bubbles:true})); c.focus(); } },250); }
+      return;
+    }
+    var a=document.querySelector('#menuNext .mn-v[data-pag="'+String(d.pag).replace(/"/g,'')+'"]'); if(a) a.click();
+  });
 })();
 </script>
 </body></html>
