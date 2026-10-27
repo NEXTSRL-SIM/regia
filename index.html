@@ -1100,7 +1100,20 @@ td.azc .ico3{margin-top:0}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <meta name="robots" content="noindex,nofollow">
-<style id="ardesia">
+<style id="conferme-portale">
+/* PORTALE NEXT-110: conferme della regia come finestre a video, non piu avvisi del browser */
+.rvelo{position:fixed;inset:0;background:rgba(5,8,12,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9999}
+.rfin{background:var(--surface,#fff);color:var(--ink,#111827);border:1px solid var(--line,#E2E7EE);border-radius:16px;width:100%;max-width:460px;box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden;font-family:var(--sans,inherit)}
+.rfin .rh{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 6px}
+.rfin .ri{width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;flex:none;font-weight:800;background:var(--amber-wash,#E0F4F9);color:var(--amber,#0891B2)}
+.rfin .ri.rosso{background:rgba(220,38,38,.12);color:#DC2626}
+.rfin .rh b{font-size:15px;font-weight:800;color:var(--titolo,var(--ink))}
+.rfin .rm{padding:4px 20px 16px 66px;font-size:13.5px;line-height:1.55;color:var(--ink-2,#3F4A5A)}
+.rfin .rp{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--line,#E2E7EE);background:var(--surface-2,#F8FAFC)}
+.rfin button{border:1px solid var(--line-2,#D5DCE5);background:var(--surface,#fff);color:var(--ink-2,#3F4A5A);border-radius:999px;padding:8px 16px;font:700 12.5px var(--sans,inherit);cursor:pointer}
+.rfin button.si{background:var(--amber,#0891B2);border-color:var(--amber,#0891B2);color:#fff}
+.rfin button.rosso{background:#DC2626;border-color:#DC2626;color:#fff}
+</style><style id="ardesia">
 /* ===== VESTE ARDESIA (PORTALE NEXT-110, 26/10) — solo grafica: nessun elemento spostato di funzione ===== */
 :root{--display:"Manrope",system-ui,sans-serif;--sans:"Manrope",system-ui,sans-serif;--mono:"Manrope",system-ui,sans-serif;--cifre:"JetBrains Mono",ui-monospace,monospace}
 :root[data-tema="chiaro"]{--ground:#F2F4F7;--surface:#FFFFFF;--surface-2:#F8FAFC;--line:#E2E7EE;--line-2:#D5DCE5;--titolo:#111827;--ink:#111827;--ink-2:#3F4A5A;--ink-3:#6B7686;--amber:#0891B2;--amber-dim:#0891B2;--amber-wash:#E0F4F9}
@@ -2504,7 +2517,7 @@ async function elencoFormazione(velo, appena){
     d.querySelectorAll('[data-butta]').forEach(b => b.onclick = async () => {
       const riga = b.closest('.flez');
       const che = riga && riga.querySelector('.ftitolo');
-      if(!confirm('Scarto questa proposta?\n\n'+((che && che.textContent) || '')+'\n\nResta scritta con sopra "scartata", e da qui la puoi rimettere.')) return;
+      if(!await rChiedi('Scarto questa proposta?',((che && che.textContent) || '')+'\n\nResta scritta con sopra «scartata», e da qui la puoi rimettere.','Scarta',true)) return;
       b.disabled = true;
       try{
         await fetch(RAPI(), { method:'POST', headers:{'Content-Type':'application/json'},
@@ -3543,8 +3556,8 @@ async function caricaImparato(){
     const [tipo, id] = b.dataset.rimetti.split(':');
     scartaLezione({ tipo, id: Number(id) }, true);
   });
-  box.querySelectorAll('[data-scartatutto]').forEach(b => b.onclick = () => {
-    if(!confirm('Scarto tutto quello che ha imparato in questa telefonata?\n\nNon si cancella niente: smette di valere e lo ritrovi qui sotto, da dove puoi rimetterlo.')) return;
+  box.querySelectorAll('[data-scartatutto]').forEach(b => b.onclick = async () => {
+    if(!await rChiedi('Scarto tutto quello che ha imparato in questa telefonata?','Non si cancella niente: smette di valere e lo ritrovi qui sotto, da dove puoi rimetterlo.','Scarta tutto',true)) return;
     scartaLezione({ tipo: 'tutto', conversazione: b.dataset.scartatutto }, false);
   });
 }
@@ -3943,8 +3956,7 @@ async function cFaiPartire(contattoId, bottone){
   const r = cListaRighe.find(x => x.contatto_id === Number(contattoId));
   if(!r){ avvisa('questa riga non e piu nella lista'); return; }
   if(!r.tel){ avvisa('questo contatto non ha un numero'); return; }
-  if(!confirm('Faccio squillare adesso?\n\n'+(r.nome||'(senza nome)')+'\n'+r.tel+
-              ''))
+  if(!await rChiedi('Faccio squillare adesso?',(r.nome||'(senza nome)')+'\n'+r.tel,'Chiama'))
     return;
   if(bottone) bottone.disabled = true;
   const e = await cComando({ lista: cListaId, chiama: Number(contattoId) });
@@ -4135,9 +4147,9 @@ document.addEventListener('click', async (e) => {
   if(d.cancella){
     const id = Number(d.cancella);
     const f = cListe.find(x => x.id === id);
-    if(!confirm('Cancello la lista "'+(f ? f.nome : '#'+id)+'"?\n\n'+
+    if(!await rChiedi('Cancello la lista «'+(f ? f.nome : '#'+id)+'»?',
       (f ? (f.in_lista||0) : 0)+' contatti in lista, '+(f ? (f.fatte||0) : 0)+' gia chiamati.\n'+
-      'La lista sparisce per sempre. I contatti restano dove sono.')) return;
+      'La lista sparisce per sempre. I contatti restano dove sono.','Cancella la lista',true)) return;
     const r = await cComando({ lista: id, cancella: true });
     if(!r.ok){ avvisa('non sono riuscito a cancellarla'); return; }
     if(cListaId === id) cListaId = null;
@@ -4185,7 +4197,7 @@ document.addEventListener('click', async (e) => {
     await cComando({ lista: cListaId, quante: q }); await cCaricaListe(); return; }
   if(t.id === 'cSvuota'){
     if(!cListaId || !cListaRighe.length) return;
-    if(!confirm('Tolgo tutti i '+cListaRighe.length+' nomi da questa lista? La lista resta, si svuota.')) return;
+    if(!await rChiedi('Svuoto la lista?','Tolgo tutti i '+cListaRighe.length+' nomi da questa lista. La lista resta, si svuota.','Svuota',true)) return;
     t.disabled = true; await cComando({ lista: cListaId, svuota: true }); t.disabled = false;
     await cCaricaListe(); avvisa('lista svuotata'); return; }
   /* LA TELEFONATA PARTE DAVVERO. Una alla volta, sempre con la conferma che
@@ -5226,6 +5238,19 @@ setTimeout(accendiTelefono, 1200);
     try{ localStorage.setItem('regia_chat_colonne', JSON.stringify({ L: parseInt(g.style.getPropertyValue('--chL')) || 340, R: parseInt(g.style.getPropertyValue('--chR')) || 300 })); }catch(e){}
   });
 })();
+</script><script id="conferme-portale-js">
+/* PORTALE NEXT-110: rChiedi(titolo, testo, tasto, rosso) -> Promise<true/false>. Sostituisce confirm() */
+function rChiedi(titolo,testo,tasto,rosso){return new Promise(function(ok){
+  var old=document.getElementById('rVelo'); if(old) old.remove();
+  var e=function(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var v=document.createElement('div'); v.className='rvelo'; v.id='rVelo';
+  v.innerHTML='<div class="rfin" role="dialog" aria-modal="true"><div class="rh"><span class="ri'+(rosso?' rosso':'')+'">'+(rosso?'!':'?')+'</span><b>'+e(titolo)+'</b></div><div class="rm">'+e(testo).replace(/\n/g,'<br>')+'</div><div class="rp"><button data-r="0">Annulla</button><button data-r="1" class="'+(rosso?'rosso':'si')+'">'+e(tasto||'Conferma')+'</button></div></div>';
+  function fine(x){ v.remove(); document.removeEventListener('keydown',k,true); ok(x); }
+  function k(ev){ if(ev.key==='Escape'){ ev.stopPropagation(); fine(false); } }
+  v.addEventListener('click',function(ev){ var b=ev.target.closest('[data-r]'); if(b) fine(b.getAttribute('data-r')==='1'); else if(ev.target===v) fine(false); });
+  document.addEventListener('keydown',k,true);
+  document.body.appendChild(v); var s=v.querySelector('button.si,button.rosso'); if(s) s.focus();
+});}
 </script><script id="menu-next">
 /* pagine gia rifatte fuori da n8n (PORTALE NEXT-110): la voce del menu apre queste al posto del webhook */
 window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','contratti-firmati':'https://nextsrl-sim.github.io/contratti-firmati/','gestione-next':'https://nextsrl-sim.github.io/gestione-installatori/','prepara-contratto-form':'https://nextsrl-sim.github.io/genera-contratto/','avvisi-merce-pronta':'https://nextsrl-sim.github.io/avvisi-merce/'};
