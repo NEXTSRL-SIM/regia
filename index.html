@@ -5513,8 +5513,15 @@ window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','cont
   w.innerHTML='<header class="pa-ag-h"><b>Next</b><span class="pa-ag-t">Le tue provvigioni</span><span class="pa-ag-sp"></span><span class="pa-ag-n">'+esc2(IO.nome||'')+'</span><button type="button" id="paAgPw">Cambia password</button><button type="button" id="paAgEsci">Esci</button></header><iframe id="paAgF" title="Provvigioni" src="'+window.PAGINE_NUOVE.provvigioni+'?v='+Date.now()+'"></iframe>';
   document.body.appendChild(w);g('paAgPw').onclick=function(){apriPw(false);};
   g('paAgEsci').onclick=async function(){try{await chiama({azione:'esci',token:tok()});}catch(e){}togliTok();location.reload();};}
+ /* PORTALE NEXT-110 (Sante 27/10 17:40): l'agente vede il menu concordato, senza Ordini Odoo, Database e Gestione venditori.
+    Le pagine per ora mostrano i dati di tutti (scelta di Sante); Provvigioni resta solo sue, in sola lettura (la decide il suo token). */
+ var VIETATE_AG=['dashboard-wf5','@supabase','vendor-admin'];
+ function menuAgente(){document.body.classList.add('pa-ag-menu');var nav=document.getElementById('menuNext');if(!nav)return;
+  VIETATE_AG.forEach(function(k){nav.querySelectorAll('.mn-v[data-pag="'+k+'"]').forEach(function(a){a.remove();});});
+  var f=document.getElementById('ifPortale');if(f&&VIETATE_AG.indexOf(f.getAttribute('data-p'))>=0){var d=nav.querySelector('.mn-v[data-pag="dashboard"]');if(d)d.click();}
+  try{if(VIETATE_AG.indexOf(localStorage.getItem('mn_pag'))>=0)localStorage.removeItem('mn_pag');}catch(e){}}
  function dentro(j){IO=j.utente;PASS=j.pass;CHI=j.chi;try{sessionStorage.setItem('regia_pass',PASS);sessionStorage.setItem('regia_chi',CHI);sessionStorage.setItem('portale_ruolo',IO.ruolo);sessionStorage.setItem('portale_nome',IO.nome);}catch(e){}
-  g('paPorta').hidden=true;var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');menu();if(IO.ruolo==='agente'){modoAgente();}else{apri();}if(IO.deve_cambiare)apriPw(true);
+  g('paPorta').hidden=true;var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');menu();if(IO.ruolo==='agente'){menuAgente();}apri();if(IO.deve_cambiare)apriPw(true);
   /* la pagina del portale aperta prima dell'accesso si ricarica, cosi riceve l'accesso della persona */
   var fp=document.getElementById('ifPortale');if(fp&&fp.getAttribute('src'))fp.setAttribute('src',fp.getAttribute('src'));}
  window.__portaleIo=function(){return IO;};
