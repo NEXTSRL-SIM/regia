@@ -1282,6 +1282,9 @@ th,.et{letter-spacing:.12em!important;font-weight:800!important}
 @media (min-width:821px){ #vPerc iframe{height:calc(100vh - 53px)!important} }
 </style>
 <style id="pa-css">
+/* PORTALE NEXT 2.0-144 (Sante 17/11): l'agente vede della regia solo In linea, in sola visione; niente telefono nel nastro */
+body.pa-ag-menu #mnSub .st:not(#tLinea),body.pa-ag-menu .schede .st:not(#tLinea){display:none!important}
+body.pa-ag-menu #vLinea button,body.pa-ag-menu #vLinea input,body.pa-ag-menu #vLinea textarea,body.pa-ag-menu .nastro .cornetta,body.pa-ag-menu .nastro #spiaTel{display:none!important}
 #porta{display:none!important}
 /* PORTALE NEXT-110: accesso per persona (portale_utenti) — grafica approvata */
 .pa{--pa-sf:#fff;--pa-sf2:#F6F8FA;--pa-ln:#E3E7EC;--pa-ink:#0F172A;--pa-ink2:#334155;--pa-ink3:#64748B;--pa-ac:#0891B2;--pa-acw:#E0F4F9;--pa-rd:#B91C1C;--pa-rdw:#FEE2E2;--pa-gr:#15803D;--pa-grw:#DCFCE7;--pa-am:#B45309;--pa-amw:#FEF3C7;--pa-vi:#6D4AE0;--pa-viw:#F0ECFE;font-family:Manrope,system-ui,sans-serif;color:var(--pa-ink);font-size:14px}
@@ -5662,13 +5665,30 @@ window.PAGINE_NUOVE={'dashboard':'https://nextsrl-sim.github.io/percorso/','cont
   w.innerHTML='<header class="pa-ag-h"><b>Next</b><span class="pa-ag-t">Le tue provvigioni</span><span class="pa-ag-sp"></span><span class="pa-ag-n">'+esc2(IO.nome||'')+'</span><button type="button" id="paAgPw">Cambia password</button><button type="button" id="paAgEsci">Esci</button></header><iframe id="paAgF" title="Provvigioni" src="'+window.PAGINE_NUOVE.provvigioni+'?v='+Date.now()+'"></iframe>';
   document.body.appendChild(w);g('paAgPw').onclick=function(){apriPw(false);};
   g('paAgEsci').onclick=async function(){try{await chiama({azione:'esci',token:tok()});}catch(e){}togliTok();location.reload();};}
- /* PORTALE NEXT-110 (Sante 27/10 17:40): l'agente vede il menu concordato, senza Ordini Odoo, Database e Gestione venditori.
-    Le pagine per ora mostrano i dati di tutti (scelta di Sante); Provvigioni resta solo sue, in sola lettura (la decide il suo token). */
- var VIETATE_AG=['dashboard-wf5','@supabase','vendor-admin'];
+ /* PORTALE NEXT 2.0-144 (Sante 17/11/2026 12:39-12:40): l'AGENTE (Roberto Polotto, Alessandro Belloni) vede SOLO
+    Tecnico > Progettazione; Regia > In linea, in sola visione; Commerciale > Nuovo preventivo, Nuovo cliente, Upload documenti;
+    Provvigioni e resoconto (solo le sue: le decide il suo token). Entra su Nuovo preventivo. Elenco AMMESSO (whitelist):
+    tutto il resto sparisce (Panoramica, Area di lavoro, Scrivania, Posta, Marketing, le altre schede della regia, Genera contratto,
+    Contratti firmati, Verifica bonifici, Avvisi merce pronta, Ordini Odoo, Gestione installatori/progettisti/venditori, Strumenti, Impostazioni).
+    Sostituisce la lista delle vietate del 27/10 (PORTALE NEXT-110). */
+ var AMMESSE_AG=['progettazione','portale-preventivi','lead-form','upload','provvigioni'],SCHEDE_AG=['tLinea'],INIZIO_AG='portale-preventivi';
+ function agOk(p){return AMMESSE_AG.indexOf(String(p||''))>=0;}
+ function agInizio(){var nav=document.getElementById('menuNext');var a=nav&&nav.querySelector('.mn-v[data-pag="'+INIZIO_AG+'"]');if(a)a.click();}
  function menuAgente(){document.body.classList.add('pa-ag-menu');var nav=document.getElementById('menuNext');if(!nav)return;
-  VIETATE_AG.forEach(function(k){nav.querySelectorAll('.mn-v[data-pag="'+k+'"]').forEach(function(a){a.remove();});});
-  var f=document.getElementById('ifPortale');if(f&&VIETATE_AG.indexOf(f.getAttribute('data-p'))>=0){var d=nav.querySelector('.mn-v[data-pag="dashboard"]');if(d)d.click();}
-  try{if(VIETATE_AG.indexOf(localStorage.getItem('mn_pag'))>=0)localStorage.removeItem('mn_pag');}catch(e){}}
+  nav.querySelectorAll('.mn-v[data-pag]').forEach(function(a){if(!agOk(a.getAttribute('data-pag')))a.remove();});
+  ['mnArea','mnAreaSub','mnMkt','mnMktSub','mnStrum','mnStrumSub','mnImpost'].forEach(function(i){var e=g(i);if(e)e.remove();});
+  ['mnTec','mnTecSub'].forEach(function(i){var e=g(i);if(e)e.classList.remove('mn-solo-next');});
+  nav.querySelectorAll('.mn-g,.mn-sep').forEach(function(x){x.remove();});
+  ['mnComm','mnAmm','mnTec'].forEach(function(i){var gp=g(i),s=g(i+'Sub');if(gp&&s&&!s.querySelector('.mn-v'))(gp.remove(),s.remove());});
+  if(!nav._agGuardia){nav._agGuardia=1;
+   /* guardia: nessuna pagina non ammessa si apre, neanche con un click fatto dal codice o da un messaggio */
+   nav.addEventListener('click',function(e){var a=e.target.closest('.mn-v[data-pag]');if(a&&!agOk(a.getAttribute('data-pag'))){e.preventDefault();e.stopImmediatePropagation();}
+    var b=e.target.closest('.st');if(b&&SCHEDE_AG.indexOf(b.id)<0){e.preventDefault();e.stopImmediatePropagation();}},true);
+   /* In linea in sola visione: niente ascolto, conferenza, prendere o chiudere la linea, suggerimenti a Valentino */
+   document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('#vLinea button,#vLinea input,#vLinea textarea,#cornetta button');if(t){e.preventDefault();e.stopImmediatePropagation();}},true);
+   setInterval(function(){var f=g('ifPortale'),vp=g('vPortale');if(f&&vp&&!vp.classList.contains('nascosto')&&f.getAttribute('data-p')&&!agOk(f.getAttribute('data-p')))agInizio();},1000);}
+  try{if(!agOk(localStorage.getItem('mn_pag')))localStorage.removeItem('mn_pag');localStorage.removeItem('ip_sez');}catch(e){}
+  setTimeout(agInizio,0);}
  function dentro(j){IO=j.utente;PASS=j.pass;CHI=j.chi;try{sessionStorage.setItem('regia_pass',PASS);sessionStorage.setItem('regia_chi',CHI);sessionStorage.setItem('portale_ruolo',IO.ruolo);sessionStorage.setItem('portale_nome',IO.nome);}catch(e){}
   g('paPorta').hidden=true;var vp=document.getElementById('porta');if(vp)vp.classList.add('nascosto');menu();if(IO.ruolo==='agente'){menuAgente();}apri();if(IO.ruolo==='next'){document.body.classList.add('pa-next');var ma=document.getElementById('mnArea');if(ma&&!ma._apri){ma._apri=1;try{if(localStorage.getItem('mn_area')==='chiusa')document.body.classList.add('mn-area-chiusa');}catch(x){}ma.addEventListener('click',function(){var c=!document.body.classList.contains('mn-area-chiusa');document.body.classList.toggle('mn-area-chiusa',c);try{localStorage.setItem('mn_area',c?'chiusa':'aperta')}catch(x){}});}/* PORTALE NEXT-102: per Sante si entra nell'Area di lavoro */var aw=document.querySelector('#menuNext .mn-v[data-pag="area-lavoro"]');if(aw)aw.click();}if(IO.deve_cambiare)apriPw(true);
   /* la pagina del portale aperta prima dell'accesso si ricarica, cosi riceve l'accesso della persona */
