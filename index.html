@@ -2314,8 +2314,11 @@ async function tira(){
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ t: PASS, chi: CHI, telefono: statoTel }) }).catch(() => {});
     /* un errore dentro disegna() non deve fermare l aggiornamento */
-    const r = await fetch(API + '?dati=1&periodo=' + periodo + '&t=' + encodeURIComponent(PASS));
-    if(r.status === 401){ sessionStorage.clear(); location.reload(); return; }
+    /* 2.0-144: l agente (menu ridotto) legge In linea da in-linea-portale col suo gettone: solo i suoi numeri, sola visione */
+    const agTok = (!PASS || document.body.classList.contains('pa-ag-menu')) ? (sessionStorage.getItem('portale_token') || localStorage.getItem('portale_token') || '') : '';
+    const r = agTok ? await fetch('https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/in-linea-portale?periodo=' + periodo, { headers: { 'X-Portale-Token': agTok } })
+                    : await fetch(API + '?dati=1&periodo=' + periodo + '&t=' + encodeURIComponent(PASS));
+    if(r.status === 401){ if(agTok){ return; } sessionStorage.clear(); location.reload(); return; }
     stato = await r.json();
     if(!stato.richiami) stato.richiami = [];
     if(!sel || !stato.vive.some(v=>v.conversazione===sel)) sel = stato.vive.length ? stato.vive[0].conversazione : null;
